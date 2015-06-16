@@ -89,6 +89,7 @@ public class MeleeAction : BaseGameAction
 
         // Deal damage (we assume that the actor is already nullchecked here)
         actor.Damage(targetTile.Actor as GridItem, damage);
+        targetTile = null;
 
         visualisation.gameObject.SetActive(false);
         yield return null;

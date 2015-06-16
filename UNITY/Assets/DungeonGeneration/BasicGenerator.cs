@@ -73,5 +73,74 @@ namespace DungeonGeneration
 
 			return false;
 		}
+
+        // object stuff
+
+        int width;
+        int height;
+        int maxRooms;
+
+        List<DungeonRoom> rooms;
+        DungeonRoom tempRoom;
+
+        int counter = 0;
+        
+        public BasicGenerator(int width, int height, int maxRooms)
+        {
+
+            this.width = width;
+            this.height = height;
+            this.maxRooms = maxRooms;
+
+            rooms = new List<DungeonRoom>(maxRooms);
+        }
+
+        public DungeonData GetCurrentGrid()
+        {
+            DungeonData newGrid = new DungeonData(width, height);
+
+            foreach (DungeonRoom room in rooms)
+            {
+                newGrid.AddRoom(room);
+            }
+
+            if(tempRoom != null)
+            {
+                newGrid.AddRoom(tempRoom);
+            }
+
+            return newGrid;
+        }
+
+        public bool NextStep()
+        {
+
+//			int attempt = 0;
+
+            if (++counter < maxRooms)
+            {
+                int c = 10;
+                do
+                {
+                    int roomWidth = Random.Range(4, 10);
+                    int roomHeight = Random.Range(4, 10);
+                    tempRoom = new DungeonRoom(Random.Range(0, width - (roomWidth + 1)), Random.Range(0, height - (roomHeight + 1)), roomWidth, roomHeight);
+                    --c;
+                }
+                while (OverlapsAny(rooms, tempRoom) && c > 0);
+
+                if (c > 0)
+                {
+                    rooms.Add(tempRoom);
+                    tempRoom = null;
+                }
+                return true;
+            }
+            else
+            {
+                tempRoom = null;   
+                return false;
+            }
+        }
 	}
 }

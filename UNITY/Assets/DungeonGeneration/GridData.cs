@@ -105,10 +105,11 @@ namespace DungeonGeneration
 
 		public bool Overlaps(DungeonRoom other)
 		{
+            // TODO fix edge case where room is in another room?
 			bool horizontalOverlap = Column <= other.Column + other.Width -1  && Column + Width - 1 >= other.Column;
 			bool verticalOverlap = Row <= other.Row + other.Height - 1 && Row + Height - 1 >= other.Row;
 
-			return horizontalOverlap || verticalOverlap;
+			return horizontalOverlap && verticalOverlap;
 		}
 
 		private bool IsBorder(int column, int row)

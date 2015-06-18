@@ -48,7 +48,7 @@ public class TempGameManager : MonoBehaviour
     private IEnumerator SpawnInspectionRoutine()
     {
         yield return null;
-        DungeonGeneration.BasicGenerator g = new DungeonGeneration.BasicGenerator(50, 40, 50);
+        DungeonGeneration.BasicGenerator g = new DungeonGeneration.BasicGenerator(50, 40, 100);
 
 
         while (g.NextStep())

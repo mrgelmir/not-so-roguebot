@@ -38,6 +38,24 @@ public class GridData: ISerializationCallbackReceiver
 		}
 	}
 
+    public void MakeEmptyGrid(int columns, int rows)
+    {
+        if(gridElements != null && gridElements.Count > 0)
+        {
+            gridElements.Clear();
+        }
+
+        gridElements = new List<List<GridTile>>(columns);
+        for (int col = 0; col < columns; col++)
+        {
+            gridElements.Add(new List<GridTile>(rows));
+            for (int row = 0; row < rows; row++)
+            {
+                gridElements[col].Add(null);
+            }
+        }
+    }
+
 	#region ISerializationCallbackReceiver implementation
 	
 	// Serialisation variables

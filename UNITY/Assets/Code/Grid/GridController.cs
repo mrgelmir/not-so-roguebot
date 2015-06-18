@@ -10,11 +10,11 @@ public class GridController : MonoBehaviour
 
 	public static readonly float GridSpacing = 1f;
 
-	public GridData Data;
+	[SerializeField, HideInInspector] private GridData gridData;
 
-	private List<List<GridTile>> gridElements { get { return Data.GridElements; } }
-	public int columns { get { return Data.Columns; } }
-	public int rows { get { return Data.Rows; } } 
+	private List<List<GridTile>> gridElements { get { return gridData.GridElements; } }
+	public int columns { get { return gridData.Columns; } }
+	public int rows { get { return gridData.Rows; } } 
 
 	public Material WallMaterial;
 	public Material FloorMaterial;
@@ -119,12 +119,6 @@ public class GridController : MonoBehaviour
         return closestTile;
 	}
 
-	// TODO remove this
-	#region generation
-
-	private TileType[] tileTypes = new TileType[] {TileType.NONE, TileType.Flat, TileType.Flat, TileType.Flat, TileType.Flat, TileType.Wall};
-
-	[ContextMenu("Clear grid")]
 	public void ClearGrid()
 	{
 		foreach (List<GridTile> col in gridElements) 
@@ -149,89 +143,98 @@ public class GridController : MonoBehaviour
 	{
 		ClearGrid();
 
-//		columns = data.Tiles.Count;
-//		if(columns > 0)
-//		{
-//			rows = data.Tiles[0].Count;
-//		}
-//		else
-//		{
-//			Debug.LogError("not enoughelements in grid");
-//			return null;
-//		}
+        // 1. create empty grid
+        gridData.MakeEmptyGrid(data.Columns, data.Rows);
 
-		for (int c = 0; c < data.Tiles.Count; c++)
-		{
-			gridElements.Add(new List<GridTile>(columns));
-			for (int r = 0; r < data.Tiles[c].Count; r++) 
-			{
-				if(data.Tiles[c][r] == null)
-				{
-					Debug.Log("tile does not exist");
-					continue;
-				}
+        // 2. add all rooms
+        foreach (DungeonRoom room in data.Rooms)
+        {
+            AddRoom(room);
+        }
 
-				TileType tileType;
+        // 3. add all corridors
+        foreach (DungeonCorridor corridor in data.Corridors)
+        {
+            AddCorridor(corridor);
+        }
 
-				switch (data.Tiles[c][r].Type) 
-				{
-				default:
-				case DungeonTileType.None:
-					tileType = TileType.NONE;
-					break;
-				case DungeonTileType.Flat:
-				case DungeonTileType.Door: // TEMP
-					tileType = TileType.Flat;
-					break;
-				case DungeonTileType.Wall:
-					tileType = TileType.Wall;
-					break;
-				}
+        // 4. make all null tiles empty tiles
+        FillEmptyTiles();
 
-				gridElements[c].Add(CreateGridElement(tileType, c, r));
-			}
-		}
 	}
 
-	[ContextMenu("Generate random grid")]
-	public void GenerateRandomGrid()
-	{
-		ClearGrid();
-		// temp generate random grid
+    private void AddRoom(DungeonRoom room)
+    {
+        // TODO get room type/data for special rooms and different tilesets
 
-		for(int col = 0; col < columns; ++col)
+
+		if (room.LinkedRooms.Count <= 0)
+			return;
+
+        if (room.Row >= 0 && room.Column >= 0 && (room.Column + room.Width) < columns && (room.Row + room.Height) < rows)
+        {
+            // add the room here
+
+            for (int c = 0; c < room.Width; c++)
+            {
+                for (int r = 0; r < room.Height; r++)
+                {
+                    DungeonTile tile = room.Tiles[c][r];
+                    if(tile == null || tile.Type == DungeonTileType.None)
+                        continue;
+
+                    // TODO check for existing tiles
+                    gridElements[room.Column + c][room.Row + r] = CreateGridElement(ConvertType(tile.Type), room.Column + c, room.Row + r);
+                }
+            }
+        }
+    }
+
+    private void AddCorridor(DungeonCorridor corridor)
+    {
+		// TODO out of grid checking
+
+		foreach (DungeonPosition pos in corridor.TilePositions)
 		{
-			gridElements.Add(new List<GridTile>(columns));
-			for(int row = 0; row < rows; ++row)
-			{
-				TileType randomType = tileTypes[Random.Range(0, tileTypes.Length)];
-				gridElements[col].Add(CreateGridElement(randomType, col, row));
-			}
+			if (gridElements[pos.Column][pos.Row] == null)
+				gridElements[pos.Column][pos.Row] = CreateGridElement(TileType.Flat, pos.Column, pos.Row);
 		}
-	}
+    }
 
-	[ContextMenu("Generate Single room")]
-	public void GenerateRoom()
-	{
-		ClearGrid();
-		// temp generate random grid
-		
-		for(int col = 0; col < columns; ++col)
-		{
-			gridElements.Add(new List<GridTile>(columns));
-			for(int row = 0; row < rows; ++row)
-			{
-				TileType tileType = IsBorderTile(col, row)? TileType.Wall: TileType.Flat;
-				gridElements[col].Add(CreateGridElement(tileType, col, row));
-			}
-		}
+    private void FillEmptyTiles()
+    {
+        for (int c = 0; c < columns; c++)
+        {
+            for (int r = 0; r < rows; r++)
+            {
+                if (gridElements[c][r] == null)
+                    gridElements[c][r] = CreateGridElement(TileType.NONE, c, r);
+            }
+        }
+    }
 
-		if(gridElements[columns/2][rows/2].Type == TileType.Flat)
-			startTile = gridElements[columns/2][rows/2];
-	}
+    private TileType ConvertType(DungeonTileType type)
+    {
+        TileType tileType;
 
-#endregion
+        switch (type)
+        {
+            default:
+            case DungeonTileType.None:
+                tileType = TileType.NONE;
+                break;
+            case DungeonTileType.Flat:
+            case DungeonTileType.Door: // TEMP
+                tileType = TileType.Flat;
+                break;
+            case DungeonTileType.Wall:
+                tileType = TileType.Wall;
+                break;
+        }
 
+        return tileType;
+    }
+    
 	private bool IsBorderTile(int col, int row)
 	{
 		return col == 0 || col == columns-1 || row == 0 || row == rows-1;

@@ -58,7 +58,14 @@ public class GridController : MonoBehaviour
 
 	private GridTile CreateGridElement(TileType type, int col, int row)
 	{
-		GridTile el = generator.SpawnElementOfType(type);
+		return CreateGridElement(type, TileOrientation.NONE, col, row);
+	}
+	private GridTile CreateGridElement(TileType type, TileOrientation orientation, int col, int row)
+	{
+		// get correct element from generator
+		GridTile el = generator.GetElement(type, orientation);
+
+		// initialize element
 		el.transform.SetParent(transform);
 		el.SetData(this, col, row);
 		el.UpdateVisual();
@@ -183,8 +190,36 @@ public class GridController : MonoBehaviour
                     if(tile == null || tile.Type == DungeonTileType.None)
                         continue;
 
+					TileOrientation verticalOrientation;
+					if (c <= 0)
+					{
+						verticalOrientation = TileOrientation.Left;
+					}
+					else if (c >= room.Width - 1)
+					{
+						verticalOrientation = TileOrientation.Right;
+					}
+					else
+					{
+						verticalOrientation = TileOrientation.NONE;
+					}
+
+					TileOrientation horizontalOrientation;
+					if (r <= 0)
+					{
+						horizontalOrientation = TileOrientation.Bottom;
+					}
+					else if (r >= room.Height - 1)
+					{
+						horizontalOrientation = TileOrientation.Top;
+					}
+					else
+					{
+						horizontalOrientation = TileOrientation.NONE;
+					}
+
                     // TODO check for existing tiles
-                    gridElements[room.Column + c][room.Row + r] = CreateGridElement(ConvertType(tile.Type), room.Column + c, room.Row + r);
+                    gridElements[room.Column + c][room.Row + r] = CreateGridElement(ConvertType(tile.Type), verticalOrientation|horizontalOrientation, room.Column + c, room.Row + r);
                 }
             }
         }

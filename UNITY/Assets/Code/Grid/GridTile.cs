@@ -118,14 +118,3 @@ public class GridTile : MonoBehaviour
 		return horizontal | vertical;
 	}
 }
-
-
-// TODO make this stackable (in separate class with helper functions)
-// ie Flat - trapped
-// http://unitypatterns.com/enums-and-flags/
-public enum TileType
-{
-	NONE,
-	Flat,
-	Wall,
-}

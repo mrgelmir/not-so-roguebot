@@ -161,9 +161,9 @@ namespace DungeonGeneration
 			DungeonPosition startPos = startRoom.CenterPos;
 			DungeonPosition endPos = endRoom.CenterPos;
 
-            // temp go horizontal first, then vertical
-			int horizontalDistance = startPos.Column - endRoom.CenterPos.Column;
-			int verticalDistance = startPos.Row - endRoom.CenterPos.Row;
+			//// temp go horizontal first, then vertical
+			//int horizontalDistance = startPos.Column - endRoom.CenterPos.Column;
+			//int verticalDistance = startPos.Row - endRoom.CenterPos.Row;
 
 			// horizontal first, then vertical. for now
 			DungeonPosition cornerPos = new DungeonPosition(startPos.Column, endPos.Row);

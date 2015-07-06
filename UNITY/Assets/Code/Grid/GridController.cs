@@ -15,10 +15,7 @@ public class GridController : MonoBehaviour
 	private List<List<GridTile>> gridElements { get { return gridData.GridElements; } }
 	public int columns { get { return gridData.Columns; } }
 	public int rows { get { return gridData.Rows; } } 
-
-	public Material WallMaterial;
-	public Material FloorMaterial;
-
+	
 	[SerializeField] private GridTile startTile = null;
 	public GridTile StartTile 
 	{ 
@@ -41,7 +38,7 @@ public class GridController : MonoBehaviour
 			{
 				foreach (GridTile el in col)
 				{
-					if(el.Type == TileType.Flat && !el.IsTaken)
+					if(el.Type == TileType.Walkeable && !el.IsTaken)
 						freeTiles.Add(el);
 				}
 			}
@@ -175,9 +172,6 @@ public class GridController : MonoBehaviour
         // TODO get room type/data for special rooms and different tilesets
 
 
-		if (room.LinkedRooms.Count <= 0)
-			return;
-
         if (room.Row >= 0 && room.Column >= 0 && (room.Column + room.Width) < columns && (room.Row + room.Height) < rows)
         {
             // add the room here
@@ -232,7 +226,7 @@ public class GridController : MonoBehaviour
 		foreach (DungeonPosition pos in corridor.TilePositions)
 		{
 			if (gridElements[pos.Column][pos.Row] == null)
-				gridElements[pos.Column][pos.Row] = CreateGridElement(TileType.Flat, pos.Column, pos.Row);
+				gridElements[pos.Column][pos.Row] = CreateGridElement(TileType.Walkeable, pos.Column, pos.Row);
 		}
     }
 
@@ -260,10 +254,10 @@ public class GridController : MonoBehaviour
                 break;
             case DungeonTileType.Flat:
             case DungeonTileType.Door: // TEMP
-                tileType = TileType.Flat;
+                tileType = TileType.Walkeable;
                 break;
             case DungeonTileType.Wall:
-                tileType = TileType.Wall;
+                tileType = TileType.SightBlocker;
                 break;
         }
 
@@ -277,6 +271,8 @@ public class GridController : MonoBehaviour
 
 }
 
+
+// TODO move to gridUtils or something, as the dungeon generation uses this
 [System.Flags]
 public enum Directions
 {
@@ -285,4 +281,63 @@ public enum Directions
 	Right = 1<<1,
 	Down = 1<<2,
 	Left = 1<<3,
+}
+
+public static class DirectionHelper
+{
+	// let the getter use its own random to keep seeds valid
+	public static Directions GetRandomDirection(System.Random rand)
+	{
+		Directions dir = Directions.NONE;
+
+		// vertical directions
+		int randomNr = rand.Next(0, 3);
+		if (randomNr == 0)
+		{
+			dir.AddDirection(Directions.Right);
+		}
+		else if (randomNr == 1)
+		{
+			dir.AddDirection(Directions.Left);
+		}
+
+		// horizontal directions
+		randomNr = rand.Next(0, 3);
+		if (randomNr == 0)
+		{
+			dir.AddDirection(Directions.Up);
+		}
+		else if (randomNr == 1)
+		{
+			dir.AddDirection(Directions.Down);
+		}		
+
+		return dir;
+	}
+
+	public static Directions GetRandomAxisAlignedDirection(System.Random rand)
+	{
+		int randomNr = rand.Next(0, 4);
+		return (Directions)(1 << randomNr);
+	}
+
+	public static void AddDirection(this Directions currentDirection, Directions addedDirection)
+	{
+		currentDirection |= addedDirection;
+	}
+
+	public static void RemoveDirection(this Directions currentDirection, Directions removeDirection)
+	{
+		currentDirection &= removeDirection;
+	}
+
+	public static int GetHorizontalDirection(this Directions direction)
+	{
+		return ((direction & Directions.Right) == Directions.Right) ? 1 : (((direction & Directions.Left) == Directions.Left) ? -1 : 0);
+	}
+
+	public static int GetVerticalDirection(this Directions direction)
+	{
+		return ((direction & Directions.Up) == Directions.Up) ? 1 : (((direction & Directions.Down) == Directions.Down) ? -1 : 0);
+	}
 }

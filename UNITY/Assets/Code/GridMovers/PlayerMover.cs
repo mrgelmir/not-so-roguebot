@@ -113,7 +113,7 @@ public class PlayerMover : GridActor, ITargeter
 	protected void MakeMove( GridTile nextTile )
 	{
 
-		if(nextTile != null && nextTile.Type == TileType.Flat && nextTile.IsNeighbour(currentTile))
+		if(nextTile != null && nextTile.Type == TileType.Walkeable && nextTile.IsNeighbour(currentTile))
 		{
 			DisableInput();
 			moveAction.SetMoveTarget(nextTile);

@@ -113,7 +113,17 @@ namespace DungeonGeneration
 			return false;
 		}
 
-        private int minRoomDistance = 1;
+        private int minRoomDistance = 1; // keep a gap of 1 for the walls
+
+		public bool Overlaps(DungeonPosition pos)
+		{
+			int offset = -minRoomDistance + 1;
+
+			bool horizontalOverlap = Column <= pos.Column - offset && Column + Width - offset >= pos.Column;
+			bool verticalOverlap = Row <= pos.Row - offset && Row + Height - offset >= pos.Row;
+
+			return horizontalOverlap && verticalOverlap;
+		}
 
 		public bool Overlaps(DungeonRoom other)
 		{
@@ -123,6 +133,39 @@ namespace DungeonGeneration
             bool verticalOverlap = Row <= other.Row + other.Height - offset && Row + Height - offset >= other.Row;
 
 			return horizontalOverlap && verticalOverlap;
+		}
+
+		public bool OverlapsAny(IList<DungeonRoom> otherRooms)
+		{
+			foreach (DungeonRoom existingRoom in otherRooms)
+			{
+				if (this.Overlaps(existingRoom))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public DungeonPosition BorderPosition(Directions dir)
+		{
+			DungeonPosition p = new DungeonPosition(0,0);
+
+			if((dir & Directions.Left) == Directions.Left)
+			{
+				// up - down
+			}
+			else if ((dir & Directions.Right) == Directions.Right)
+			{
+				// up - down
+			}
+			else
+			{
+				// up = down
+			}
+
+			return p;
 		}
 
 		private bool IsBorder(int column, int row)
@@ -144,6 +187,8 @@ namespace DungeonGeneration
                     //Tiles[c][r] = IsBorder(c, r) ? DungeonTile.WallTile : DungeonTile.FlatTile;
 				}
 			}
+
+			// TODO add the door tiles
 		}
 	}
 
@@ -211,6 +256,22 @@ namespace DungeonGeneration
 		public override string ToString()
 		{
 			return string.Format("Column : {0} Row : {1}", column, row);
+		}
+
+		public void MoveBy(Directions direction, int distance = 1)
+		{
+			column += direction.GetHorizontalDirection() * distance;
+			row += direction.GetVerticalDirection() * distance;
+		}
+
+		public bool OverlapsAny(IList<DungeonRoom> rooms)
+		{
+			foreach (DungeonRoom room in rooms)
+			{
+				if (room.Overlaps(this))
+					return true;
+			}
+			return false;
 		}
     }
 

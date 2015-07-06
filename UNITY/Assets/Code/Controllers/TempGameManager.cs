@@ -47,11 +47,21 @@ public class TempGameManager : MonoBehaviour
 
     private IEnumerator SpawnInspectionRoutine()
     {
+		// TODO move the selection of dungeon generator elsewhere
+		DungeonGeneration.DungeonGenerationInfo info = new DungeonGeneration.DungeonGenerationInfo()
+		{
+			Width = 50,
+			Height = 40,
+			MaxRooms = 100,
+		};
+
+		//DungeonGeneration.IDungeonGenerator g = new DungeonGeneration.DungeonWalkGenerator();
+		DungeonGeneration.IDungeonGenerator g = new DungeonGeneration.BasicGenerator();
+		g.Setup(info);
+		
         yield return null;
-        DungeonGeneration.BasicGenerator g = new DungeonGeneration.BasicGenerator(50, 40, 100);
 
-
-        while (g.NextStep())
+        while (g.NextGenerationStep())
         {
             if (slowGeneration)
             {

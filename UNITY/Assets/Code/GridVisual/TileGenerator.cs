@@ -16,7 +16,7 @@ public class TileGenerator : MonoBehaviour
 	{
 		GridTile tilePrefab = null;
 
-		if (type != TileType.Flat)
+		if (type != TileType.Walkeable)
 		{
 			tilePrefab = gridElements.Find((GridTile obj) => obj.Type == type);
 		}
@@ -85,10 +85,11 @@ public enum TileOrientation
 }
 
 // TODO: wrap in separate class with helper functions
-// ie Flat + trapped (type.IsTrapped)
+// ie Walkeable + Trapped (type.IsTrapped)
 public enum TileType
 {
-	NONE,
-	Flat,
-	Wall,
+	NONE = 0,
+	Walkeable = 1 << 0,
+	SightBlocker = 1 << 1,
+	Interactable = 1 << 2,
 }

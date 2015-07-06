@@ -80,10 +80,10 @@ public class GridTile : MonoBehaviour
 		case TileType.NONE:
 			gizmoColor = Color.white;
 			break;
-		case TileType.Flat:
+		case TileType.Walkeable:
 			gizmoColor = Color.grey;
 			break;
-		case TileType.Wall:
+		case TileType.SightBlocker:
 			gizmoColor = Color.black;
 			break;
 		}

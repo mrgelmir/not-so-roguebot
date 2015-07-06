@@ -4,74 +4,25 @@ using System.Collections.Generic;
 
 namespace DungeonGeneration
 {
-	public class BasicGenerator
+	public class BasicGenerator : IDungeonGenerator
 	{
-		public static DungeonData GenerateGrid(int width, int height, int maxRooms)
-		{
-			DungeonData newGrid = new DungeonData(width, height);
+		private DungeonData data;
+		private int maxRooms;
 
-			List<DungeonRoom> rooms = new List<DungeonRoom>();
-
-//			int attempt = 0;
-
-			for (int i = 0; i < maxRooms; i++)
-			{
-//				Debug.Log(attempt.ToString());
-//				++attempt;
-
-				DungeonRoom possibleRoom;
-				int counter = 10;
-				do
-				{
-					int roomWidth = Random.Range(4, 10);
-					int roomHeight = Random.Range(4, 10);
-					possibleRoom = new DungeonRoom(Random.Range(0, width - (roomWidth + 1)), Random.Range(0, height - (roomHeight + 1)), roomWidth, roomHeight);
-					--counter;
-				}
-				while(OverlapsAny(rooms, possibleRoom) && counter > 0);
-
-				if(counter > 0)
-				{
-					rooms.Add(possibleRoom);
-				}
-			}
-
-			foreach (DungeonRoom room in rooms)
-			{
-				newGrid.AddRoom(room);
-			}
-			
-			return newGrid;
-		}
-
-		private static bool OverlapsAny(List<DungeonRoom> existingRooms, DungeonRoom room)
-		{
-			foreach (DungeonRoom existingRoom in existingRooms)
-			{
-				if(room.Overlaps(existingRoom))
-				{
-				   return true;
-				}
-			}
-
-			return false;
-		}
-
-        // object stuff
-
-        DungeonData data;
-        int maxRooms;
-
-        DungeonRoom tempRoom;
+        private DungeonRoom tempRoom = null;
 
         int counter = 0;
         
-        public BasicGenerator(int width, int height, int maxRooms)
+        public BasicGenerator()
         {
-            this.maxRooms = maxRooms;
-
-            data = new DungeonData(width, height);
+            
         }
+
+		public void Setup(DungeonGenerationInfo info)
+		{
+			this.maxRooms = info.MaxRooms;
+			data = new DungeonData(info.Width, info.Height);
+		}
 
         public DungeonData GetCurrentGrid()
         {
@@ -86,7 +37,7 @@ namespace DungeonGeneration
             return tempData;
         }
 
-        public bool NextStep()
+        public bool NextGenerationStep()
         {
 
 //			int attempt = 0;
@@ -101,7 +52,7 @@ namespace DungeonGeneration
                     tempRoom = new DungeonRoom(Random.Range(0, data.Columns - (roomWidth + 1)), Random.Range(0, data.Rows - (roomHeight + 1)), roomWidth, roomHeight);
                     --c;
                 }
-                while (OverlapsAny(data.Rooms, tempRoom) && c > 0);
+				while (tempRoom.OverlapsAny(data.Rooms) && c > 0);
 
                 if (c > 0)
                 {

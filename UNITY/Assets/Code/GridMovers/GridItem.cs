@@ -82,9 +82,9 @@ public class GridItem : MonoBehaviour
             randomTile = RandomNeighbour();
             ++counter;
         }
-        while (counter < 20 && (randomTile.IsTaken || randomTile.Type != TileType.Flat));
+        while (counter < 20 && (randomTile.IsTaken || randomTile.Type != TileType.Walkeable));
 
-        if (randomTile.IsTaken || randomTile.Type != TileType.Flat)
+        if (randomTile.IsTaken || randomTile.Type != TileType.Walkeable)
         {
             randomTile = null;
         }

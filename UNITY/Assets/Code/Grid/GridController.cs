@@ -70,20 +70,20 @@ public class GridController : MonoBehaviour
 		return el;
 	}
 
-	public GridTile GetNeighbour(GridTile el, Directions dir)
+	public GridTile GetNeighbour(GridTile el, Direction dir)
 	{
 		int neighbourRow = el.Row;
 		int neighbourCol = el.Column;
 
 		// get actual neighbour position
-		if ((dir & Directions.Left) == Directions.Left)
+		if ((dir & Direction.Left) == Direction.Left)
 			-- neighbourCol;
-		else if ((dir & Directions.Right) == Directions.Right)
+		else if ((dir & Direction.Right) == Direction.Right)
 			++ neighbourCol;
 
-		if ((dir & Directions.Up) == Directions.Up)
+		if ((dir & Direction.Up) == Direction.Up)
 			++ neighbourRow;
-		else if ((dir & Directions.Down) == Directions.Down)
+		else if ((dir & Direction.Down) == Direction.Down)
 			-- neighbourRow;
 
 		// clamp
@@ -274,7 +274,7 @@ public class GridController : MonoBehaviour
 
 // TODO move to gridUtils or something, as the dungeon generation uses this
 [System.Flags]
-public enum Directions
+public enum Direction
 {
 	NONE = 0,
 	Up = 1<<0,
@@ -286,58 +286,103 @@ public enum Directions
 public static class DirectionHelper
 {
 	// let the getter use its own random to keep seeds valid
-	public static Directions GetRandomDirection(System.Random rand)
+	public static Direction GetRandomDirection(System.Random rand)
 	{
-		Directions dir = Directions.NONE;
+		Direction dir = Direction.NONE;
 
 		// vertical directions
 		int randomNr = rand.Next(0, 3);
 		if (randomNr == 0)
 		{
-			dir.AddDirection(Directions.Right);
+			dir.AddDirection(Direction.Right);
 		}
 		else if (randomNr == 1)
 		{
-			dir.AddDirection(Directions.Left);
+			dir.AddDirection(Direction.Left);
 		}
 
 		// horizontal directions
 		randomNr = rand.Next(0, 3);
 		if (randomNr == 0)
 		{
-			dir.AddDirection(Directions.Up);
+			dir.AddDirection(Direction.Up);
 		}
 		else if (randomNr == 1)
 		{
-			dir.AddDirection(Directions.Down);
+			dir.AddDirection(Direction.Down);
 		}		
 
 		return dir;
 	}
 
-	public static Directions GetRandomAxisAlignedDirection(System.Random rand)
+	public static Direction GetRandomAxisAlignedDirection(System.Random rand)
 	{
 		int randomNr = rand.Next(0, 4);
-		return (Directions)(1 << randomNr);
+		return (Direction)(1 << randomNr);
 	}
 
-	public static void AddDirection(this Directions currentDirection, Directions addedDirection)
+	public static void AddDirection(this Direction currentDirection, Direction addedDirection)
 	{
 		currentDirection |= addedDirection;
 	}
 
-	public static void RemoveDirection(this Directions currentDirection, Directions removeDirection)
+	public static void RemoveDirection(this Direction currentDirection, Direction removeDirection)
 	{
 		currentDirection &= removeDirection;
 	}
 
-	public static int GetHorizontalDirection(this Directions direction)
+	public static bool ContainsDirection(this Direction direction, Direction other)
 	{
-		return ((direction & Directions.Right) == Directions.Right) ? 1 : (((direction & Directions.Left) == Directions.Left) ? -1 : 0);
+		return (direction & other) == other;
 	}
 
-	public static int GetVerticalDirection(this Directions direction)
+	public static int GetHorizontalDirection(this Direction direction)
 	{
-		return ((direction & Directions.Up) == Directions.Up) ? 1 : (((direction & Directions.Down) == Directions.Down) ? -1 : 0);
+		return ((direction & Direction.Right) == Direction.Right) ? 1 : (((direction & Direction.Left) == Direction.Left) ? -1 : 0);
+	}
+
+	public static int GetVerticalDirection(this Direction direction)
+	{
+		return ((direction & Direction.Up) == Direction.Up) ? 1 : (((direction & Direction.Down) == Direction.Down) ? -1 : 0);
+	}
+
+	/// <summary>
+	/// Rotates the Direction in increments of 45 degrees 
+	/// </summary>
+	/// <param name="direction to rotate"></param>
+	/// <param name="angle in degrees"></param>
+	/// <returns>The rotated direction</returns>
+	public static Direction RotateBy(this Direction direction, int angle)
+	{
+		if(angle < 0) // deal with negative angles
+		{ angle = 360 - (System.Math.Abs(angle) % 360); }
+
+		int numClockwiseRotations = angle / 45;
+
+		int newDirection = 0;
+		int directionInt = (int)direction;
+
+		// check if power of two: if so only a single bit is set
+		bool singleBitSet = directionInt != 0 && (directionInt & (directionInt - 1)) == 0;
+
+		for (int i = 0; i < numClockwiseRotations; i++)
+		{
+			// some binary stuff incoming
+			if (singleBitSet)
+			{
+				// shift left by one, clamp within 4 bits bounds, then OR current direction 
+				newDirection = ((directionInt << 1) % 15) | directionInt;
+			}
+			else
+			{
+				// shift left by one, clamp within 4 bits bounds, then AND current direction
+				newDirection = ((directionInt << 1) % 15) & directionInt;
+			}
+
+			directionInt = newDirection;
+			singleBitSet = !singleBitSet;
+		}
+
+		return (Direction)newDirection;
 	}
 }

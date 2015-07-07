@@ -92,35 +92,35 @@ public class GridItem : MonoBehaviour
         return randomTile;
     }
 
-    public GridTile NeigbourForDirection(Directions dir)
+    public GridTile NeigbourForDirection(Direction dir)
     {
         // TODO fix
         GridTile tile = null;
 
         switch (dir)
         {
-            case Directions.Up:
+            case Direction.Up:
                 tile = currentTile.Top;
                 break;
-            case Directions.Up | Directions.Right:
+            case Direction.Up | Direction.Right:
                 tile = currentTile.TopRight;
                 break;
-            case Directions.Right:
+            case Direction.Right:
                 tile = currentTile.Right;
                 break;
-            case Directions.Right | Directions.Down:
+            case Direction.Right | Direction.Down:
                 tile = currentTile.BottomRight;
                 break;
-            case Directions.Down:
+            case Direction.Down:
                 tile = currentTile.Bottom;
                 break;
-            case Directions.Down | Directions.Left:
+            case Direction.Down | Direction.Left:
                 tile = currentTile.BottomLeft;
                 break;
-            case Directions.Left:
+            case Direction.Left:
                 tile = currentTile.Left;
                 break;
-            case Directions.Left | Directions.Up:
+            case Direction.Left | Direction.Up:
                 tile = currentTile.TopLeft;
                 break;
         }

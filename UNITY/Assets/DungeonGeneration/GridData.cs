@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace DungeonGeneration
@@ -50,7 +51,12 @@ namespace DungeonGeneration
             corridors.Add(corridor);
 
             return false;
-        }        
+        }
+
+		public bool ContainsPosition(DungeonPosition position)
+		{
+			return (position.Column > 0 && position.Row > 0 && position.Column < columns && position.Row < rows);
+		}
 	}
 
 	public class DungeonTile
@@ -113,20 +119,21 @@ namespace DungeonGeneration
 			return false;
 		}
 
-        private int minRoomDistance = 1; // keep a gap of 1 for the walls
+        private const int minRoomDistance = 1; // keep a gap of 1 for the walls
 
 		public bool Overlaps(DungeonPosition pos)
 		{
 			int offset = -minRoomDistance + 1;
 
-			bool horizontalOverlap = Column <= pos.Column - offset && Column + Width - offset >= pos.Column;
-			bool verticalOverlap = Row <= pos.Row - offset && Row + Height - offset >= pos.Row;
+			bool horizontalOverlap = Column - 1 <= pos.Column - offset && Column + Width - offset >= pos.Column;
+			bool verticalOverlap = Row - 1 <= pos.Row - offset && Row + Height - offset >= pos.Row;
 
 			return horizontalOverlap && verticalOverlap;
 		}
 
 		public bool Overlaps(DungeonRoom other)
 		{
+			// TODO maybe use the overlap with two dungeon positions to reduce duplicate code? + define a min/max for the room
             int offset = -minRoomDistance + 1;
 
             bool horizontalOverlap = Column <= other.Column + other.Width - offset && Column + Width - offset >= other.Column;
@@ -148,21 +155,29 @@ namespace DungeonGeneration
 			return false;
 		}
 
-		public DungeonPosition BorderPosition(Directions dir)
+		public DungeonPosition BorderPosition(Direction dir)
 		{
-			DungeonPosition p = new DungeonPosition(0,0);
+			DungeonPosition p = CenterPos;
 
-			if((dir & Directions.Left) == Directions.Left)
+			// for now we take borders to the left or right side before top or bottom
+			if(dir.ContainsDirection(Direction.Right))
 			{
-				// up - down
+				p.Column = Column + Width;
 			}
-			else if ((dir & Directions.Right) == Directions.Right)
+			else if (dir.ContainsDirection(Direction.Left))
 			{
-				// up - down
+				p.Column = Column - 1;
 			}
 			else
 			{
-				// up = down
+				if(dir.ContainsDirection(Direction.Up))
+				{
+					p.Row = Row + Height;
+				}
+				else // this means that the Direction.NONE ends up on the bottom
+				{
+					p.Row = Row - 1;
+				}
 			}
 
 			return p;
@@ -194,11 +209,11 @@ namespace DungeonGeneration
 
 	public class DungeonCorridor
 	{
-        public DungeonTile BorderTile;
 		public List<DungeonPosition> TilePositions = new List<DungeonPosition>();
 
         public DungeonCorridor(int width, DungeonRoom startRoom, DungeonRoom endRoom)
         {
+
             startRoom.LinkedRooms.Add(endRoom);
             endRoom.LinkedRooms.Add(startRoom);
 
@@ -213,6 +228,7 @@ namespace DungeonGeneration
 			// horizontal first, then vertical. for now
 			DungeonPosition cornerPos = new DungeonPosition(startPos.Column, endPos.Row);
 
+			TilePositions = new List<DungeonPosition>(Math.Abs(startPos.Column - endPos.Column) + Math.Abs(startPos.Row - endPos.Row) - 1);
 
 			int row = startPos.Row;
 			int col = startPos.Column;
@@ -227,7 +243,11 @@ namespace DungeonGeneration
 				TilePositions.Add(new DungeonPosition(col, row));
 			}
 		}
-
+		
+		public DungeonCorridor(IList<DungeonPosition> tiles)
+		{
+			TilePositions = new List<DungeonPosition>(tiles);
+		}
     }
 
     public struct DungeonPosition
@@ -258,7 +278,7 @@ namespace DungeonGeneration
 			return string.Format("Column : {0} Row : {1}", column, row);
 		}
 
-		public void MoveBy(Directions direction, int distance = 1)
+		public void MoveBy(Direction direction, int distance = 1)
 		{
 			column += direction.GetHorizontalDirection() * distance;
 			row += direction.GetVerticalDirection() * distance;
@@ -266,12 +286,19 @@ namespace DungeonGeneration
 
 		public bool OverlapsAny(IList<DungeonRoom> rooms)
 		{
+			return GetOverlappingRoom(rooms) != null;
+		}
+
+		public DungeonRoom GetOverlappingRoom(IList<DungeonRoom> rooms)
+		{
 			foreach (DungeonRoom room in rooms)
 			{
 				if (room.Overlaps(this))
-					return true;
+				{
+					return room;
+				}
 			}
-			return false;
+			return null;
 		}
     }
 

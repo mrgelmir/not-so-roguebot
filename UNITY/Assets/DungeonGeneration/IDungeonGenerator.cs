@@ -12,5 +12,10 @@
 		public int Width;
 		public int Height;
 		public int MaxRooms;
+
+		public int MinRoomWidth;
+		public int MinRoomHeight;
+		public int MaxRoomWidth;
+		public int MaxRoomHeight;
 	}
 }

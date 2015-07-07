@@ -33,6 +33,9 @@ public class TempGameManager : MonoBehaviour
 
         yield return StartCoroutine(SpawnInspectionRoutine());
 
+		// dungeon generation only
+		yield break;
+
 		int enemiesToSpawn = (RequiredEnemies + 1 ) - FindObjectsOfType<GridActor>().Length;
 
 		for(;enemiesToSpawn > 0; -- enemiesToSpawn)
@@ -52,11 +55,16 @@ public class TempGameManager : MonoBehaviour
 		{
 			Width = 50,
 			Height = 40,
-			MaxRooms = 100,
+			MaxRooms = 20,
+
+			MinRoomWidth = 4,
+			MinRoomHeight = 4,
+			MaxRoomWidth = 8,
+			MaxRoomHeight = 6,
 		};
 
-		//DungeonGeneration.IDungeonGenerator g = new DungeonGeneration.DungeonWalkGenerator();
-		DungeonGeneration.IDungeonGenerator g = new DungeonGeneration.BasicGenerator();
+		DungeonGeneration.IDungeonGenerator g = new DungeonGeneration.DungeonWalkGenerator();
+		//DungeonGeneration.IDungeonGenerator g = new DungeonGeneration.BasicGenerator();
 		g.Setup(info);
 		
         yield return null;
@@ -66,7 +74,8 @@ public class TempGameManager : MonoBehaviour
             if (slowGeneration)
             {
                 gc.GenerateGrid(g.GetCurrentGrid());
-                yield return new WaitForSeconds(.1f);
+				yield return new WaitForSeconds(.1f);
+				//yield return null;
             }
         }
 

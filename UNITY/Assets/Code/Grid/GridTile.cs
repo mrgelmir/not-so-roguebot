@@ -17,14 +17,14 @@ public class GridTile : MonoBehaviour
     public int Column { get { return column; } }
     public GridItem Actor { get { return actor; } }
 
-	public GridTile Left { get { return grid.GetNeighbour(this, Directions.Left); } }
-	public GridTile Right { get { return grid.GetNeighbour(this, Directions.Right); } }
-	public GridTile Top { get { return grid.GetNeighbour(this, Directions.Up); } }
-	public GridTile Bottom { get { return grid.GetNeighbour(this, Directions.Down); } }	
-	public GridTile TopRight { get { return grid.GetNeighbour(this, Directions.Up | Directions.Right); } }
-	public GridTile TopLeft { get { return grid.GetNeighbour(this, Directions.Up | Directions.Left); } }
-	public GridTile BottomRight { get { return grid.GetNeighbour(this, Directions.Down | Directions.Right); } }
-	public GridTile BottomLeft { get { return grid.GetNeighbour(this, Directions.Down | Directions.Left); } }
+	public GridTile Left { get { return grid.GetNeighbour(this, Direction.Left); } }
+	public GridTile Right { get { return grid.GetNeighbour(this, Direction.Right); } }
+	public GridTile Top { get { return grid.GetNeighbour(this, Direction.Up); } }
+	public GridTile Bottom { get { return grid.GetNeighbour(this, Direction.Down); } }	
+	public GridTile TopRight { get { return grid.GetNeighbour(this, Direction.Up | Direction.Right); } }
+	public GridTile TopLeft { get { return grid.GetNeighbour(this, Direction.Up | Direction.Left); } }
+	public GridTile BottomRight { get { return grid.GetNeighbour(this, Direction.Down | Direction.Right); } }
+	public GridTile BottomLeft { get { return grid.GetNeighbour(this, Direction.Down | Direction.Left); } }
 
 	private bool isTaken = false;
 	public bool IsTaken{ get { return isTaken; } }
@@ -41,7 +41,7 @@ public class GridTile : MonoBehaviour
 		return !isSelf && isColNeighbour && isRowNeighbour;
 	}
 
-	public GridTile GetNeigbour(Directions dir)
+	public GridTile GetNeigbour(Direction dir)
 	{
 		return grid.GetNeighbour(this, dir);
 	}
@@ -92,27 +92,27 @@ public class GridTile : MonoBehaviour
 		Gizmos.DrawSphere(transform.position, .1f);
 	}
 
-	public static Directions GetDirection(GridTile from, GridTile to)
+	public static Direction GetDirection(GridTile from, GridTile to)
 	{
-		Directions horizontal = Directions.NONE;
-		Directions vertical = Directions.NONE;
+		Direction horizontal = Direction.NONE;
+		Direction vertical = Direction.NONE;
 
 		if(from.Column < to.Column)
 		{
-			horizontal = Directions.Right;
+			horizontal = Direction.Right;
 		}
 		else if (from.Column > to.Column)
 		{
-			horizontal = Directions.Left;
+			horizontal = Direction.Left;
 		}
 
 		if(from.Row < to.Row)
 		{
-			vertical = Directions.Up;
+			vertical = Direction.Up;
 		}
 		else if (from.Row > to.Row)
 		{
-			vertical = Directions.Down;
+			vertical = Direction.Down;
 		}
 
 		return horizontal | vertical;

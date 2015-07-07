@@ -7,7 +7,7 @@ public class MoveAction : BaseGameAction
 
 	public GridTile TargetTile;
 
-	private Directions nextDir = Directions.NONE;
+	private Direction nextDir = Direction.NONE;
 
 	public virtual void SetMoveTarget(GridTile target)
 	{
@@ -28,7 +28,7 @@ public class MoveAction : BaseGameAction
 		}
 		else
 		{
-			nextDir = Directions.NONE;
+			nextDir = Direction.NONE;
 		}
 	}
 
@@ -38,7 +38,7 @@ public class MoveAction : BaseGameAction
 
 		// keep on moving until the target position is reached
 
-		if(nextDir != Directions.NONE)
+		if(nextDir != Direction.NONE)
 		{
 			StartCoroutine(MoveTileRoutine(nextDir));
 		}
@@ -49,7 +49,7 @@ public class MoveAction : BaseGameAction
 
 	}
 
-	private IEnumerator MoveTileRoutine(Directions dir)
+	private IEnumerator MoveTileRoutine(Direction dir)
 	{
 		// Do the base move here
 		yield return StartCoroutine(actor.MoveToTileRoutine(actor.CurrentTile.GetNeigbour(dir)));

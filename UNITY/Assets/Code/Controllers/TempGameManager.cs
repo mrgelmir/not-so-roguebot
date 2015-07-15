@@ -11,6 +11,8 @@ public class TempGameManager : MonoBehaviour
 	public GridActor EnemyPrefab;
 	public int RequiredEnemies = 2;
 
+	public GridContainer customGridData = null;
+
 	protected void Start()
 	{
 		RestartGame();
@@ -50,6 +52,12 @@ public class TempGameManager : MonoBehaviour
 
     private IEnumerator SpawnInspectionRoutine()
     {
+		if(customGridData != null)
+		{
+			gc.GenerateGrid(customGridData.Data);
+			yield break;
+		}
+
 		// TODO move the selection of dungeon generator elsewhere
 		DungeonGeneration.DungeonGenerationInfo info = new DungeonGeneration.DungeonGenerationInfo()
 		{

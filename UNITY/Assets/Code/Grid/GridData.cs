@@ -59,9 +59,9 @@ public class GridData: ISerializationCallbackReceiver
 	#region ISerializationCallbackReceiver implementation
 	
 	// Serialisation variables
-	[SerializeField][HideInInspector] private List<GridTile> serializeList;
-	[SerializeField][HideInInspector] private int serializedColumns;
-	[SerializeField][HideInInspector] private int serializedRows;
+	[SerializeField, HideInInspector] private List<GridTile> serializeList;
+	[SerializeField, HideInInspector] private int serializedColumns;
+	[SerializeField, HideInInspector] private int serializedRows;
 	
 	public void OnBeforeSerialize ()
 	{

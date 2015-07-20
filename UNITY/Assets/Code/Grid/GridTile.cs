@@ -54,19 +54,19 @@ public class GridTile : MonoBehaviour
 		this.row = row;
 	}
 
-	public void UpdateVisual()
+	public virtual void UpdateVisual()
 	{
 		transform.localPosition = new Vector3(column * GridController.GridSpacing, 0f, row * GridController.GridSpacing);
 		gameObject.name = column + "-" + row + "|" + type.ToString();
 	}
 
-	public void OnEnterTile(GridItem actor)
+	public virtual void OnEnterTile(GridItem actor)
 	{
         this.actor = actor;
 		isTaken = true;
 	}
 
-	public void OnLeaveTile()
+	public virtual void OnLeaveTile()
     {
         this.actor = null;
 		isTaken = false;

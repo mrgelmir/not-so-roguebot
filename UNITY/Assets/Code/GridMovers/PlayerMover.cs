@@ -76,16 +76,16 @@ public class PlayerMover : GridActor, ITargeter
 
     //Targeting
     System.Action<GridTile> onTargetFound = null;
-    public void RequestTargetNeigbourTile(System.Action<GridTile> onTargetFound)
-    {
-        Debug.Log("PlayerMover - Requesting neigbour target");
-        //TODO check meigbouring tiles first: If only one possible target is found -> attack that one
+	public void RequestTargetNeigbourTile(System.Action<GridTile> onTargetFound)
+	{
+		Debug.Log("PlayerMover - Requesting neigbour target");
+		//TODO check meigbouring tiles first: If only one possible target is found -> attack that one
 
-        this.onTargetFound = onTargetFound;
+		this.onTargetFound = onTargetFound;
 
-        InputController.Instance.OnActorClicked += OnTargetingClick;
-        InputController.Instance.OnTileClicked += OnTargetingClick;
-    }
+		InputController.Instance.OnActorClicked += OnTargetingClick;
+		InputController.Instance.OnTileClicked += OnTargetingClick;
+	}
 
     public void RequestTargetTile(System.Action<GridTile> onTargetFound)
     {

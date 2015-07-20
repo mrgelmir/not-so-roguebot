@@ -134,9 +134,9 @@ namespace DungeonGeneration
 			Row = row;
 
 
-			//// TODO deduce width and height from the nested Tiles list?
-			//Width = width;
-			//Height = height;
+			// TODO deduce width and height from the nested Tiles list?
+			Width = width;
+			Height = height;
 
 			//Tiles = new List<List<DungeonTile>>(Width);
 			//for (int c = 0; c < width; c++)

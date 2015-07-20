@@ -2,15 +2,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine; // TODO remove this dependence by using a custom editor for the gridcontainer
 
 namespace DungeonGeneration
 {
+	[Serializable]
 	public class DungeonData
 	{
+		[SerializeField]
 		private int columns;
+		[SerializeField]
 		private int rows;
-        
+
+		[SerializeField]
         private List<DungeonRoom> rooms = new List<DungeonRoom>();
+		[SerializeField]
         private List<DungeonCorridor> corridors = new List<DungeonCorridor>();
 
         public int Columns { get { return columns; } }
@@ -60,6 +66,7 @@ namespace DungeonGeneration
 		}
 	}
 
+	[Serializable]
 	public class DungeonTile
 	{
 		public DungeonTileType Type;
@@ -75,6 +82,7 @@ namespace DungeonGeneration
         public static readonly DungeonTile DoorTile = new DungeonTile(DungeonTileType.Door);
 	}
 
+	[Serializable]
 	public class DungeonRoom
 	{
 		public int Column;
@@ -82,9 +90,37 @@ namespace DungeonGeneration
 		public int Width;
 		public int Height;
 
-		public List<List<DungeonTile>> Tiles;
 		public List<DungeonPosition> Doors = new List<DungeonPosition>();
 
+		private List<List<DungeonTile>> tiles = null;
+		public List<List<DungeonTile>> Tiles
+		{
+			get
+			{
+				if(tiles == null)
+				{
+					tiles = new List<List<DungeonTile>>(Width);
+					for (int c = 0; c < Width; c++)
+					{
+						tiles.Add(new List<DungeonTile>(Height));
+						for (int r = 0; r < Height; r++)
+						{
+							// empty object
+							Tiles[c].Add(DungeonTile.FlatTile);
+						}
+					}
+
+					SetTileTypes();
+				}
+				return tiles;
+			}
+			private set
+			{
+				tiles = value;
+			}
+		}
+
+		[NonSerialized]
         public List<DungeonRoom> LinkedRooms = new List<DungeonRoom>();
 
 		public DungeonPosition CenterPos
@@ -97,22 +133,23 @@ namespace DungeonGeneration
 			Column = column;
 			Row = row;
 
-			// TODO deduce width and height from the nested Tiles list?
-			Width = width;
-			Height = height;
 
-			Tiles = new List<List<DungeonTile>>(Width);
-			for (int c = 0; c < width; c++)
-			{
-				Tiles.Add(new List<DungeonTile>(height));
-				for (int r = 0; r < height; r++)
-				{
-					// empty object
-					Tiles[c].Add(DungeonTile.FlatTile);
-				}
-			}
+			//// TODO deduce width and height from the nested Tiles list?
+			//Width = width;
+			//Height = height;
 
-			SetTileTypes();
+			//Tiles = new List<List<DungeonTile>>(Width);
+			//for (int c = 0; c < width; c++)
+			//{
+			//	Tiles.Add(new List<DungeonTile>(height));
+			//	for (int r = 0; r < height; r++)
+			//	{
+			//		// empty object
+			//		Tiles[c].Add(DungeonTile.FlatTile);
+			//	}
+			//}
+
+			//SetTileTypes();
 		}
 
 		public bool AddDoor(DungeonPosition position)
@@ -231,6 +268,7 @@ namespace DungeonGeneration
 		}
 	}
 
+	[Serializable]
 	public class DungeonCorridor
 	{
 		public List<DungeonPosition> TilePositions = new List<DungeonPosition>();
@@ -286,6 +324,7 @@ namespace DungeonGeneration
 		}
     }
 
+	[Serializable]
     public struct DungeonPosition
     {
 		public DungeonPosition(int column, int row)
@@ -294,6 +333,7 @@ namespace DungeonGeneration
 			this.row = row;
 		}
 
+		[SerializeField]
 		private int column;
 
 		public int Column
@@ -301,6 +341,8 @@ namespace DungeonGeneration
 			get { return column; }
 			set { column = value; }
 		}
+
+		[SerializeField]
 		private int row;
 
 		public int Row

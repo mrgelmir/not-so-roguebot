@@ -86,10 +86,21 @@ public enum TileOrientation
 
 // TODO: wrap in separate class with helper functions
 // ie Walkeable + Trapped (type.IsTrapped)
+[System.Flags]
 public enum TileType
 {
 	NONE = 0,
 	Walkeable = 1 << 0,
 	SightBlocker = 1 << 1,
 	Interactable = 1 << 2,
+	Door = 1 << 3 | 1 << 0,
+	
+}
+
+public static class TileTypeHelper
+{
+	public static bool ContainsType(this TileType ownType, TileType type)
+	{
+		return (ownType & type) == type;
+	}
 }

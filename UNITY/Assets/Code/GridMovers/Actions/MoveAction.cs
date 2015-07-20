@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using GridUtils;
 
 public class MoveAction : BaseGameAction 
 {
 	[SerializeField] private int movementCost;
 
+	[HideInInspector]
 	public GridTile TargetTile;
 
 	private Direction nextDir = Direction.NONE;
@@ -49,7 +51,7 @@ public class MoveAction : BaseGameAction
 
 	}
 
-	private IEnumerator MoveTileRoutine(Direction dir)
+	protected virtual IEnumerator MoveTileRoutine(Direction dir)
 	{
 		// Do the base move here
 		yield return StartCoroutine(actor.MoveToTileRoutine(actor.CurrentTile.GetNeigbour(dir)));

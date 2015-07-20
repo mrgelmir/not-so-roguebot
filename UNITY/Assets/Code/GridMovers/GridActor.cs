@@ -113,6 +113,8 @@ public class GridActor : GridItem
 	
 	public virtual void StopTurn ()
 	{
+		transform.position = Vector3.down * 50f;
+
         // TODO find out what to do
 		StopAllCoroutines();
 		currentTile = null;

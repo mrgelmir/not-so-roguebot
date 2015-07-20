@@ -70,7 +70,7 @@ public class MeleeAction : BaseGameAction
         }
     }
 
-    [SerializeField] private LineRenderer visualisation;
+    [SerializeField] private LineRenderer visualisation = null;
 
     private IEnumerator AttackRoutine()
     {

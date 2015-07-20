@@ -1,4 +1,5 @@
 ﻿using DungeonGeneration;
+using GridUtils;
 using System;
 using System.Collections.Generic;
 
@@ -74,12 +75,16 @@ namespace DungeonGeneration
 			// set next step here
 			// - if maximum number of rooms or maximum number of generation attempts are not exceeded : continue
 			// - otherwise start the corridor generation
-			if (workingData.Rooms.Count >= maxRooms || attemptedRooms > 20)
+			if (workingData.Rooms.Count >= maxRooms || attemptedRooms > maxRooms * 3)
 			{
 				// move over to corridor generation
 				NextStep = GenerateCorridor;
 			}
 		}
+
+		private const int maxCorridorLength = 20;
+
+		private int consecutiveFailedCorridors = 0;
 
 		private void GenerateCorridor()
 		{
@@ -103,7 +108,7 @@ namespace DungeonGeneration
 
 			// go on a walk with a changing pseudorandom direction (biased towards current direction and max 90 degree turns) until a room or the edge has been reached
 
-			int maxCorridorLength = 20;
+			
 			List<DungeonPosition> pathTiles = new List<DungeonPosition>();
 			pathTiles.Add(currentPos);
 			do
@@ -113,28 +118,22 @@ namespace DungeonGeneration
 				pathTiles.Add(currentPos);
 
 			}
-			while (!Collision(currentPos) && pathTiles.Count < maxCorridorLength);
+			while (!CheckTileCollision(currentPos) && pathTiles.Count < maxCorridorLength);
 
-			if (abortCorridor || pathTiles.Count > maxCorridorLength) // check if needed to abort (end of map, reached max length ... )
+			// check if we can use this corridor
+			if(EvaluateCorridor(pathTiles, startRoom))
 			{
-
-			}
-			else // hit something
-			{
-				// create the corridor and add to dungeon
 				workingData.AddCorridor(new DungeonCorridor(pathTiles));
-
-				// add doors to start room
-
-				// add door to other room or to other corridor
+				consecutiveFailedCorridors = 0;
 			}
-
+			else
+			{
+				++consecutiveFailedCorridors;
+			}
 
 			// set next step here
-
-			// TODO: determine when to end walks (when all rooms are connected? -> temp 10 corridors)
-
-			if (workingData.Corridors.Count > 30)
+			// TODO: determine when to end walks (when all rooms are connected?)
+			if (workingData.Corridors.Count > maxRooms * 2 || consecutiveFailedCorridors > 10)
 			{
 				NextStep = null;
 			}
@@ -144,7 +143,6 @@ namespace DungeonGeneration
 			}
 		}
 
-		private int corridorCounter = 0;
 		private int straightBias = 20;
 		private bool abortCorridor = false;
 
@@ -164,19 +162,70 @@ namespace DungeonGeneration
 			return direction;
 		}
 
-		private bool Collision(DungeonPosition position)
+		private bool EvaluateCorridor(List<DungeonPosition> currentPath, DungeonRoom startRoom)
 		{
-			// check grid			
+			DungeonPosition lastPosition = currentPath[currentPath.Count - 1];
+			// path too long or out of bounds
+			if (currentPath.Count <=0 || currentPath.Count >= maxCorridorLength || !workingData.ContainsPosition(lastPosition)) 
+			{
+				return false;
+			}
+
+			if(currentPath.Count <= 2)
+			{
+				startRoom.AddDoor(currentPath[0]);
+			}
+
+			// collision with room
+			DungeonRoom room = lastPosition.GetOverlappingRoom(workingData.Rooms);
+			if(room != null)
+			{
+
+				if (room.IsOuterCorner(lastPosition))
+				{
+					return false;
+				}
+				else
+				{
+					// add door to end room
+					if (!room.AddDoor(lastPosition))
+						return false;
+					
+					// add door to start room
+					startRoom.AddDoor(currentPath[0]);
+
+					return true;
+				}
+			}
+
+			//collision with corridor -> only add start door
+			startRoom.AddDoor(currentPath[0]);
+
+			return true;
+		}
+
+		private bool CheckTileCollision(DungeonPosition position)
+		{
+			// check out of grid			
 			if(!workingData.ContainsPosition(position))
 			{
-				abortCorridor = true;
 				return true;
 			}
 
+			// check rooms
 			if (position.OverlapsAny(workingData.Rooms))
 			{
-				abortCorridor = false;
+				// check edge case, I mean corner case. he he he ...
+				//abortCorridor = (position.GetOverlappingRoom(workingData.Rooms).IsOuterCorner(position));
 				return true;
+			}
+
+			foreach (DungeonCorridor corridor in workingData.Corridors)
+			{
+				if(corridor.Overlaps(position))
+				{
+					return true;
+				}
 			}
 
 			return false;

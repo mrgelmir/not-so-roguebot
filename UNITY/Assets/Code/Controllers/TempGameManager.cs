@@ -4,6 +4,9 @@ using System.Collections;
 public class TempGameManager : MonoBehaviour
 {
     public bool slowGeneration = false;
+	public bool onlyGeneration = false;
+
+	public GameObject overviewCamera;
 
 	public GridMoveManager gm;
 	public GridController gc;
@@ -23,18 +26,19 @@ public class TempGameManager : MonoBehaviour
 
 	private IEnumerator RestartGameRoutine()
 	{
-//		gm.EndGame();
-//        if (Random.value > .1f)
-//            gc.GenerateRandomGrid();
-//        else
-//            gc.GenerateRoom();
+		overviewCamera.SetActive(true);
+		gm.EndGame();
+
 
         //gc.GenerateGrid(DungeonGeneration.BasicGenerator.GenerateGrid(50, 40, 50));
 
         yield return StartCoroutine(SpawnInspectionRoutine());
 
-		// dungeon generation only
-		yield break;
+		overviewCamera.SetActive(onlyGeneration);
+		if(onlyGeneration)
+		{
+			yield break;
+		}
 
 		int enemiesToSpawn = (RequiredEnemies + 1 ) - FindObjectsOfType<GridActor>().Length;
 
@@ -57,10 +61,10 @@ public class TempGameManager : MonoBehaviour
 			Height = 40,
 			MaxRooms = 20,
 
-			MinRoomWidth = 4,
+			MinRoomWidth = 5,
 			MinRoomHeight = 4,
-			MaxRoomWidth = 8,
-			MaxRoomHeight = 6,
+			MaxRoomWidth = 10,
+			MaxRoomHeight = 8,
 		};
 
 		DungeonGeneration.IDungeonGenerator g = new DungeonGeneration.DungeonWalkGenerator();
@@ -83,4 +87,12 @@ public class TempGameManager : MonoBehaviour
 
     }
 
+	public void SetSlowGeneration(bool b)
+	{
+		slowGeneration = b;
+	}
+	public void SetOnlyGeneration(bool b)
+	{
+		onlyGeneration = b;
+	}
 }

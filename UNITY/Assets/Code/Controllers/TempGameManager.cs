@@ -34,10 +34,7 @@ public class TempGameManager : MonoBehaviour
         //gc.GenerateGrid(DungeonGeneration.BasicGenerator.GenerateGrid(50, 40, 50));
 
         yield return StartCoroutine(SpawnInspectionRoutine());
-
-		// dungeon generation only
-		yield break;
-
+		
 		int enemiesToSpawn = (RequiredEnemies + 1 ) - FindObjectsOfType<GridActor>().Length;
 
 		for(;enemiesToSpawn > 0; -- enemiesToSpawn)

@@ -70,12 +70,13 @@ public class InputController : MonoBehaviour
 		// if grid is tapped -> ask 
 		if(Physics.Raycast(ray, out hit))
 		{
-			GridController controller = hit.collider.gameObject.GetComponent<GridController>();
-			if(controller != null)
+			// only bother to cast when there are subscribers? or check type first, then subscribers?
+			
+			if(OnTileClicked != null)
 			{
-				if(OnTileClicked != null)
+				GridController controller = hit.collider.GetComponent<GridController>();
+				if (controller != null)
 				{
-					// only bother to get clicked tile when there are subscribers
 					GridTile clickedTile = controller.ClosestTileToPoint(hit.point);
                     if(clickedTile != null)
                     {
@@ -86,10 +87,10 @@ public class InputController : MonoBehaviour
 				return;
 			}
 
-			GridActor actor = hit.collider.GetComponent<GridActor>();
-			if(actor != null)
+			if(OnActorClicked != null)
 			{
-				if(OnActorClicked != null)
+				GridActor actor = hit.collider.GetComponent<GridActor>();
+				if(actor != null)
 				{
 					OnActorClicked(actor);
 				}

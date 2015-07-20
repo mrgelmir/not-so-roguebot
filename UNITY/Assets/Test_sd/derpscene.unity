@@ -340,37 +340,13 @@ GameObject:
   m_Component:
   - 4: {fileID: 472123023}
   - 20: {fileID: 472123022}
-  - 124: {fileID: 472123021}
-  - 92: {fileID: 472123020}
-  - 81: {fileID: 472123019}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!81 &472123019
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 472123018}
-  m_Enabled: 1
---- !u!92 &472123020
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 472123018}
-  m_Enabled: 1
---- !u!124 &472123021
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 472123018}
-  m_Enabled: 1
+  m_IsActive: 0
 --- !u!20 &472123022
 Camera:
   m_ObjectHideFlags: 0
@@ -563,6 +539,7 @@ MonoBehaviour:
   gc: {fileID: 464869373}
   EnemyPrefab: {fileID: 11436672, guid: fc20ff5e2af967448a3ffa9632ef7a4b, type: 2}
   RequiredEnemies: 2
+  customGridData: {fileID: 11400000, guid: 3e532c9b326f3ff498100a76cfd525ab, type: 2}
 --- !u!4 &837652785
 Transform:
   m_ObjectHideFlags: 0
@@ -796,7 +773,7 @@ Prefab:
       objectReference: {fileID: 1548537810}
     - target: {fileID: 133742, guid: f4de2eb8643633b439bbae7a1949e8d6, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f4de2eb8643633b439bbae7a1949e8d6, type: 2}

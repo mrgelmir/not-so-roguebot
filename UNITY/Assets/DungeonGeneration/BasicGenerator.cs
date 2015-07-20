@@ -24,6 +24,16 @@ namespace DungeonGeneration
 			data = new DungeonData(info.Width, info.Height);
 		}
 
+		public DungeonData GenerateDungeon()
+		{
+			while(NextGenerationStep())
+			{
+				// empty body
+			}
+
+			return GetCurrentGrid();
+		}
+
         public DungeonData GetCurrentGrid()
         {
             //return a copy with the possible room added

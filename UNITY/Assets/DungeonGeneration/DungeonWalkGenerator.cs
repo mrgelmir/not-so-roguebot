@@ -27,6 +27,16 @@ namespace DungeonGeneration
 			NextStep = GenerateRoom;
 		}
 
+		public DungeonData GenerateDungeon()
+		{
+			while (NextGenerationStep())
+			{
+				// empty body
+			}
+
+			return GetCurrentGrid();
+		}
+
 		public DungeonData GetCurrentGrid()
 		{
 			// Return a copy of the grid

@@ -17,10 +17,17 @@ MonoBehaviour:
     rooms:
     - Column: 1
       Row: 1
-      Width: 4
-      Height: 5
-    - Column: 0
-      Row: 0
-      Width: 0
-      Height: 0
-    corridors: []
+      Width: 10
+      Height: 10
+    corridors:
+    - TilePositions:
+      - column: 0
+        row: 0
+      - column: 0
+        row: 1
+      - column: 0
+        row: 2
+      - column: 0
+        row: 3
+      - column: 0
+        row: 4

@@ -3,6 +3,7 @@
 	interface IDungeonGenerator
 	{
 		void Setup(DungeonGenerationInfo info);
+		DungeonData GenerateDungeon();
 		DungeonData GetCurrentGrid();
 		bool NextGenerationStep();
 	}

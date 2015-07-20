@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GridUtils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine; // TODO remove this dependence by using a custom editor for the gridcontainer
@@ -89,6 +90,8 @@ namespace DungeonGeneration
 		public int Width;
 		public int Height;
 
+		public List<DungeonPosition> Doors = new List<DungeonPosition>();
+
 		private List<List<DungeonTile>> tiles = null;
 		public List<List<DungeonTile>> Tiles
 		{
@@ -149,20 +152,30 @@ namespace DungeonGeneration
 			//SetTileTypes();
 		}
 
-		public bool AddDoor(int column, int row)
+		public bool AddDoor(DungeonPosition position)
 		{
 			// return false if the door isn't on a border
-			return false;
+			if(IsBorderPosition(position) || Overlaps(position))
+			{
+				// the door is actually outside of the room
+				Doors.Add(position);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+			
 		}
 
         private const int minRoomDistance = 1; // keep a gap of 1 for the walls
 
-		public bool Overlaps(DungeonPosition pos)
+		public bool Overlaps(DungeonPosition position)
 		{
 			int offset = -minRoomDistance + 1;
 
-			bool horizontalOverlap = Column - 1 <= pos.Column - offset && Column + Width - offset >= pos.Column;
-			bool verticalOverlap = Row - 1 <= pos.Row - offset && Row + Height - offset >= pos.Row;
+			bool horizontalOverlap = Column - 1 <= position.Column - offset && Column + Width - offset >= position.Column;
+			bool verticalOverlap = Row - 1 <= position.Row - offset && Row + Height - offset >= position.Row;
 
 			return horizontalOverlap && verticalOverlap;
 		}
@@ -176,6 +189,13 @@ namespace DungeonGeneration
             bool verticalOverlap = Row <= other.Row + other.Height - offset && Row + Height - offset >= other.Row;
 
 			return horizontalOverlap && verticalOverlap;
+		}
+
+		public bool IsBorderPosition(DungeonPosition position)
+		{
+			int offset = -minRoomDistance + 1;
+			return ((position.Column == Column + Width - offset) || (position.Column - offset == Column)) &&
+					((position.Row == Row + Height - offset) || (position.Row - offset == Row ));
 		}
 
 		public bool OverlapsAny(IList<DungeonRoom> otherRooms)
@@ -219,12 +239,17 @@ namespace DungeonGeneration
 			return p;
 		}
 
-		private bool IsBorder(int column, int row)
+		public bool IsOuterCorner(DungeonPosition position)
 		{
-			//only supports rectangular rooms now
-			return (column == 0 || column == Width-1) || (row == 0 || row == Height-1);
-		}
+			int offset = -minRoomDistance + 1;
 
+			// used for catching edge case
+			bool verticalBorder = Row - 1 == position.Row - offset || Row + Height - offset == position.Row;
+			bool horizontalBorder = Column - 1 == position.Column - offset || Column + Width - offset == position.Column;
+
+			return verticalBorder && horizontalBorder;
+		}
+		
 		private void SetTileTypes()
 		{
 			//temp: sides are walls, rest are flat
@@ -285,6 +310,18 @@ namespace DungeonGeneration
 		{
 			TilePositions = new List<DungeonPosition>(tiles);
 		}
+
+		public bool Overlaps(DungeonPosition position)
+		{
+			foreach (DungeonPosition pos in TilePositions)
+			{
+				if(pos.Overlaps(position))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
     }
 
 	[Serializable]
@@ -341,7 +378,19 @@ namespace DungeonGeneration
 			}
 			return null;
 		}
-    }
+
+		public bool Overlaps(DungeonPosition position)
+		{
+			// a tile with the same position is also counted as an overlap
+			return position.column == column && position.row == row;
+		}
+
+		public bool Neigbours(DungeonPosition position)
+		{
+			// a tile with the same position is also counted as an overlap
+			return Math.Abs(position.column - column) <= 1 && Math.Abs(position.row - row) <= 1;
+		}
+	}
 
 	public enum DungeonTileType
 	{
@@ -352,4 +401,3 @@ namespace DungeonGeneration
 	}
 
 }
-

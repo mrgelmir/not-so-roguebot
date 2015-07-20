@@ -27,6 +27,12 @@ public class PlayerMover : GridActor, ITargeter
         }
     }
 
+	public override void StopTurn()
+	{
+		base.StopTurn();
+		DisableInput();
+	}
+
 	protected override void ProgressTurn ()
 	{
         base.ProgressTurn();
@@ -113,7 +119,7 @@ public class PlayerMover : GridActor, ITargeter
 	protected void MakeMove( GridTile nextTile )
 	{
 
-		if(nextTile != null && nextTile.Type == TileType.Walkeable && nextTile.IsNeighbour(currentTile))
+		if (nextTile != null && nextTile.Type.ContainsType(TileType.Walkeable) && nextTile.IsNeighbour(currentTile))
 		{
 			DisableInput();
 			moveAction.SetMoveTarget(nextTile);

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using GridUtils;
 
 [SelectionBase]
 public class GridItem : MonoBehaviour
@@ -82,9 +83,9 @@ public class GridItem : MonoBehaviour
             randomTile = RandomNeighbour();
             ++counter;
         }
-        while (counter < 20 && (randomTile.IsTaken || randomTile.Type != TileType.Walkeable));
+        while (counter < 20 && (randomTile.IsTaken || !randomTile.Type.ContainsType(TileType.Walkeable)));
 
-        if (randomTile.IsTaken || randomTile.Type != TileType.Walkeable)
+		if (randomTile.IsTaken || !randomTile.Type.ContainsType(TileType.Walkeable))
         {
             randomTile = null;
         }

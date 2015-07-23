@@ -38,7 +38,9 @@ public class PathFinder
 
 interface IPathFindeable
 {
+	/*
 	int HeuristicDistance(IPathFindeable other); // Manhattan method?
 	int MovementCost(IPathFindeable other); // check if can reach first
 	IEnumerable<IPathFindeable> GetNeighbours();
+	*/
 }

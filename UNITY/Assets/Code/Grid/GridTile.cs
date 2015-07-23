@@ -3,7 +3,7 @@ using System.Collections;
 using GridUtils;
 
 [SelectionBase]
-public class GridTile : MonoBehaviour
+public class GridTile : MonoBehaviour, IPathFindeable
 {
 	[SerializeField] private TileType type = TileType.NONE;
 	[SerializeField] private int row;
@@ -71,7 +71,6 @@ public class GridTile : MonoBehaviour
         this.actor = null;
 		isTaken = false;
 	}
-
 
 	protected void OnDrawGizmos()
 	{

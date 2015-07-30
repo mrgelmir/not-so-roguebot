@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class TempGameManager : MonoBehaviour
 {
@@ -51,7 +52,14 @@ public class TempGameManager : MonoBehaviour
 
 		yield return null;
 
+
 		gm.StartGame();
+
+
+		PathFinder.GetPath(gc.RandomFreeTile, gc.RandomFreeTile, (IEnumerable<GridTile> l) =>
+		{
+			Debug.Log("success");
+		});
 	}
 
     private IEnumerator SpawnInspectionRoutine()

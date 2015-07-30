@@ -42,9 +42,14 @@ public class GridTile : MonoBehaviour, IPathFindeable
 		return !isSelf && isColNeighbour && isRowNeighbour;
 	}
 
-	public GridTile GetNeigbour(Direction dir)
+	public GridTile GetNeighbour(Direction dir)
 	{
 		return grid.GetNeighbour(this, dir);
+	}
+
+	public GridTile[] GetNeighbours()
+	{
+		return grid.GetNeighbours(this);
 	}
 
 	public void SetData( GridController grid, int column, int row)
@@ -116,5 +121,38 @@ public class GridTile : MonoBehaviour, IPathFindeable
 		}
 
 		return horizontal | vertical;
+	}
+
+	public int HeuristicDistance(IPathFindeable other)
+	{
+		GridTile otherTile = other as GridTile;
+		if (otherTile == null)
+			return int.MaxValue;
+
+		return Mathf.Abs(Column - otherTile.Column) + Mathf.Abs(Row - otherTile.Row);
+	}
+
+	//public int MovementCost(IPathFindeable other)
+	//{
+	//	throw new System.NotImplementedException();
+	//}
+
+	public System.Collections.Generic.IEnumerable<IPathFindeable> Neighbours
+	{
+		get
+		{
+			System.Collections.Generic.List<IPathFindeable> neighbours = new System.Collections.Generic.List<IPathFindeable>(8);
+			foreach (GridTile neighbour in GetNeighbours())
+			{
+				if (neighbour != null)
+					neighbours.Add(neighbour);
+			}
+			return neighbours;
+		}
+	}
+
+	public bool Walkeable
+	{
+		get { return type.ContainsType(TileType.Walkeable); }
 	}
 }

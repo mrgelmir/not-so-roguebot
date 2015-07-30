@@ -94,6 +94,27 @@ public class GridController : MonoBehaviour
 		return gridElements[neighbourCol][neighbourRow];
 	}
 
+	public GridTile[] GetNeighbours(GridTile el)
+	{
+		GridTile[] neighbours = new GridTile[9];
+
+		for (int column = -1; column <= 1; column++)
+		{
+			for (int row = -1; row <= 1; row++)
+			{
+				int neighbourColumn = el.Column + column;
+				int neighbourRow = el.Row + row;
+				if(neighbourColumn > 0 && neighbourColumn < columns && neighbourRow > 0 && neighbourRow < rows && !( column == 0 && row == 0 ) )
+				{
+					int index = (column + 1) * 3 + (row + 1);
+					neighbours[index] = gridElements[neighbourColumn][neighbourRow];
+				}
+			}
+		}
+
+		return neighbours;
+	}
+
 	public GridTile ClosestTileToPoint(Vector3 point)
 	{
 		// TODO find more elegant way to do this (probably using tile spacing)

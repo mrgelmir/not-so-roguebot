@@ -37,6 +37,18 @@ public class PlayerMover : GridActor, ITargeter
 	protected override void ProgressTurn ()
 	{
         base.ProgressTurn();
+
+		// check current path
+		if (currentPath != null && currentPath.Count > 0)
+		{
+			bool validMove = MakeMove(currentPath.Dequeue());
+
+			if(!validMove)
+			{
+				currentPath.Clear();
+			}
+		}
+
 		//enable input 
 		Enableinput ();
 	}
@@ -71,7 +83,7 @@ public class PlayerMover : GridActor, ITargeter
 		}
 		else if(tile.Walkeable)
 		{
-			PathFinder.GetPath(currentTile, tile, MovePath);
+			PathFinder.GetPath(currentTile, tile, SetNewPath);
 		}
 	}
 
@@ -124,9 +136,8 @@ public class PlayerMover : GridActor, ITargeter
 	
 	// MOVING
 
-	protected void MakeMove( GridTile nextTile )
+	protected bool MakeMove( GridTile nextTile )
 	{
-
 		if (nextTile != null && nextTile.Type.ContainsType(TileType.Walkeable) && nextTile.IsNeighbour(currentTile))
 		{
 			DisableInput();
@@ -136,7 +147,11 @@ public class PlayerMover : GridActor, ITargeter
             {
                 FinishTurn();
             }
+
+			return true;
 		}
+
+		return false;
 	}
 
 	private IEnumerator MoveRoutine(GridTile nextTile)
@@ -145,21 +160,25 @@ public class PlayerMover : GridActor, ITargeter
 		FinishTurn ();
 	}
 
-	private void MovePath(IEnumerable<GridTile> path)
-	{
-		StartCoroutine(MovePathRoutine(path));
-	}
+	// remember curretn path
+	private Queue<GridTile> currentPath;
 
-	private IEnumerator MovePathRoutine(IEnumerable<GridTile> path)
+	private void SetNewPath(IEnumerable<GridTile> path)
 	{
+		currentPath = new Queue<GridTile>();
 		foreach (GridTile tile in path)
 		{
-			yield return StartCoroutine(MoveToTileRoutine(tile));
+			currentPath.Enqueue(tile);
 		}
 
-		FinishTurn();
-	}
+		currentPath.Dequeue(); // temp removing current element
 
+		if(currentPath.Count > 0)
+		{
+			MakeMove(currentPath.Dequeue());
+		}
+	}
+	
 	// INPUT
 
 	private void Enableinput ()

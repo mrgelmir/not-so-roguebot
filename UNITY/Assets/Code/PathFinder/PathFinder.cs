@@ -8,7 +8,7 @@ public class PathFinder
 {
 	public static void GetPath(GridTile from, GridTile to, Action<IEnumerable<GridTile>> OnPath)
 	{
-		UnityEngine.Debug.Log("requesting path from " + from + " to " + to);
+		//UnityEngine.Debug.Log("requesting path from " + from + " to " + to);
 		OnPath(FindPath(from, to));
 	}
 

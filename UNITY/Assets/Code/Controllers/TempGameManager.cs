@@ -56,10 +56,6 @@ public class TempGameManager : MonoBehaviour
 		gm.StartGame();
 
 
-		PathFinder.GetPath(gc.RandomFreeTile, gc.RandomFreeTile, (IEnumerable<GridTile> l) =>
-		{
-			Debug.Log("success");
-		});
 	}
 
     private IEnumerator SpawnInspectionRoutine()

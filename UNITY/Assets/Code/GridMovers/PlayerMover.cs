@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerMover : GridActor, ITargeter
 {
@@ -64,7 +65,14 @@ public class PlayerMover : GridActor, ITargeter
 
 	void TileClicked (GridTile tile)
 	{
-		MakeMove(tile);
+		if(tile.IsNeighbour(currentTile))
+		{
+			MakeMove(tile);
+		}
+		else if(tile.Walkeable)
+		{
+			PathFinder.GetPath(currentTile, tile, MovePath);
+		}
 	}
 
     private void ActionButtonClicked(BaseGameAction action)
@@ -135,6 +143,21 @@ public class PlayerMover : GridActor, ITargeter
 	{
 		yield return StartCoroutine (MoveToTileRoutine (nextTile));
 		FinishTurn ();
+	}
+
+	private void MovePath(IEnumerable<GridTile> path)
+	{
+		StartCoroutine(MovePathRoutine(path));
+	}
+
+	private IEnumerator MovePathRoutine(IEnumerable<GridTile> path)
+	{
+		foreach (GridTile tile in path)
+		{
+			yield return StartCoroutine(MoveToTileRoutine(tile));
+		}
+
+		FinishTurn();
 	}
 
 	// INPUT

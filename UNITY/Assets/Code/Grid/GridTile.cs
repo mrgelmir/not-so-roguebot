@@ -97,6 +97,27 @@ public class GridTile : MonoBehaviour, IPathFindeable
 		Gizmos.DrawSphere(transform.position, .1f);
 	}
 
+	protected void OnDrawGizmosSelected()
+	{
+		Color gizmoColor = Color.white;
+		switch (type)
+		{
+			default:
+			case TileType.NONE:
+				gizmoColor = Color.white;
+				break;
+			case TileType.Walkeable:
+				gizmoColor = Color.grey;
+				break;
+			case TileType.SightBlocker:
+				gizmoColor = Color.black;
+				break;
+		}
+
+		Gizmos.color = gizmoColor;
+		Gizmos.DrawSphere(transform.position, .3f);
+	}
+
 	public static Direction GetDirection(GridTile from, GridTile to)
 	{
 		Direction horizontal = Direction.NONE;

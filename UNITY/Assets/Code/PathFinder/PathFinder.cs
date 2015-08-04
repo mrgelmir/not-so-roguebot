@@ -8,6 +8,7 @@ public class PathFinder
 {
 	public static void GetPath(GridTile from, GridTile to, Action<IEnumerable<GridTile>> OnPath)
 	{
+		UnityEngine.Debug.Log("requesting path from " + from + " to " + to);
 		OnPath(FindPath(from, to));
 	}
 
@@ -18,7 +19,15 @@ public class PathFinder
 		PathFinder p = new PathFinder(from, to);
 
 		// return values
-		return p.Path as IEnumerable<GridTile>;
+
+		List<GridTile> l = new List<GridTile>();
+
+		foreach (IPathFindeable pf in p.Path)
+		{
+			l.Add(pf as GridTile);
+		}
+
+		return l;
 	}
 
 	Node currentNode = null;
@@ -28,47 +37,44 @@ public class PathFinder
 
 	private PathFinder(IPathFindeable from, IPathFindeable to)
 	{
-		currentNode = new Node(from);
+		target = to;
+		OpenList.Add(new Node(from));
 
-
-		// TODO do again
-		int attemptCounter = 100;
 		do
 		{
-			ProcessNode(currentNode);
-			--attemptCounter;
+			Calculate();
 		}
-		while (currentNode != target && attemptCounter > 0); // TODO fix possible case of not reaching end node more elegantly
-
-		UnityEngine.Debug.Log("Found target ? " + attemptCounter + " turns left");
+		while (currentNode.PathFindeable != target && OpenList.Count > 0);
 	}
 
-	private void ProcessNode(Node currentNode)
+	private void Calculate() // TODO find better name
 	{
-		// TODO do again
-		OpenList.Remove(currentNode);
+		// find lowest heuristic value in open list (lowest F value)
+		OpenList.Sort(); // temp sort here (maybe find more performant stuff?)
 
-		// add neigbours to open list
+		if(OpenList.Count == 0)
+		{
+			UnityEngine.Debug.Log("No more open list nodes");
+			return;
+		}
+		currentNode = OpenList[0];
+
+		//move node from open list and to closed list
+		OpenList.Remove(currentNode);
+		ClosedList.Add(currentNode);
+
+		// add its neigbours to open list
 		foreach (IPathFindeable pathFindeable in currentNode.PathFindeable.Neighbours)
 		{
 			Node newNode = new Node(pathFindeable, currentNode, 10, target);
-			if (pathFindeable.Walkeable && !OpenList.Contains(newNode))
+			if (pathFindeable.Walkeable && !OpenList.Contains(newNode) && !ClosedList.Contains(newNode))
 			{
 				// TODO calculate movement cost
 				OpenList.Add(newNode);
 			}
 		}
-
-		// sort list 
-		 OpenList.Sort();
-
-		// add current node to closed list
-		ClosedList.Add(currentNode);
-
-		// find new current node (lowest F value)
-		currentNode = OpenList[0];
 	}
-
+	
 	private IEnumerable<IPathFindeable> Path
 	{
 		get
@@ -104,6 +110,7 @@ public class PathFinder
 
 		public Node(IPathFindeable pathFindeable, Node parent, int MovementCost, IPathFindeable target)
 		{
+			Parent = parent;
 			PathFindeable = pathFindeable;
 			G = MovementCost;
 			H = PathFindeable.HeuristicDistance(target);

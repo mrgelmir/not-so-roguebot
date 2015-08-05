@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using GridUtils;
+using System.Collections.Generic;
 
 [SelectionBase]
 public class GridTile : MonoBehaviour, IPathFindeable
@@ -29,6 +30,8 @@ public class GridTile : MonoBehaviour, IPathFindeable
 
 	private bool isTaken = false;
 	public bool IsTaken{ get { return isTaken; } }
+	
+	private int uniqueIndex = -1;
 
 	public bool IsNeighbour(GridTile el)
 	{
@@ -57,6 +60,9 @@ public class GridTile : MonoBehaviour, IPathFindeable
 		this.grid = grid;
 		this.column = column;
 		this.row = row;
+
+		// generate this index for pathfinding purposes
+		uniqueIndex = column * (grid.rows + 1) + row;
 	}
 
 	public virtual void UpdateVisual()
@@ -144,6 +150,8 @@ public class GridTile : MonoBehaviour, IPathFindeable
 		return horizontal | vertical;
 	}
 
+	// IPathfindeable implementation
+
 	public int HeuristicDistance(IPathFindeable other)
 	{
 		GridTile otherTile = other as GridTile;
@@ -153,12 +161,20 @@ public class GridTile : MonoBehaviour, IPathFindeable
 		return Mathf.Abs(Column - otherTile.Column) + Mathf.Abs(Row - otherTile.Row);
 	}
 
-	//public int MovementCost(IPathFindeable other)
-	//{
-	//	throw new System.NotImplementedException();
-	//}
+	private const int straightMovementCost = 10;
+	private const int diagonalMovementCost = 15;
 
-	public System.Collections.Generic.IEnumerable<IPathFindeable> Neighbours
+	public int MovementCostFrom(IPathFindeable other)
+	{
+		// check if not Neighbours 
+		GridTile otherTile = other as GridTile;
+		if (otherTile == null || !IsNeighbour(otherTile))
+			return int.MaxValue;
+		
+		return ((column == otherTile.column)^(row == otherTile.row)) ? straightMovementCost : diagonalMovementCost;
+	}
+
+	public IEnumerable<IPathFindeable> Neighbours
 	{
 		get
 		{
@@ -172,8 +188,6 @@ public class GridTile : MonoBehaviour, IPathFindeable
 		}
 	}
 
-	public bool Walkeable
-	{
-		get { return type.ContainsType(TileType.Walkeable); }
-	}
+	public bool Walkeable { get { return type.ContainsType(TileType.Walkeable); } }
+	public int UniqueIndex { get { return uniqueIndex; } }
 }

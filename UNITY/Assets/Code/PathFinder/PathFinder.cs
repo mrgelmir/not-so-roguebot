@@ -30,11 +30,11 @@ public class PathFinder
 		return l;
 	}
 
-	Node currentNode = null;
-	IPathFindeable target = null;
-	List<Node> OpenList = new List<Node>();
-	List<Node> ClosedList = new List<Node>(); // TODO calculate a feasible amount to start with?
-
+	private Node currentNode = null;
+	private IPathFindeable target = null;
+	private List<Node> OpenList = new List<Node>();
+	private List<Node> ClosedList = new List<Node>(); // TODO calculate a feasible amount to start with?
+	
 	private PathFinder(IPathFindeable from, IPathFindeable to)
 	{
 		target = to;
@@ -66,11 +66,23 @@ public class PathFinder
 		// add its neigbours to open list
 		foreach (IPathFindeable pathFindeable in currentNode.PathFindeable.Neighbours)
 		{
-			Node newNode = new Node(pathFindeable, currentNode, 10, target);
+			Node newNode = new Node(pathFindeable, currentNode, target);
 			if (pathFindeable.Walkeable && !OpenList.Contains(newNode) && !ClosedList.Contains(newNode))
 			{
-				// TODO calculate movement cost
-				OpenList.Add(newNode);
+				// see if this item exists on open list
+				int currentIndex = OpenList.IndexOf(newNode);
+				if(currentIndex > 0)
+				{
+					// check if current node would be a better parent 
+					if(OpenList[currentIndex].G > newNode.G)
+					{
+						OpenList[currentIndex].SetNewParent(currentNode);
+					}
+				}
+				else
+				{
+					OpenList.Add(newNode);
+				}
 			}
 		}
 	}
@@ -108,12 +120,17 @@ public class PathFinder
 			PathFindeable = pathFindeable;
 		}
 
-		public Node(IPathFindeable pathFindeable, Node parent, int MovementCost, IPathFindeable target)
+		public Node(IPathFindeable pathFindeable, Node parent, IPathFindeable target)
+		{
+			PathFindeable = pathFindeable;
+			H = PathFindeable.HeuristicDistance(target);
+			SetNewParent(parent);
+		}
+
+		public void SetNewParent(Node parent)
 		{
 			Parent = parent;
-			PathFindeable = pathFindeable;
-			G = MovementCost;
-			H = PathFindeable.HeuristicDistance(target);
+			G = parent.G + PathFindeable.MovementCostFrom(parent.PathFindeable);
 		}
 
 		public override bool Equals(object other)
@@ -147,10 +164,10 @@ public class PathFinder
 
 public interface IPathFindeable
 {
-	
-	int HeuristicDistance(IPathFindeable other); // Manhattan method?
-	//int MovementCost(IPathFindeable other); // check if can reach first
+	int HeuristicDistance(IPathFindeable other);
+	int MovementCostFrom(IPathFindeable other);
 	IEnumerable<IPathFindeable> Neighbours { get; }
 	bool Walkeable { get; }
+	int UniqueIndex { get; }
 	
 }

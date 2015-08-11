@@ -809,8 +809,8 @@ MonoBehaviour:
   overviewCamera: {fileID: 472123018}
   gm: {fileID: 1718580270}
   gc: {fileID: 464869373}
-  EnemyPrefab: {fileID: 11436672, guid: fc20ff5e2af967448a3ffa9632ef7a4b, type: 2}
-  RequiredEnemies: 0
+  EnemyPrefab: {fileID: 11436672, guid: 6d5f3c2324ec9e34b9ecc64fcbba7e19, type: 2}
+  RequiredEnemies: 10
   customGridData: {fileID: 0}
 --- !u!4 &837652785
 Transform:
@@ -1332,7 +1332,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 444728, guid: f4de2eb8643633b439bbae7a1949e8d6, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 444728, guid: f4de2eb8643633b439bbae7a1949e8d6, type: 2}
       propertyPath: m_LocalRotation.x
@@ -1358,14 +1358,6 @@ Prefab:
       propertyPath: actionPanel
       value: 
       objectReference: {fileID: 1548537810}
-    - target: {fileID: 133742, guid: f4de2eb8643633b439bbae7a1949e8d6, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2064890, guid: f4de2eb8643633b439bbae7a1949e8d6, type: 2}
-      propertyPath: far clip plane
-      value: 50
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f4de2eb8643633b439bbae7a1949e8d6, type: 2}
   m_IsPrefabParent: 0

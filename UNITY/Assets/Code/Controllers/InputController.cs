@@ -32,7 +32,16 @@ public class InputController : MonoBehaviour
 	[SerializeField] private Camera cam;
 	public Camera Cam 
 	{
-		get { return (cam != null)? cam: Camera.main; }
+		get
+		{
+			// TODO take prefrence to the player camera instead of using the main camera (+ allow swapping cameras?)
+			if (cam == null)
+			{
+				cam = Camera.main;
+			}
+
+			return cam;
+		}
 		set { cam = value; }
 	}
 
@@ -83,8 +92,8 @@ public class InputController : MonoBehaviour
 						Debug.DrawLine(Vector3.zero, clickedTile.transform.position, Color.cyan, 2f);
                         OnTileClicked(clickedTile);
                     }
+					return;
 				}
-				return;
 			}
 
 			if(OnActorClicked != null)
@@ -93,11 +102,11 @@ public class InputController : MonoBehaviour
 				if(actor != null)
 				{
 					OnActorClicked(actor);
+					return;
 				}
-				return;
 			}
 
-			//other cases go here
+			//other cases go here (or refactor to fancier solution?)
 		}
 	}
 }

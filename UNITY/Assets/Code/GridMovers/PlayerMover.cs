@@ -61,6 +61,16 @@ public class PlayerMover : GridActor, ITargeter
         DisableInput();
     }
 
+	public override void ActorDestroyed()
+	{
+		// do not destroy player for now. Awww yeah!
+		//base.ActorDestroyed();
+
+		LeaveTile();
+		
+
+	}
+
 	// MESSAGES
 
 	void ActorClicked (GridActor actor)
@@ -98,7 +108,7 @@ public class PlayerMover : GridActor, ITargeter
     System.Action<GridTile> onTargetFound = null;
 	public void RequestTargetNeigbourTile(System.Action<GridTile> onTargetFound)
 	{
-		Debug.Log("PlayerMover - Requesting neigbour target");
+		//Debug.Log("PlayerMover - Requesting neigbour target");
 		//TODO check meigbouring tiles first: If only one possible target is found -> attack that one
 
 		this.onTargetFound = onTargetFound;
@@ -109,7 +119,7 @@ public class PlayerMover : GridActor, ITargeter
 
     public void RequestTargetTile(System.Action<GridTile> onTargetFound)
     {
-        Debug.Log("PlayerMover - Requesting target");
+		//Debug.Log("PlayerMover - Requesting target");
         this.onTargetFound = onTargetFound;
 
         InputController.Instance.OnActorClicked += OnTargetingClick;
@@ -118,6 +128,7 @@ public class PlayerMover : GridActor, ITargeter
 
     private void OnTargetingClick(GridActor actor)
     {
+		//Debug.Log("found target actor");
         OnTargetingClick(actor.CurrentTile);
     }
 
@@ -126,9 +137,9 @@ public class PlayerMover : GridActor, ITargeter
         InputController.Instance.OnActorClicked -= OnTargetingClick;
         InputController.Instance.OnTileClicked -= OnTargetingClick;
 
+		//Debug.Log("found target tile");
         if(onTargetFound != null)
         {
-            Debug.Log("found target");
             onTargetFound(tile);
         }
     }
@@ -160,7 +171,7 @@ public class PlayerMover : GridActor, ITargeter
 		FinishTurn ();
 	}
 
-	// remember curretn path
+	// remember current path
 	private Queue<GridTile> currentPath;
 
 	private void SetNewPath(IEnumerable<GridTile> path)

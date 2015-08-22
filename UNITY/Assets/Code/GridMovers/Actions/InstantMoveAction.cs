@@ -7,7 +7,7 @@ public class InstantMoveAction : MoveAction
 
 	protected override IEnumerator MoveTileRoutine(Direction dir)
 	{
-		StartCoroutine(actor.MoveToTileRoutine(actor.CurrentTile.GetNeigbour(dir)));
+		StartCoroutine(actor.MoveToTileRoutine(actor.CurrentTile.GetNeighbour(dir)));
 		ActionComplete();
 		yield return null;
 	}

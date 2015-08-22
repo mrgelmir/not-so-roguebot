@@ -1,9 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using GridUtils;
+using System.Collections.Generic;
 
 [SelectionBase]
-public class GridTile : MonoBehaviour
+public class GridTile : MonoBehaviour, IPathFindeable
 {
 	[SerializeField] private TileType type = TileType.NONE;
 	[SerializeField] private int row;
@@ -29,6 +30,8 @@ public class GridTile : MonoBehaviour
 
 	private bool isTaken = false;
 	public bool IsTaken{ get { return isTaken; } }
+	
+	private int uniqueIndex = -1;
 
 	public bool IsNeighbour(GridTile el)
 	{
@@ -42,9 +45,14 @@ public class GridTile : MonoBehaviour
 		return !isSelf && isColNeighbour && isRowNeighbour;
 	}
 
-	public GridTile GetNeigbour(Direction dir)
+	public GridTile GetNeighbour(Direction dir)
 	{
 		return grid.GetNeighbour(this, dir);
+	}
+
+	public GridTile[] GetNeighbours()
+	{
+		return grid.GetNeighbours(this);
 	}
 
 	public void SetData( GridController grid, int column, int row)
@@ -52,6 +60,9 @@ public class GridTile : MonoBehaviour
 		this.grid = grid;
 		this.column = column;
 		this.row = row;
+
+		// generate this index for pathfinding purposes
+		uniqueIndex = column * (grid.rows + 1) + row;
 	}
 
 	public virtual void UpdateVisual()
@@ -72,7 +83,6 @@ public class GridTile : MonoBehaviour
 		isTaken = false;
 	}
 
-
 	protected void OnDrawGizmos()
 	{
 		Color gizmoColor = Color.white;
@@ -91,6 +101,27 @@ public class GridTile : MonoBehaviour
 
 		Gizmos.color = gizmoColor;
 		Gizmos.DrawSphere(transform.position, .1f);
+	}
+
+	protected void OnDrawGizmosSelected()
+	{
+		Color gizmoColor = Color.white;
+		switch (type)
+		{
+			default:
+			case TileType.NONE:
+				gizmoColor = Color.white;
+				break;
+			case TileType.Walkeable:
+				gizmoColor = Color.grey;
+				break;
+			case TileType.SightBlocker:
+				gizmoColor = Color.black;
+				break;
+		}
+
+		Gizmos.color = gizmoColor;
+		Gizmos.DrawSphere(transform.position, .3f);
 	}
 
 	public static Direction GetDirection(GridTile from, GridTile to)
@@ -118,4 +149,45 @@ public class GridTile : MonoBehaviour
 
 		return horizontal | vertical;
 	}
+
+	// IPathfindeable implementation
+
+	public int HeuristicDistance(IPathFindeable other)
+	{
+		GridTile otherTile = other as GridTile;
+		if (otherTile == null)
+			return int.MaxValue;
+
+		return Mathf.Abs(Column - otherTile.Column) + Mathf.Abs(Row - otherTile.Row);
+	}
+
+	private const int straightMovementCost = 10;
+	private const int diagonalMovementCost = 15;
+
+	public int MovementCostFrom(IPathFindeable other)
+	{
+		// check if not Neighbours 
+		GridTile otherTile = other as GridTile;
+		if (otherTile == null || !IsNeighbour(otherTile))
+			return int.MaxValue;
+		
+		return ((column == otherTile.column)^(row == otherTile.row)) ? straightMovementCost : diagonalMovementCost;
+	}
+
+	public IEnumerable<IPathFindeable> Neighbours
+	{
+		get
+		{
+			System.Collections.Generic.List<IPathFindeable> neighbours = new System.Collections.Generic.List<IPathFindeable>(8);
+			foreach (GridTile neighbour in GetNeighbours())
+			{
+				if (neighbour != null)
+					neighbours.Add(neighbour);
+			}
+			return neighbours;
+		}
+	}
+
+	public bool Walkeable { get { return type.ContainsType(TileType.Walkeable); } }
+	public int UniqueIndex { get { return uniqueIndex; } }
 }

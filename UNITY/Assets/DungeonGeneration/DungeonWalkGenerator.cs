@@ -71,7 +71,7 @@ namespace DungeonGeneration
 			{
 				int roomWidth = r.Next(dInfo.MinRoomWidth, dInfo.MaxRoomWidth + 1);
 				int roomHeight = r.Next(dInfo.MinRoomHeight, dInfo.MaxRoomHeight + 1);
-				tempRoom = new DungeonRoom(r.Next(0, workingData.Columns - (roomWidth + 1)), r.Next(0, workingData.Rows - (roomHeight + 1)), roomWidth, roomHeight);
+				tempRoom = new DungeonRoom(r.Next(1, workingData.Columns - (roomWidth + 2)), r.Next(1, workingData.Rows - (roomHeight + 2)), roomWidth, roomHeight);
 				--c;
 			}
 			while (tempRoom.OverlapsAny(workingData.Rooms) && c > 0);
@@ -176,7 +176,7 @@ namespace DungeonGeneration
 		{
 			DungeonPosition lastPosition = currentPath[currentPath.Count - 1];
 			// path too long or out of bounds
-			if (currentPath.Count <=0 || currentPath.Count >= maxCorridorLength || !workingData.ContainsPosition(lastPosition)) 
+			if (currentPath.Count <= 0 || currentPath.Count >= maxCorridorLength || !workingData.ContainsPosition(lastPosition)) 
 			{
 				return false;
 			}

@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using GridUtils;
 
 public class TempGameManager : MonoBehaviour
 {
@@ -51,7 +53,10 @@ public class TempGameManager : MonoBehaviour
 
 		yield return null;
 
+
 		gm.StartGame();
+
+
 	}
 
     private IEnumerator SpawnInspectionRoutine()

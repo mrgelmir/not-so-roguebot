@@ -23,10 +23,12 @@ public class MeleeAction : BaseGameAction
 
         if (targetTile == null || targetTile.Actor == null)
         {
+			//Debug.Log("no target found, requesting one");
             GetTarget();
         }
         else
         {
+			//Debug.Log("target found, attacking");
             Attack();
         }
     }

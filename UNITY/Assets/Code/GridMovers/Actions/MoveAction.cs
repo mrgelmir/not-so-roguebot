@@ -54,7 +54,7 @@ public class MoveAction : BaseGameAction
 	protected virtual IEnumerator MoveTileRoutine(Direction dir)
 	{
 		// Do the base move here
-		yield return StartCoroutine(actor.MoveToTileRoutine(actor.CurrentTile.GetNeigbour(dir)));
+		yield return StartCoroutine(actor.MoveToTileRoutine(actor.CurrentTile.GetNeighbour(dir)));
 		ActionComplete();
 	}
 

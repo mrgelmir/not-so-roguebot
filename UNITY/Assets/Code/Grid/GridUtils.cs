@@ -5,9 +5,13 @@
 	{
 		NONE = 0,
 		Up = 1 << 0,
+		UpRight = 1 << 0 | 1 << 1,
 		Right = 1 << 1,
+		DownRight = 1 << 2 | 1 << 1,
 		Down = 1 << 2,
+		DownLeft = 1 << 2 | 1 << 3,
 		Left = 1 << 3,
+		UpLeft = 1 << 0 | 1 << 3,
 	}
 
 	public static class DirectionHelper
@@ -44,7 +48,8 @@
 
 		public static Direction GetRandomAxisAlignedDirection(System.Random rand)
 		{
-			int randomNr = rand.Next(0, 4);
+			int randomNr = rand.Next(0, 8);
+			randomNr -= randomNr % 2; // make axis aligned
 			return (Direction)(1 << randomNr);
 		}
 
@@ -65,12 +70,12 @@
 
 		public static int GetHorizontalDirection(this Direction direction)
 		{
-			return ((direction & Direction.Right) == Direction.Right) ? 1 : (((direction & Direction.Left) == Direction.Left) ? -1 : 0);
+			return direction.ContainsDirection(Direction.Right) ? 1 : (direction.ContainsDirection(Direction.Left) ? -1 : 0);
 		}
 
 		public static int GetVerticalDirection(this Direction direction)
 		{
-			return ((direction & Direction.Up) == Direction.Up) ? 1 : (((direction & Direction.Down) == Direction.Down) ? -1 : 0);
+			return direction.ContainsDirection(Direction.Up) ? 1 : (direction.ContainsDirection(Direction.Down) ? -1 : 0);
 		}
 
 		/// <summary>
@@ -90,6 +95,7 @@
 			int directionInt = (int)direction;
 
 			// check if power of two: if so only a single bit is set
+			// TODO rotation of more than dual direction (ie. top, right and left)
 			bool singleBitSet = directionInt != 0 && (directionInt & (directionInt - 1)) == 0;
 
 			for (int i = 0; i < numClockwiseRotations; i++)

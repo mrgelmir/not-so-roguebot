@@ -17,21 +17,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &121312
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 476452}
-  m_Layer: 0
-  m_Name: Door
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &126248
 GameObject:
   m_ObjectHideFlags: 1
@@ -81,6 +66,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &186272
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 487870}
+  m_Layer: 0
+  m_Name: DoorVisual
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &419716
 Transform:
   m_ObjectHideFlags: 1
@@ -91,7 +91,7 @@ Transform:
   m_LocalPosition: {x: 0, y: .5, z: 0}
   m_LocalScale: {x: .100000001, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 476452}
+  m_Father: {fileID: 487870}
   m_RootOrder: 0
 --- !u!4 &459438
 Transform:
@@ -103,8 +103,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 487870}
   - {fileID: 463814}
-  - {fileID: 476452}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &463814
@@ -118,20 +118,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 459438}
-  m_RootOrder: 0
---- !u!4 &476452
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 121312}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 419716}
-  - {fileID: 483912}
-  m_Father: {fileID: 459438}
   m_RootOrder: 1
 --- !u!4 &483912
 Transform:
@@ -143,8 +129,22 @@ Transform:
   m_LocalPosition: {x: 0, y: .5, z: 0}
   m_LocalScale: {x: .100000009, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 476452}
+  m_Father: {fileID: 487870}
   m_RootOrder: 1
+--- !u!4 &487870
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 186272}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 419716}
+  - {fileID: 483912}
+  m_Father: {fileID: 459438}
+  m_RootOrder: 0
 --- !u!23 &2370990
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -224,7 +224,7 @@ MonoBehaviour:
   visual: {fileID: 0}
   actor: {fileID: 0}
   grid: {fileID: 0}
-  DoorVisual: {fileID: 476452}
+  DoorVisual: {fileID: 487870}
   VerticalOffset: 1
 --- !u!212 &21251644
 SpriteRenderer:

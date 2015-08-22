@@ -325,7 +325,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &366814240
 RectTransform:
   m_ObjectHideFlags: 0
@@ -340,10 +340,10 @@ RectTransform:
   - {fileID: 1761573080}
   m_Father: {fileID: 387968283}
   m_RootOrder: 2
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 80.2167358, y: -111.136017}
+  m_SizeDelta: {x: 160.433472, y: 67.4240112}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &366814241
 MonoBehaviour:
@@ -809,8 +809,8 @@ MonoBehaviour:
   overviewCamera: {fileID: 472123018}
   gm: {fileID: 1718580270}
   gc: {fileID: 464869373}
-  EnemyPrefab: {fileID: 11436672, guid: fc20ff5e2af967448a3ffa9632ef7a4b, type: 2}
-  RequiredEnemies: 20
+  EnemyPrefab: {fileID: 11436672, guid: 6d5f3c2324ec9e34b9ecc64fcbba7e19, type: 2}
+  RequiredEnemies: 10
   customGridData: {fileID: 0}
 --- !u!4 &837652785
 Transform:
@@ -979,7 +979,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1438947538
 RectTransform:
   m_ObjectHideFlags: 0
@@ -994,10 +994,10 @@ RectTransform:
   - {fileID: 1843771274}
   m_Father: {fileID: 387968283}
   m_RootOrder: 1
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 80.2167358, y: -77.4240112}
+  m_SizeDelta: {x: 160.433472, y: 44.9493408}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1438947539
 MonoBehaviour:
@@ -1332,7 +1332,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 444728, guid: f4de2eb8643633b439bbae7a1949e8d6, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 444728, guid: f4de2eb8643633b439bbae7a1949e8d6, type: 2}
       propertyPath: m_LocalRotation.x
@@ -1358,14 +1358,6 @@ Prefab:
       propertyPath: actionPanel
       value: 
       objectReference: {fileID: 1548537810}
-    - target: {fileID: 133742, guid: f4de2eb8643633b439bbae7a1949e8d6, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2064890, guid: f4de2eb8643633b439bbae7a1949e8d6, type: 2}
-      propertyPath: far clip plane
-      value: 50
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f4de2eb8643633b439bbae7a1949e8d6, type: 2}
   m_IsPrefabParent: 0

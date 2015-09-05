@@ -7,21 +7,26 @@ using System.Collections;
 /// </summary>
 public static class Log
 {
-	public static void Message(Object message, Object context = null)
+	public static void Write(object message, Object context = null)
+	{
+		Message(message, context);
+	}
+
+	public static void Message(object message, Object context = null)
 	{
 #if UNITY_EDITOR
 		Debug.Log(message, context);
 #endif
 	}
 
-	public static void Error(Object message, Object context = null)
+	public static void Error(object message, Object context = null)
 	{
 #if UNITY_EDITOR
 		Debug.LogError(message, context);
 #endif
 	}
 
-	public static void Warning(Object message, Object context = null)
+	public static void Warning(object message, Object context = null)
 	{
 #if UNITY_EDITOR
 		Debug.LogWarning(message, context);

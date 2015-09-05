@@ -50,7 +50,7 @@ public class PlayerMover : GridActor, ITargeter
 		}
 
 		//enable input 
-		Enableinput ();
+		EnableInput ();
 	}
 
     protected override void FinishTurn()
@@ -140,7 +140,7 @@ public class PlayerMover : GridActor, ITargeter
 		//Debug.Log("found target tile");
         if(onTargetFound != null)
         {
-            onTargetFound(tile);
+            onTargetFound(grid.IsVisible(currentTile, tile) ? tile : null);
         }
     }
 
@@ -192,7 +192,7 @@ public class PlayerMover : GridActor, ITargeter
 	
 	// INPUT
 
-	private void Enableinput ()
+	private void EnableInput ()
 	{
         actionPanel.gameObject.SetActive(true);
 		InputController.Instance.OnActorClicked += ActorClicked;

@@ -62,7 +62,7 @@ public class GridTile : MonoBehaviour, IPathFindeable
 		this.row = row;
 
 		// generate this index for pathfinding purposes
-		uniqueIndex = column * (grid.rows + 1) + row;
+		uniqueIndex = column * (grid.Rows + 1) + row;
 	}
 
 	public virtual void UpdateVisual()
@@ -186,6 +186,19 @@ public class GridTile : MonoBehaviour, IPathFindeable
 			}
 			return neighbours;
 		}
+	}
+
+	public override string ToString()
+	{
+		System.Text.StringBuilder sb = new System.Text.StringBuilder();
+		sb.Append("Tile col:");
+		sb.Append(Column);
+		sb.Append(" row:");
+		sb.Append(Row);
+
+		// add type?
+
+		return sb.ToString();
 	}
 
 	public bool Walkeable { get { return type.ContainsType(TileType.Walkeable); } }

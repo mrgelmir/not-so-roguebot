@@ -21,6 +21,7 @@ public class TempGameManager : MonoBehaviour
 	protected void Start()
 	{
 		RestartGame();
+
 	}
 
 	public void RestartGame()
@@ -97,7 +98,6 @@ public class TempGameManager : MonoBehaviour
         }
 
         gc.GenerateGrid(g.GetCurrentGrid());
-
     }
 
 	public void SetSlowGeneration(bool b)

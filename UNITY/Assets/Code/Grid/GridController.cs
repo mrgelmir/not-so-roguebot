@@ -14,8 +14,8 @@ public class GridController : MonoBehaviour
 	[SerializeField, HideInInspector] private GridData gridData;
 
 	private List<List<GridTile>> gridElements { get { return gridData.GridElements; } }
-	public int columns { get { return gridData.Columns; } }
-	public int rows { get { return gridData.Rows; } } 
+	public int Columns { get { return gridData.Columns; } }
+	public int Rows { get { return gridData.Rows; } } 
 	
 	[SerializeField] private GridTile startTile = null;
 	public GridTile StartTile 
@@ -88,8 +88,8 @@ public class GridController : MonoBehaviour
 			-- neighbourRow;
 
 		// clamp
-		neighbourCol = Mathf.Clamp(neighbourCol, 0, columns-1);
-		neighbourRow = Mathf.Clamp(neighbourRow, 0, rows-1);
+		neighbourCol = Mathf.Clamp(neighbourCol, 0, Columns-1);
+		neighbourRow = Mathf.Clamp(neighbourRow, 0, Rows-1);
 
 		return gridElements[neighbourCol][neighbourRow];
 	}
@@ -104,7 +104,7 @@ public class GridController : MonoBehaviour
 			{
 				int neighbourColumn = el.Column + column;
 				int neighbourRow = el.Row + row;
-				if(neighbourColumn > 0 && neighbourColumn < columns && neighbourRow > 0 && neighbourRow < rows && !( column == 0 && row == 0 ) )
+				if(neighbourColumn > 0 && neighbourColumn < Columns && neighbourRow > 0 && neighbourRow < Rows && !( column == 0 && row == 0 ) )
 				{
 					int index = (column + 1) * 3 + (row + 1);
 					neighbours[index] = gridElements[neighbourColumn][neighbourRow];
@@ -165,6 +165,168 @@ public class GridController : MonoBehaviour
 		startTile = null;
 	}
 
+	public bool IsVisible(GridTile start, GridTile end)
+	{
+		Log.Write("getting visibility between " + start + " and " + end);
+
+		// get line of all tiles between start and end
+		var tiles = GetBresenhamLine2(start, end);
+		//var tiles = GetBresenhamLine(start, end);
+
+		GetSanderLine(start, end);
+
+		for (int i = 0; i < tiles.Count; i++)
+		{
+			if (tiles[i].Type.ContainsType(TileType.SightBlocker)) // check for other visibility blockers
+			{
+				Log.Write("This tile blocks the visibility: " + tiles[i].ToString(), tiles[i]);
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public IList<GridTile> GetBresenhamLine(GridTile start, GridTile end)
+	{
+		// TOOD maybe use the supercover line algorithm for corner cases? 
+		// http://lifc.univ-fcomte.fr/home/~ededu/projects/bresenham/
+		// or use two / three lines to check
+
+
+		int col0 = start.Column;
+		int row0 = start.Row;
+		int col1 = end.Column;
+		int row1 = end.Row;
+
+		int expectedCount = 1 + Mathf.Max(Mathf.Abs(col0 - col1), Mathf.Abs(row0 - row1));
+		Log.Write("expected count: " + expectedCount);
+		List<GridTile> finalLine = new List<GridTile>(expectedCount);
+
+		bool isSteep = Mathf.Abs(row0 - row1) > Mathf.Abs(col1 - col0);
+		if (isSteep)
+		{
+			Swap(ref col0, ref row0);
+			Swap(ref col1, ref row1);
+		}
+		if (col0 > col1)
+		{
+			Swap(ref col0, ref col1);
+			Swap(ref row0, ref row1);
+		}
+
+		int deltaX = col1 - col0;
+		int deltaY = Mathf.Abs(row1 - row0);
+		int error = 0;
+		int y = row0;
+		int ystep = (row0 < row1) ? 1 : -1;
+
+		for (int x = col0; x <= col1; x++)
+		{
+			if (isSteep)
+			{
+				finalLine.Add(gridElements[y][x]);
+			}
+			else
+			{
+				finalLine.Add(gridElements[x][y]);
+			}
+			error += deltaY;
+			if (2 * error >= deltaX)
+			{
+				y += ystep;
+				error -= deltaX;
+			}
+		}
+		Log.Write("final count = " + finalLine.Count);
+		return finalLine;
+	}
+
+	public IList<GridTile> GetBresenhamLine2(GridTile start, GridTile end)
+	{
+
+		int x = start.Column;
+		int y = start.Row;
+		int x2 = end.Column;
+		int y2 = end.Row;
+
+		List<GridTile> finalLine = new List<GridTile>();
+
+		int w = x2 - x;
+		int h = y2 - y;
+		int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
+		if (w < 0) dx1 = -1; else if (w > 0) dx1 = 1;
+		if (h < 0) dy1 = -1; else if (h > 0) dy1 = 1;
+		if (w < 0) dx2 = -1; else if (w > 0) dx2 = 1;
+		int longest = Mathf.Abs(w);
+		int shortest = Mathf.Abs(h);
+		if (!(longest > shortest))
+		{
+			longest = Mathf.Abs(h);
+			shortest = Mathf.Abs(w);
+			if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
+			dx2 = 0;
+		}
+		int numerator = longest >> 1;
+		for (int i = 0; i <= longest; i++)
+		{
+			//putpixel(x, y, color);
+
+			finalLine.Add(gridElements[x][y]);
+
+			numerator += shortest;
+			if (!(numerator < longest))
+			{
+				numerator -= longest;
+				x += dx1;
+				y += dy1;
+			}
+			else
+			{
+				x += dx2;
+				y += dy2;
+			}
+		}
+
+		return finalLine;
+	}
+
+	public IList<GridTile> GetSanderLine(GridTile start, GridTile end)
+	{
+		//throw new System.NotImplementedException("TODO fix");
+		// 1. check voor horizontale / verticale lijn -> makkelijke edge case
+
+		if(start.Column == end.Column || start.Row == end.Row)
+		{
+			Log.Write("straight line");
+			return null;
+		}
+
+		// indien geen rechte lijn -> y = A*x + B functie opstellen ( en converteren naar x ook? x = (y-B)/a )
+		float a = (end.Row - start.Row) / (1.0f * (end.Column - start.Column));
+		float b = start.Row - a * start.Column;
+
+		Log.Write(a + "*x+" + b);
+
+		// TODO: find good place to check for overlapping cells
+
+		Log.Write("-- Colums --");
+		for(float x = Mathf.Min(start.Column, end.Column); x < Mathf.Max(start.Column, end.Column); x += 0.5f)
+		{
+			Log.Write("x:" + x + " y:" + (a * x + b).ToString());
+		}
+
+		Log.Write("-- Rows --");
+		for (float y = Mathf.Min(start.Row, end.Row); y < Mathf.Max(start.Row, end.Row); y += 0.5f)
+		{
+			Log.Write("x:" + ((y-b)/a).ToString() + " y:" + y);
+		}
+
+		// get the biggest gap to bridge, or default to one of the two
+
+
+		return null;
+	}
+
 	public void GenerateGrid(DungeonData data)
 	{
 		ClearGrid();
@@ -194,7 +356,7 @@ public class GridController : MonoBehaviour
         // TODO get room type/data for special rooms and different tilesets
 
 
-        if (room.Row >= 0 && room.Column >= 0 && (room.Column + room.Width) < columns && (room.Row + room.Height) < rows)
+        if (room.Row >= 0 && room.Column >= 0 && (room.Column + room.Width) < Columns && (room.Row + room.Height) < Rows)
         {
             // add the room here
 
@@ -262,9 +424,9 @@ public class GridController : MonoBehaviour
 
     private void FillEmptyTiles()
     {
-        for (int c = 0; c < columns; c++)
+        for (int c = 0; c < Columns; c++)
         {
-            for (int r = 0; r < rows; r++)
+            for (int r = 0; r < Rows; r++)
             {
                 if (gridElements[c][r] == null)
 				{
@@ -280,7 +442,7 @@ public class GridController : MonoBehaviour
 		Direction dir = Direction.Up;
 		for (int numRotations = 0; numRotations < 7; numRotations++)
 		{
-			GridTile neighbourTile = gridElements[Mathf.Clamp(c + dir.GetHorizontalDirection(), 0, columns-1)][Mathf.Clamp(r + dir.GetVerticalDirection(), 0, rows-1)];
+			GridTile neighbourTile = gridElements[Mathf.Clamp(c + dir.GetHorizontalDirection(), 0, Columns-1)][Mathf.Clamp(r + dir.GetVerticalDirection(), 0, Rows-1)];
 			
 			if(neighbourTile != null && neighbourTile.Type != TileType.NONE && neighbourTile.Type != TileType.SightBlocker)
 			{
@@ -319,7 +481,14 @@ public class GridController : MonoBehaviour
     
 	private bool IsBorderTile(int col, int row)
 	{
-		return col == 0 || col == columns-1 || row == 0 || row == rows-1;
+		return col == 0 || col == Columns-1 || row == 0 || row == Rows-1;
+	}
+
+	private void Swap<T>(ref T a, ref T b)
+	{
+		T c = a;
+		a = b;
+		b = c;
 	}
 
 }

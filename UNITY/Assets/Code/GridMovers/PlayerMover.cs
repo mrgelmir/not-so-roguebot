@@ -113,8 +113,8 @@ public class PlayerMover : GridActor, ITargeter
 
 		this.onTargetFound = onTargetFound;
 
-		InputController.Instance.OnActorClicked += OnTargetingClick;
-		InputController.Instance.OnTileClicked += OnTargetingClick;
+		// delayed subscribe to prevent buttons from triggering these events when subscribing
+		StartCoroutine(Subscribe());
 	}
 
     public void RequestTargetTile(System.Action<GridTile> onTargetFound)
@@ -122,9 +122,16 @@ public class PlayerMover : GridActor, ITargeter
 		//Debug.Log("PlayerMover - Requesting target");
         this.onTargetFound = onTargetFound;
 
-        InputController.Instance.OnActorClicked += OnTargetingClick;
-        InputController.Instance.OnTileClicked += OnTargetingClick;
-    }
+		StartCoroutine(Subscribe());
+	}
+
+	private IEnumerator Subscribe()
+	{
+		yield return null;
+
+		InputController.Instance.OnActorClicked += OnTargetingClick;
+		InputController.Instance.OnTileClicked += OnTargetingClick;
+	}
 
     private void OnTargetingClick(GridActor actor)
     {

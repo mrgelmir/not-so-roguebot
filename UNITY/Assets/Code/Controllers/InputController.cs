@@ -60,10 +60,26 @@ public class InputController : MonoBehaviour
 
 	protected void Update()
 	{
-		if(Input.GetMouseButtonUp(0))
+
+#if UNITY_EDITOR || UNITY_STANDALONE // mouse controls
+		if (Input.GetMouseButtonDown(0))
 		{
 			TouchPoint(cam.ScreenToViewportPoint( Input.mousePosition ));
 		}
+
+
+#else
+		//only do one touch atm (heheheh...)
+		if(Input.touchCount > 0)
+		{
+			Touch t = Input.touches[0];
+
+			if(t.phase == TouchPhase.Ended)
+			{
+				TouchPoint(cam.ScreenToViewportPoint(t.position));
+			}
+		}
+#endif
 	}
 
 	public void TouchPoint(Vector3 viewPortPos)

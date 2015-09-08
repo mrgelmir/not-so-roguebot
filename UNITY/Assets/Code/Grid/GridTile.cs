@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using GridUtils;
 using System.Collections.Generic;
+using DungeonGeneration;
 
 [SelectionBase]
 public class GridTile : MonoBehaviour, IPathFindeable
@@ -30,7 +31,20 @@ public class GridTile : MonoBehaviour, IPathFindeable
 
 	private bool isTaken = false;
 	public bool IsTaken{ get { return isTaken; } }
-	
+
+	public DungeonPosition Position
+	{
+		get
+		{
+			return new DungeonPosition(column, row);
+		}
+		set
+		{
+			column = value.Column;
+			row = value.Row;
+		}
+	}
+
 	private int uniqueIndex = -1;
 
 	public bool IsNeighbour(GridTile el)
@@ -203,4 +217,5 @@ public class GridTile : MonoBehaviour, IPathFindeable
 
 	public bool Walkeable { get { return type.ContainsType(TileType.Walkeable); } }
 	public int UniqueIndex { get { return uniqueIndex; } }
+
 }

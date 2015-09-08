@@ -169,162 +169,86 @@ public class GridController : MonoBehaviour
 	{
 		Log.Write("getting visibility between " + start + " and " + end);
 
-		// get line of all tiles between start and end
-		var tiles = GetBresenhamLine2(start, end);
-		//var tiles = GetBresenhamLine(start, end);
+		// temp
+		GetLine(start, end);
 
-		GetSanderLine(start, end);
+		// visible until proven invisible
+		bool inVisible = false;
 
-		for (int i = 0; i < tiles.Count; i++)
+		// iterate over tiles until a blocker is found
+		IterateGridLine(start.Position, end.Position, (int column, int row) =>
 		{
-			if (tiles[i].Type.ContainsType(TileType.SightBlocker)) // check for other visibility blockers
-			{
-				Log.Write("This tile blocks the visibility: " + tiles[i].ToString(), tiles[i]);
-				return false;
-			}
-		}
-		return true;
+			// add other types/cases here
+			return inVisible = gridElements[column][row].Type.ContainsType(TileType.SightBlocker); 
+		});
+
+		return !inVisible;
 	}
 
-	public IList<GridTile> GetBresenhamLine(GridTile start, GridTile end)
+	public IList<GridTile> GetLine(GridTile start, GridTile end)
 	{
-		// TOOD maybe use the supercover line algorithm for corner cases? 
-		// http://lifc.univ-fcomte.fr/home/~ededu/projects/bresenham/
-		// or use two / three lines to check
 
+		// get total line lenght (duplicated from IterateGridLine =/)
+		int xDist = Mathf.Abs(end.Column - start.Column);
+		int yDist = Mathf.Abs(end.Row - start.Row);
+		int tileCount = 1 + xDist + yDist;
 
-		int col0 = start.Column;
-		int row0 = start.Row;
-		int col1 = end.Column;
-		int row1 = end.Row;
+		// initialize list with correct amount of elements
+		List<GridTile> lineTiles = new List<GridTile>(tileCount);
 
-		int expectedCount = 1 + Mathf.Max(Mathf.Abs(col0 - col1), Mathf.Abs(row0 - row1));
-		Log.Write("expected count: " + expectedCount);
-		List<GridTile> finalLine = new List<GridTile>(expectedCount);
-
-		bool isSteep = Mathf.Abs(row0 - row1) > Mathf.Abs(col1 - col0);
-		if (isSteep)
+		IterateGridLine(start.Position, end.Position, (int column, int row) =>
 		{
-			Swap(ref col0, ref row0);
-			Swap(ref col1, ref row1);
-		}
-		if (col0 > col1)
-		{
-			Swap(ref col0, ref col1);
-			Swap(ref row0, ref row1);
-		}
+			lineTiles.Add(gridElements[column][row]);
+			return false;
+		});
 
-		int deltaX = col1 - col0;
-		int deltaY = Mathf.Abs(row1 - row0);
-		int error = 0;
-		int y = row0;
-		int ystep = (row0 < row1) ? 1 : -1;
+		return lineTiles;
+	}
 
-		for (int x = col0; x <= col1; x++)
+	private delegate bool VisitTile(int column, int row);
+
+	private void IterateGridLine(DungeonPosition from, DungeonPosition to, VisitTile onVisit)
+	{
+		// TODO simpler horizontal/vertical implementation here?
+		
+		// get the total distance
+		int xDist = Mathf.Abs(to.Column - from.Column);
+		int yDist = Mathf.Abs(to.Row - from.Row);
+
+		// get total line lenght
+		int tileCount = 1 + xDist + yDist;
+
+		// start position to iterate from
+		int x = from.Column;
+		int y = from.Row;
+
+		// the column and row direction 
+		int xStep = (to.Column > from.Column) ? 1 : -1;
+		int yStep = (to.Row > from.Row) ? 1 : -1;
+
+		int error = xDist - yDist;
+
+		// adjust to allow pure integer math
+		xDist *= 2;
+		yDist *= 2;
+
+		for(; tileCount > 0; --tileCount)
 		{
-			if (isSteep)
+			// if onVisit returns true, we no longer need to continue
+			if (onVisit(x, y))
+				break;
+
+			if(error > 0)
 			{
-				finalLine.Add(gridElements[y][x]);
+				x += xStep;
+				error -= yDist;
 			}
 			else
 			{
-				finalLine.Add(gridElements[x][y]);
-			}
-			error += deltaY;
-			if (2 * error >= deltaX)
-			{
-				y += ystep;
-				error -= deltaX;
+				y += yStep;
+				error += xDist;
 			}
 		}
-		Log.Write("final count = " + finalLine.Count);
-		return finalLine;
-	}
-
-	public IList<GridTile> GetBresenhamLine2(GridTile start, GridTile end)
-	{
-
-		int x = start.Column;
-		int y = start.Row;
-		int x2 = end.Column;
-		int y2 = end.Row;
-
-		List<GridTile> finalLine = new List<GridTile>();
-
-		int w = x2 - x;
-		int h = y2 - y;
-		int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
-		if (w < 0) dx1 = -1; else if (w > 0) dx1 = 1;
-		if (h < 0) dy1 = -1; else if (h > 0) dy1 = 1;
-		if (w < 0) dx2 = -1; else if (w > 0) dx2 = 1;
-		int longest = Mathf.Abs(w);
-		int shortest = Mathf.Abs(h);
-		if (!(longest > shortest))
-		{
-			longest = Mathf.Abs(h);
-			shortest = Mathf.Abs(w);
-			if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
-			dx2 = 0;
-		}
-		int numerator = longest >> 1;
-		for (int i = 0; i <= longest; i++)
-		{
-			//putpixel(x, y, color);
-
-			finalLine.Add(gridElements[x][y]);
-
-			numerator += shortest;
-			if (!(numerator < longest))
-			{
-				numerator -= longest;
-				x += dx1;
-				y += dy1;
-			}
-			else
-			{
-				x += dx2;
-				y += dy2;
-			}
-		}
-
-		return finalLine;
-	}
-
-	public IList<GridTile> GetSanderLine(GridTile start, GridTile end)
-	{
-		//throw new System.NotImplementedException("TODO fix");
-		// 1. check voor horizontale / verticale lijn -> makkelijke edge case
-
-		if(start.Column == end.Column || start.Row == end.Row)
-		{
-			Log.Write("straight line");
-			return null;
-		}
-
-		// indien geen rechte lijn -> y = A*x + B functie opstellen ( en converteren naar x ook? x = (y-B)/a )
-		float a = (end.Row - start.Row) / (1.0f * (end.Column - start.Column));
-		float b = start.Row - a * start.Column;
-
-		Log.Write(a + "*x+" + b);
-
-		// TODO: find good place to check for overlapping cells
-
-		Log.Write("-- Colums --");
-		for(float x = Mathf.Min(start.Column, end.Column); x < Mathf.Max(start.Column, end.Column); x += 0.5f)
-		{
-			Log.Write("x:" + x + " y:" + (a * x + b).ToString());
-		}
-
-		Log.Write("-- Rows --");
-		for (float y = Mathf.Min(start.Row, end.Row); y < Mathf.Max(start.Row, end.Row); y += 0.5f)
-		{
-			Log.Write("x:" + ((y-b)/a).ToString() + " y:" + y);
-		}
-
-		// get the biggest gap to bridge, or default to one of the two
-
-
-		return null;
 	}
 
 	public void GenerateGrid(DungeonData data)

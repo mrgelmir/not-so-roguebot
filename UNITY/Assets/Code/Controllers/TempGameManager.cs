@@ -21,7 +21,6 @@ public class TempGameManager : MonoBehaviour
 	protected void Start()
 	{
 		RestartGame();
-
 	}
 
 	public void RestartGame()

@@ -355,7 +355,6 @@ public class GridController : MonoBehaviour
                 if (gridElements[c][r] == null)
 				{
                     gridElements[c][r] = CreateGridElement(GetFillTileType(c,r), c, r);
-
 				}
             }
         }

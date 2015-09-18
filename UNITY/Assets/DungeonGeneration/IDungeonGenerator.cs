@@ -8,6 +8,7 @@
 		bool NextGenerationStep();
 	}
 
+	[System.Serializable]
 	public class DungeonGenerationInfo
 	{
 		public int Width;

@@ -8,7 +8,7 @@ public class GridMoveManager : MonoBehaviour
 
 	public int CurrentRound = 0;
 	public bool BreakOnRoundEnd = false;
-
+	
 //	protected void Start()
 //	{
 //		StartGame();
@@ -82,7 +82,6 @@ public class GridMoveManager : MonoBehaviour
 		}
 
 		EndRound();
-
 	}
 
 	private void EndRound()

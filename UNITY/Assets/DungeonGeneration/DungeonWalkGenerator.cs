@@ -21,7 +21,7 @@ namespace DungeonGeneration
 			dInfo = info;
 			r = new Random(); // maybe use a seed here?
 
-			this.maxRooms = info.MaxRooms;
+			maxRooms = info.MaxRooms;
 			workingData = new DungeonData(info.Width, info.Height);
 
 			// set start step
@@ -35,13 +35,17 @@ namespace DungeonGeneration
 				// empty body
 			}
 
+			//// temp add a target in a random room
+			DungeonRoom randomRoom = workingData.Rooms[r.Next(workingData.Rooms.Count)];
+			randomRoom.Tiles[r.Next(randomRoom.Width)][r.Next(randomRoom.Height)] = DungeonTile.TargetTile;
+
 			return GetCurrentGrid();
 		}
 
 		public DungeonData GetCurrentGrid()
 		{
 			// Return a copy of the grid
-			return new DungeonData(workingData);
+            return new DungeonData(workingData);
 		}
 
 		public bool NextGenerationStep()
@@ -92,7 +96,7 @@ namespace DungeonGeneration
 			}
 		}
 
-		private const int maxCorridorLength = 20;
+		private const int maxCorridorLength = 200;
 
 		private int consecutiveFailedCorridors = 0;
 
@@ -108,17 +112,17 @@ namespace DungeonGeneration
 			DungeonRoom startRoom = workingData.Rooms[r.Next(0, workingData.Rooms.Count)];
 
 			Direction currentDirection = DirectionHelper.GetRandomAxisAlignedDirection(r);
-			DungeonPosition startPos = startRoom.BorderPosition(currentDirection);
-			DungeonPosition currentPos = startPos;
-
-			while(currentDirection == Direction.NONE)
+			while (currentDirection == Direction.NONE)
 			{
 				currentDirection = DirectionHelper.GetRandomAxisAlignedDirection(r);
 			}
 
-			// go on a walk with a changing pseudorandom direction (biased towards current direction and max 90 degree turns) until a room or the edge has been reached
+			DungeonPosition startPos = startRoom.BorderPosition(currentDirection);
+			DungeonPosition currentPos = startPos;
 
 			
+
+			// go on a walk with a changing pseudorandom direction (biased towards current direction and max 90 degree turns) until a room or the edge has been reached
 			List<DungeonPosition> pathTiles = new List<DungeonPosition>();
 			pathTiles.Add(currentPos);
 			do
@@ -143,7 +147,7 @@ namespace DungeonGeneration
 
 			// set next step here
 			// TODO: determine when to end walks (when all rooms are connected?)
-			if (workingData.Corridors.Count > maxRooms * 2 || consecutiveFailedCorridors > 10)
+			if (workingData.Corridors.Count > maxRooms * 2 || consecutiveFailedCorridors > 100)
 			{
 				NextStep = null;
 			}
@@ -174,6 +178,7 @@ namespace DungeonGeneration
 
 		private bool EvaluateCorridor(List<DungeonPosition> currentPath, DungeonRoom startRoom)
 		{
+
 			DungeonPosition lastPosition = currentPath[currentPath.Count - 1];
 			// path too long or out of bounds
 			if (currentPath.Count <= 0 || currentPath.Count >= maxCorridorLength || !workingData.ContainsPosition(lastPosition)) 
@@ -181,14 +186,14 @@ namespace DungeonGeneration
 				return false;
 			}
 
-			if(currentPath.Count <= 2)
+			if (currentPath.Count <= 2)
 			{
 				startRoom.AddDoor(currentPath[0]);
 			}
 
 			// collision with room
 			DungeonRoom room = lastPosition.GetOverlappingRoom(workingData.Rooms);
-			if(room != null)
+			if(room != null && room != startRoom)
 			{
 
 				if (room.IsOuterCorner(lastPosition))

@@ -251,7 +251,7 @@ public class GridController : MonoBehaviour
 		}
 	}
 
-	public void GenerateGrid(DungeonData data)
+	public void DrawGrid(DungeonData data)
 	{
 		ClearGrid();
 
@@ -341,7 +341,7 @@ public class GridController : MonoBehaviour
 
 		foreach (DungeonPosition pos in corridor.TilePositions)
 		{
-			if (gridElements[pos.Column][pos.Row] == null)
+			if (pos.Column < gridElements.Count && pos.Row < gridElements[0].Count && gridElements[pos.Column][pos.Row] == null)
 				gridElements[pos.Column][pos.Row] = CreateGridElement(TileType.Walkeable, pos.Column, pos.Row);
 		}
     }
@@ -351,7 +351,7 @@ public class GridController : MonoBehaviour
         for (int c = 0; c < Columns; c++)
         {
             for (int r = 0; r < Rows; r++)
-            {
+			{
                 if (gridElements[c][r] == null)
 				{
                     gridElements[c][r] = CreateGridElement(GetFillTileType(c,r), c, r);
@@ -363,11 +363,11 @@ public class GridController : MonoBehaviour
 	private TileType GetFillTileType(int c, int r)
 	{
 		Direction dir = Direction.Up;
-		for (int numRotations = 0; numRotations < 7; numRotations++)
+		for (int numRotations = 0; numRotations < 8; numRotations++)
 		{
-			GridTile neighbourTile = gridElements[Mathf.Clamp(c + dir.GetHorizontalDirection(), 0, Columns-1)][Mathf.Clamp(r + dir.GetVerticalDirection(), 0, Rows-1)];
-			
-			if(neighbourTile != null && neighbourTile.Type != TileType.NONE && neighbourTile.Type != TileType.SightBlocker)
+			GridTile neighbourTile = gridElements[Mathf.Clamp(c + dir.GetHorizontalDirection(), 0, Columns - 1)][Mathf.Clamp(r + dir.GetVerticalDirection(), 0, Rows - 1)];
+
+			if (neighbourTile != null && neighbourTile.Type != TileType.NONE && neighbourTile.Type != TileType.SightBlocker)
 			{
 				return TileType.SightBlocker;
 			}
@@ -396,8 +396,11 @@ public class GridController : MonoBehaviour
                 break;
             case DungeonTileType.Wall:
                 tileType = TileType.SightBlocker;
-                break;
-        }
+				break;
+			case DungeonTileType.Target:
+				tileType = TileType.Target;
+				break;
+		}
 
         return tileType;
     }

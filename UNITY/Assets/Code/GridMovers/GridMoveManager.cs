@@ -8,6 +8,8 @@ public class GridMoveManager : MonoBehaviour
 
 	public int CurrentRound = 0;
 	public bool BreakOnRoundEnd = false;
+
+	public System.Action OnEndRound;
 	
 //	protected void Start()
 //	{
@@ -98,6 +100,11 @@ public class GridMoveManager : MonoBehaviour
 			}
 			return false;
 		});
+
+		if(OnEndRound != null)
+		{
+			OnEndRound();
+		}
 
 		// start next round
 		StartCoroutine(StartRoundRoutine());

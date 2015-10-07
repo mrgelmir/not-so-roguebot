@@ -80,6 +80,7 @@ namespace DungeonGeneration
 		public static readonly DungeonTile FlatTile = new DungeonTile(DungeonTileType.Flat);
         public static readonly DungeonTile WallTile = new DungeonTile(DungeonTileType.Wall);
         public static readonly DungeonTile DoorTile = new DungeonTile(DungeonTileType.Door);
+        public static readonly DungeonTile TargetTile = new DungeonTile(DungeonTileType.Target);
 	}
 
 	[Serializable]
@@ -398,6 +399,7 @@ namespace DungeonGeneration
 		Flat = 1,
 		Wall = 2,
 		Door = 3,
+		Target = 4,
 	}
 
 }

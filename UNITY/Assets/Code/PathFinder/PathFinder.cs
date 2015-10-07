@@ -146,7 +146,7 @@ public class PathFinder
 
 		public bool Equals(Node other)
 		{
-			return this.PathFindeable.Equals(other.PathFindeable);
+			return PathFindeable.Equals(other.PathFindeable);
 		}
 
 		public int CompareTo(Node other)

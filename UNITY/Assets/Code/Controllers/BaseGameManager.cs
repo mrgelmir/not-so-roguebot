@@ -3,14 +3,17 @@ using System.Collections;
 
 public class BaseGameManager : MonoBehaviour
 {
+	[Header("Basic References")]
 	[SerializeField]
-	private GridMoveManager gm;
+	protected GridMoveManager gridMoveManager;
 
 	[SerializeField]
-	private GridController gc;
+	protected GridController gridController;
 
-	[SerializeField]
-	private DungeonGeneration.DungeonGenerationInfo dungeonInfo;
+	private void Start()
+	{
+		InitializeGame();
+	}
 
 	/// <summary>
 	/// Do the setup of the game here
@@ -18,29 +21,21 @@ public class BaseGameManager : MonoBehaviour
 	/// - create targets/goals
 	/// - spawn characters/items/enemies
 	/// - show intro text/cinematic
+	/// - This method should call thhe StartGame() function
 	/// </summary>
-	public void InitializeGame()
+	public virtual void InitializeGame()
 	{
-		// setup grid
-
-		DungeonGeneration.IDungeonGenerator generator = new DungeonGeneration.DungeonWalkGenerator();
-		generator.Setup(dungeonInfo);
-
-		gc.GenerateGrid(generator.GenerateDungeon());
-		
-		// spawn player
-
-
+		gridMoveManager.OnEndRound += EndOfTurn;
 	}
 
 	/// <summary>
 	/// Use this to actually start the game
-	/// - give the player control
+	/// - give the player control (indirect through the gm)
 	/// - start level ticking
 	/// </summary>
-	public void StartGame()
+	public virtual void StartGame()
 	{
-		
+		gridMoveManager.StartGame();
 	}
 
 	/// <summary>
@@ -48,9 +43,9 @@ public class BaseGameManager : MonoBehaviour
 	/// - save game
 	/// - go back to main menu
 	/// </summary>
-	public void StopGame()
+	public virtual void StopGame()
 	{
-
+		// TODO see which functionality should overlap with FinishGame?
 	}
 
 	/// <summary>
@@ -58,28 +53,18 @@ public class BaseGameManager : MonoBehaviour
 	/// - step-based levels?
 	/// - check for victory conditions
 	/// </summary>
-	public void EndOfTurn()
+	public virtual void EndOfTurn()
 	{
-
+		
 	}
 
 	/// <summary>
 	/// End of the game has been reached
 	/// - Cleanup logic
-	/// - Inform player of victory
+	/// - Inform player of victory/defeat
 	/// </summary>
-	public void FinishGame()
+	public virtual void FinishGame()
 	{
-
-	}
-
-	/// <summary>
-	/// Level has failed
-	/// - player died
-	/// - goal was not met
-	/// </summary>
-	public void FailGame()
-	{
-
+		gridMoveManager.OnEndRound -= EndOfTurn;
 	}
 }

@@ -63,7 +63,7 @@ public class TempGameManager : MonoBehaviour
     {
 		if(customGridData != null)
 		{
-			gc.GenerateGrid(customGridData.Data);
+			gc.DrawGrid(customGridData.Data);
 			yield break;
 		}
 
@@ -90,13 +90,13 @@ public class TempGameManager : MonoBehaviour
         {
             if (slowGeneration)
             {
-                gc.GenerateGrid(g.GetCurrentGrid());
+                gc.DrawGrid(g.GetCurrentGrid());
 				yield return new WaitForSeconds(.1f);
 				//yield return null;
             }
         }
 
-        gc.GenerateGrid(g.GetCurrentGrid());
+        gc.DrawGrid(g.GetCurrentGrid());
     }
 
 	public void SetSlowGeneration(bool b)

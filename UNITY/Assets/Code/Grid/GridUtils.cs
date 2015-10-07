@@ -4,14 +4,14 @@
 	public enum Direction
 	{
 		NONE = 0,
-		Up = 1 << 0,
-		UpRight = 1 << 0 | 1 << 1,
-		Right = 1 << 1,
-		DownRight = 1 << 2 | 1 << 1,
-		Down = 1 << 2,
-		DownLeft = 1 << 2 | 1 << 3,
-		Left = 1 << 3,
-		UpLeft = 1 << 0 | 1 << 3,
+		Up = 1,
+		UpRight = 3,
+		Right = 2,
+		DownRight = 6,
+		Down = 4,
+		DownLeft = 12,
+		Left = 8,
+		UpLeft = 9,
 	}
 
 	public static class DirectionHelper
@@ -22,25 +22,25 @@
 			Direction dir = Direction.NONE;
 
 			// vertical directions
-			int randomNr = rand.Next(0, 3);
+			int randomNr = rand.Next(3);
 			if (randomNr == 0)
 			{
-				dir.AddDirection(Direction.Right);
+				dir = dir.AddDirection(Direction.Right);
 			}
 			else if (randomNr == 1)
 			{
-				dir.AddDirection(Direction.Left);
+				dir = dir.AddDirection(Direction.Left);
 			}
 
 			// horizontal directions
-			randomNr = rand.Next(0, 3);
+			randomNr = rand.Next(3);
 			if (randomNr == 0)
 			{
-				dir.AddDirection(Direction.Up);
+				dir = dir.AddDirection(Direction.Up);
 			}
 			else if (randomNr == 1)
 			{
-				dir.AddDirection(Direction.Down);
+				dir = dir.AddDirection(Direction.Down);
 			}
 
 			return dir;
@@ -48,19 +48,44 @@
 
 		public static Direction GetRandomAxisAlignedDirection(System.Random rand)
 		{
-			int randomNr = rand.Next(0, 8);
-			randomNr -= randomNr % 2; // make axis aligned
-			return (Direction)(1 << randomNr);
+			Direction dir = Direction.NONE;
+
+			int randomNr = rand.Next(3);
+			if(rand.Next(2) == 1)
+			{
+				// vertical directions
+				if (randomNr == 0)
+				{
+					dir = dir.AddDirection(Direction.Right);
+				}
+				else if (randomNr == 1)
+				{
+					dir = dir.AddDirection(Direction.Left);
+				}
+			}
+			else
+			{
+				if (randomNr == 0)
+				{
+					dir = dir.AddDirection(Direction.Up);
+				}
+				else if (randomNr == 1)
+				{
+					dir = dir.AddDirection(Direction.Down);
+				}
+			}			
+
+			return dir;
 		}
 
-		public static void AddDirection(this Direction currentDirection, Direction addedDirection)
+		public static Direction AddDirection(this Direction currentDirection, Direction addedDirection)
 		{
-			currentDirection |= addedDirection;
+			return currentDirection | addedDirection;
 		}
 
-		public static void RemoveDirection(this Direction currentDirection, Direction removeDirection)
+		public static Direction RemoveDirection(this Direction currentDirection, Direction removeDirection)
 		{
-			currentDirection &= removeDirection;
+			return currentDirection & removeDirection;
 		}
 
 		public static bool ContainsDirection(this Direction direction, Direction other)
@@ -93,7 +118,7 @@
 
 			int newDirection = 0;
 			int directionInt = (int)direction;
-
+			
 			// check if power of two: if so only a single bit is set
 			// TODO rotation of more than dual direction (ie. top, right and left)
 			bool singleBitSet = directionInt != 0 && (directionInt & (directionInt - 1)) == 0;

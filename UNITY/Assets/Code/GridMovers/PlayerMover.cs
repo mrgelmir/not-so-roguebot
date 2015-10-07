@@ -15,6 +15,14 @@ public class PlayerMover : GridActor, ITargeter
 		SetTile(grid.StartTile);
 
         meleeAction.Init(this);
+
+		if(actionPanel == null)
+		{
+			// this is ugly -> find a way to spawn the actionpanel instead of finding it
+			actionPanel = FindObjectOfType<ActionPanel>();
+		}
+
+		
 	}
 
     public override void StartTurn(System.Action<GridActor> done)

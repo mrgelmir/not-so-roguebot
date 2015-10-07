@@ -11,7 +11,11 @@ public class EndTile : GridTile
 		if(player != null)
 		{
 			//victory: later on send a message to the GameManager
-			Application.LoadLevel(0);
+			//Application.LoadLevel(0);
+
+			BaseGameManager mgr = FindObjectOfType<BaseGameManager>();
+
+			mgr.FinishGame();
 		}
 	}
 	

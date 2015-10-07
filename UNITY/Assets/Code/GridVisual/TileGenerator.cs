@@ -25,7 +25,7 @@ public class TileGenerator : MonoBehaviour
 			tilePrefab = TileForOrientation(orientation);
 		}
 
-		GridTile spawnedTile = Instantiate<GridTile>(tilePrefab);
+		GridTile spawnedTile = Instantiate(tilePrefab);
 
 		return spawnedTile;
 	}
@@ -94,7 +94,7 @@ public enum TileType
 	SightBlocker = 1 << 1,
 	Interactable = 1 << 2,
 	Door = 1 << 3 | 1 << 0,
-	
+	Target = 1 << 4 | 1 << 0,	
 }
 
 public static class TileTypeHelper

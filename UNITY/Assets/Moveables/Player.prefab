@@ -255,7 +255,7 @@ MonoBehaviour:
   HitPoints: 0
   moverData:
     initiative: 1
-    hitpoints: 10
+    hitpoints: 2
     strength: 3
     actionPoints: 1
   InitiativeCountDown: 0
@@ -394,6 +394,14 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: moverData.actionPoints
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: moverData.hitpoints
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: data.showAction
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -27,6 +27,10 @@ public class GridMoveManager : MonoBehaviour
 
 	public void StartGame()
 	{
+		canRun = true;
+
+		gridActors.Clear();
+
 		// get all gridActors, even the missing ones
 		foreach (var actor in FindObjectsOfType<GridActor>())
 		{
@@ -46,12 +50,15 @@ public class GridMoveManager : MonoBehaviour
 		StartRound();
 	}
 
+	private bool canRun = true;
+
 	public void EndGame()
 	{
-		foreach (GridActor actor in gridActors)
-		{
-			actor.StopTurn();
-		}
+		canRun = false;
+		//foreach (GridActor actor in gridActors)
+		//{
+		//	actor.StopTurn();
+		//}
 	}
 
 	private int currentActorIndex = 0;
@@ -69,6 +76,9 @@ public class GridMoveManager : MonoBehaviour
 
 	private void ContinueRound()
 	{
+		if (!canRun)
+			return;
+
 		// check all actors
 		for(; currentActorIndex < gridActors.Count; ++currentActorIndex)
 		{

@@ -34,11 +34,15 @@ public class PathFinder
 	private IPathFindeable target = null;
 	private List<Node> OpenList = new List<Node>();
 	private List<Node> ClosedList = new List<Node>(); // TODO calculate a feasible amount to start with?
-	
+
+	protected List<IPathFindeable> Nodes;
+	protected List<int> HeuristicValues;
+	protected List<int> MoveValues;
+
 	private PathFinder(IPathFindeable from, IPathFindeable to)
 	{
 		target = to;
-		OpenList.Add(new Node(from));
+		OpenList.Add(new Node(from, to, null));
 
 		do
 		{
@@ -66,7 +70,7 @@ public class PathFinder
 		// add its neigbours to open list
 		foreach (IPathFindeable pathFindeable in currentNode.PathFindeable.Neighbours)
 		{
-			Node newNode = new Node(pathFindeable, currentNode, target);
+			Node newNode = new Node(pathFindeable, target, currentNode);
 			if (pathFindeable.Walkeable && !OpenList.Contains(newNode) && !ClosedList.Contains(newNode))
 			{
 				// see if this item exists on open list
@@ -76,7 +80,7 @@ public class PathFinder
 					// check if current node would be a better parent 
 					if(OpenList[currentIndex].G > newNode.G)
 					{
-						OpenList[currentIndex].SetNewParent(currentNode);
+						OpenList[currentIndex].SetParent(currentNode);
 					}
 				}
 				else
@@ -93,7 +97,7 @@ public class PathFinder
 		{
 			List<IPathFindeable> itinerary = new List<IPathFindeable>();
 			Node n = currentNode;
-
+			
 			do
 			{
 				itinerary.Add(n.PathFindeable);
@@ -120,21 +124,32 @@ public class PathFinder
 			PathFindeable = pathFindeable;
 		}
 
-		public Node(IPathFindeable pathFindeable, Node parent, IPathFindeable target)
+		public Node(IPathFindeable pathFindeable, IPathFindeable target, Node parent)
 		{
 			PathFindeable = pathFindeable;
 			H = PathFindeable.HeuristicDistance(target);
-			SetNewParent(parent);
+			SetParent(parent);
 		}
 
-		public void SetNewParent(Node parent)
+		public void SetParent(Node parent)
 		{
 			Parent = parent;
-			G = parent.G + PathFindeable.MovementCostFrom(parent.PathFindeable);
+
+			if(parent == null)
+			{
+				G = 0;
+			}
+			else
+			{
+				G = parent.G + PathFindeable.MovementCostFrom(parent.PathFindeable);
+			}
 		}
 
 		public override bool Equals(object other)
 		{
+			if (other == null)
+				return false;
+			
 			Node otherNode = other as Node;
 			return otherNode == null ? false : this.Equals(otherNode);
 		}

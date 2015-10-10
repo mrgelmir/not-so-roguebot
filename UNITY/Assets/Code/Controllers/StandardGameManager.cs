@@ -132,7 +132,12 @@ class StandardGameManager: BaseGameManager
 		Application.LoadLevel(0);
 	}
 
-	private void Restart(bool increment = true)
+	private void Restart()
+	{
+		Restart(true);
+	}
+
+	private void Restart(bool increment)
 	{
 		// clear all enemies
 		foreach (GridItem item in FindObjectsOfType<GridItem>())

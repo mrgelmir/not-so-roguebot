@@ -48,7 +48,7 @@ class StandardGameManager: BaseGameManager
 			Instantiate(enemyPrefab, Vector3.up * -10f, Quaternion.identity);
 		}
 
-		textPopup.Show("Start game", "Avoid Enemies and find the exit of the maze to win the game. \nMay the odds be ever in your favour", StartGame);
+		textPopup.Show("Start game", "Avoid Enemies and find the exit of the maze to win the game.", StartGame);
 
 
 		//// pass on to start game
@@ -61,18 +61,12 @@ class StandardGameManager: BaseGameManager
 
 		base.StartGame();
 
-		StartCoroutine(TemporaryCheck());
-	}
-
-	private IEnumerator TemporaryCheck()
-	{
-		yield return null;
-
-		PathFinder.GetPath(FindObjectOfType<PlayerMover>().CurrentTile, FindObjectOfType<EndTile>(), PahtFindingDone);
+		PathFinder.GetPath(gridController.StartTile, FindObjectOfType<EndTile>(), PahtFindingDone);
 	}
 
 	private void PahtFindingDone(IEnumerable<GridTile> path)
 	{
+		// check to see if level can be finished
 		GridTile targetTile = FindObjectOfType<EndTile>();
         foreach (GridTile tile in path)
 		{
@@ -83,15 +77,6 @@ class StandardGameManager: BaseGameManager
 		}
 
 		Restart(false);
-	}
-
-	private IEnumerator SpawnRoutine(DungeonGeneration.IDungeonGenerator gridGenerator)
-	{
-		while (gridGenerator.NextGenerationStep())
-		{
-			gridController.DrawGrid(gridGenerator.GetCurrentGrid());
-			yield return new WaitForSeconds(.2f);
-		}
 	}
 
 	public override void EndOfTurn()

@@ -19,6 +19,7 @@ public class GridItem : MonoBehaviour
 			transform.position = currentTile.transform.position;
 			return true;
 		}
+
 		return false;
 	}
 

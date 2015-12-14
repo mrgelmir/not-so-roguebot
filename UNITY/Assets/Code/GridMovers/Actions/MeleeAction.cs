@@ -61,15 +61,15 @@ public class MeleeAction : BaseGameAction
 
     private void Attack()
     {
-        if (targetTile.Actor as GridItem != null)
-        {
-            // attack here using actor's strength and stuff
-            StartCoroutine(AttackRoutine());
-        }
-        else
-        {
-            CancelAction();
-        }
+        //if (targetTile.Actor as GridItem != null)
+        //{
+        //    // attack here using actor's strength and stuff
+        //    StartCoroutine(AttackRoutine());
+        //}
+        //else
+        //{
+        //    CancelAction();
+        //}
     }
 
     [SerializeField] private LineRenderer visualisation = null;
@@ -90,7 +90,7 @@ public class MeleeAction : BaseGameAction
         int damage = actor.moverData.Strength;
 
         // Deal damage (we assume that the actor is already nullchecked here)
-        actor.Damage(targetTile.Actor as GridItem, damage);
+        //actor.Damage(targetTile.Actor as GridItem, damage);
         targetTile = null;
 
         visualisation.gameObject.SetActive(false);

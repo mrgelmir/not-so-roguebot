@@ -28,11 +28,11 @@ public class RandomAttacker : GridActor, ITargeter
 		GridTile t = null;
 		foreach (GridTile tile in currentTile.Neighbours)
 		{
-			if (tile.Actor as PlayerMover != null)
-			{
-				t = tile;
-				break;
-			}
+			//if (tile.Actor as PlayerMover != null)
+			//{
+			//	t = tile;
+			//	break;
+			//}
 		}
 
 		if (t != null) // attack neigbouring actor

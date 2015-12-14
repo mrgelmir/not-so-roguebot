@@ -1,19 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace GridActorSystem
 {
-	class GridWalker : MonoBehaviour, IMover
+	public class GridWalker : GridAction, IMover
 	{
 		public bool MoveTo(GridTile tile)
 		{
-			throw new NotImplementedException();
+			if(ValidateTile(tile))
+			{
+				Entity.SetTile(tile);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		public bool ValidateTile(GridTile tile)
 		{
-			throw new NotImplementedException();
+			return true; // atm, all tiles are okay
 		}
 	}
 }

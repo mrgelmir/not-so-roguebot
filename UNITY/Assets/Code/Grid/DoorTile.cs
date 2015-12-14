@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using GridActorSystem;
 
 public class DoorTile : GridTile
 {
@@ -9,7 +10,7 @@ public class DoorTile : GridTile
 	[SerializeField]
 	private float VerticalOffset = 1f;
 
-	public override void OnEnterTile(GridItem actor)
+	public override void OnEnterTile(GridEntity actor)
 	{
 		base.OnEnterTile(actor);
 		DoorVisual.localPosition = Vector3.up * VerticalOffset;

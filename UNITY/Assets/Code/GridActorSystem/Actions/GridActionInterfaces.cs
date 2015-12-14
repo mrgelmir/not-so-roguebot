@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿
 
 namespace GridActorSystem
 {
@@ -23,6 +20,8 @@ namespace GridActorSystem
 		/// <param name="tile">The tile to check</param>
 		/// <returns>Can the tile be moved to</returns>
 		bool ValidateTile(GridTile tile);
+
+		// add a function like GetValidTiles() to preview possible tiles?
 	}
 
 	/// <summary>

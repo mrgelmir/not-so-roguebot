@@ -8,7 +8,7 @@ namespace GridActorSystem
 	/// - Knows its positon in a grid
 	/// - Can block a tile
 	/// - Holds a reference to the grid
-	/// - Is like John Snow, it knows nothing
+	/// - Is like John Snow; it knows nothing
 	/// </summary>
 	[SelectionBase]
 	public class GridEntity : MonoBehaviour
@@ -36,18 +36,19 @@ namespace GridActorSystem
 
 		public void Remove()
 		{
-
+			// TODO: add to pool or remove via a manager
+			Destroy(gameObject);
 		}
 
 		private void EnterTile(GridTile tile)
 		{
 			currentTile = tile;
-			//tile.OnEnterTile();
+			tile.OnEnterTile(this);
 		}
 
 		private void LeaveTile()
 		{
-
+			currentTile.OnLeaveTile();
 		}
 		
 	}

@@ -25,6 +25,12 @@ public class TileGenerator : MonoBehaviour
 			tilePrefab = TileForOrientation(orientation);
 		}
 
+		if(tilePrefab == null)
+		{
+			//Log.Warning("tile for type " + type.ToString() + " and orientation " + orientation.ToString() + " is not found");
+			return null;
+		}
+
 		GridTile spawnedTile = Instantiate(tilePrefab);
 
 		return spawnedTile;

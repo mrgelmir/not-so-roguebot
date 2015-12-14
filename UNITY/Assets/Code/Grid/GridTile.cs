@@ -3,6 +3,7 @@ using System.Collections;
 using GridUtils;
 using System.Collections.Generic;
 using DungeonGeneration;
+using GridActorSystem;
 
 [SelectionBase]
 public class GridTile : MonoBehaviour, IPathFindeable
@@ -11,14 +12,14 @@ public class GridTile : MonoBehaviour, IPathFindeable
 	[SerializeField] private int row;
 	[SerializeField] private int column;
 	[SerializeField] private GameObject visual;
-    [SerializeField] private GridItem actor;
+    [SerializeField] private GridEntity actor;
 
 	[SerializeField] private GridController grid;
 
 	public TileType Type { get { return type; } }
 	public int Row { get { return row; } }
     public int Column { get { return column; } }
-    public GridItem Actor { get { return actor; } }
+    public GridEntity Actor { get { return actor; } }
 
 	public GridTile Left { get { return grid.GetNeighbour(this, Direction.Left); } }
 	public GridTile Right { get { return grid.GetNeighbour(this, Direction.Right); } }
@@ -85,7 +86,7 @@ public class GridTile : MonoBehaviour, IPathFindeable
 		gameObject.name = column + "-" + row + "|" + type.ToString();
 	}
 
-	public virtual void OnEnterTile(GridItem actor)
+	public virtual void OnEnterTile(GridEntity actor)
 	{
         this.actor = actor;
 		isTaken = true;
@@ -192,7 +193,7 @@ public class GridTile : MonoBehaviour, IPathFindeable
 	{
 		get
 		{
-			System.Collections.Generic.List<IPathFindeable> neighbours = new System.Collections.Generic.List<IPathFindeable>(8);
+			List<IPathFindeable> neighbours = new System.Collections.Generic.List<IPathFindeable>(8);
 			foreach (GridTile neighbour in GetNeighbours())
 			{
 				if (neighbour != null)

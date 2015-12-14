@@ -63,6 +63,11 @@ public class GridController : MonoBehaviour
 		// get correct element from generator
 		GridTile el = generator.GetElement(type, orientation);
 
+		if(el == null)
+		{
+			return null;
+		}
+
 		// initialize element
 		el.transform.SetParent(transform);
 		el.SetData(this, col, row);
@@ -145,6 +150,7 @@ public class GridController : MonoBehaviour
         return closestTile;
 	}
 
+	[ContextMenu("Clear Grid")]
 	public void ClearGrid()
 	{
 		foreach (List<GridTile> col in gridElements) 

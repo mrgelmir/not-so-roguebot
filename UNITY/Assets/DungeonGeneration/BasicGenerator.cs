@@ -7,7 +7,7 @@ namespace DungeonGeneration
 	public class BasicGenerator : IDungeonGenerator
 	{
 		private DungeonData data;
-		private int maxRooms;
+		private DungeonGenerationInfo info;
 
         private DungeonRoom tempRoom = null;
 
@@ -20,8 +20,8 @@ namespace DungeonGeneration
 
 		public void Setup(DungeonGenerationInfo info)
 		{
-			this.maxRooms = info.MaxRooms;
 			data = new DungeonData(info.Width, info.Height);
+			this.info = info;
 		}
 
 		public DungeonData GenerateDungeon()
@@ -52,13 +52,13 @@ namespace DungeonGeneration
 
 //			int attempt = 0;
 
-            if (++counter < maxRooms)
+            if (++counter < info.MaxRooms)
             {
                 int c = 10;
                 do
                 {
-                    int roomWidth = Random.Range(4, 10);
-                    int roomHeight = Random.Range(4, 10);
+                    int roomWidth = Random.Range(info.MinRoomWidth, info.MaxRoomWidth);
+                    int roomHeight = Random.Range(info.MinRoomHeight, info.MaxRoomHeight);
                     tempRoom = new DungeonRoom(Random.Range(0, data.Columns - (roomWidth + 1)), Random.Range(0, data.Rows - (roomHeight + 1)), roomWidth, roomHeight);
                     --c;
                 }
@@ -82,7 +82,7 @@ namespace DungeonGeneration
         private void AddCorridors()
         {
             // pick pick two random rooms and connect them
-			for (int i = 0; i < 10; ++i)
+			for (int i = 0; i < data.Rooms.Count; ++i)
 			{
 				ConnectTwoRandomRooms();
 			}

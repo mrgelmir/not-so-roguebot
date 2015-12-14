@@ -29,7 +29,7 @@ public class GridItem : MonoBehaviour
 		{
 			LeaveTile();
 			currentTile = tile;
-			tile.OnEnterTile(this);
+			//tile.OnEnterTile(this);
 			return true;
 		}
 		return false;

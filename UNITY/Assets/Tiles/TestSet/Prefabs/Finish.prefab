@@ -25,7 +25,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 459438}
-  - 114: {fileID: 11437674}
   m_Layer: 0
   m_Name: Finish
   m_TagString: Untagged
@@ -118,23 +117,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 109724}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &11437674
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 168788}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 773cf8fd0ac31f843ae3f2bfe58a96d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 9
-  row: 0
-  column: 0
-  visual: {fileID: 0}
-  actor: {fileID: 0}
-  grid: {fileID: 0}
 --- !u!212 &21251644
 SpriteRenderer:
   m_ObjectHideFlags: 1

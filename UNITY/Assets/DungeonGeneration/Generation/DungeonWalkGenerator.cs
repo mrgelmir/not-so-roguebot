@@ -175,9 +175,7 @@ namespace DungeonGeneration
 
 			if (allRoomsConnected && (workingData.Corridors.Count > maxRooms * 2 || consecutiveFailedCorridors > 100))
 			{
-				if (allRoomsConnected)
-					Log.Write("all rooms connected");
-				else if (workingData.Corridors.Count > maxRooms * 2)
+				if (workingData.Corridors.Count > maxRooms * 2)
 					Log.Write("too many corridors (" + workingData.Corridors.Count + " corridors vs. " + maxRooms + " max rooms");
 				else if (consecutiveFailedCorridors > 100)
 					Log.Write("too many failed corridors");
@@ -219,12 +217,6 @@ namespace DungeonGeneration
 				return false;
 			}
 
-			//// not quite sure why this is here...
-			//if (currentPath.Count <= 2)
-			//{
-			//	startRoom.AddDoor(currentPath[0]);
-			//}
-
 			// collision with room
 			DungeonRoom endRoom = lastPosition.GetOverlappingRoom(workingData.Rooms);
 			if (endRoom != null)
@@ -241,8 +233,11 @@ namespace DungeonGeneration
 				else
 				{
 					// add door to end room (evaluation fails when door cannot be placed)
-					if (!endRoom.AddDoor(lastPosition))
-						return false;
+					if(endRoom.IsBorderPosition(lastPosition))
+					{
+						if (!endRoom.AddDoor(lastPosition))
+							return false;
+					}
 
 					// add door to start room
 					startRoom.AddDoor(currentPath[0]);

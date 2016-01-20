@@ -14,7 +14,7 @@ namespace DungeonGeneration
 		Target = 4, // TODO make this an object on top of the grid instead of a tiletype
 	}
 	
-	// THIS NEEDS TO BE A VALUE TYPE: DO NOT CHANGE 
+	// THIS NEEDS TO BE A VALUE TYPE: DO NOT CHANGE (a value type gets copied over, a reference type gets referenced)
 	public struct DungeonPosition
 	{
 		public DungeonPosition(int column, int row)

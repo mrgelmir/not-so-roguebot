@@ -3,6 +3,7 @@ using System.Collections;
 using GridActorSystem;
 using DungeonGeneration;
 using DungeonVisuals;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -45,10 +46,13 @@ public class GameManager : MonoBehaviour
 		dungeonGenerator.Setup(dungeonInfo);
 		GridData gridData = dungeonGenerator.GenerateDungeon().GetFlattenedGrid();
 
+		// temp assign color to each index
+		Dictionary<int, Color> colorMap = new Dictionary<int, Color>();
+
 		foreach (GridTile tile in gridData)
 		{
 			GameObject tilePrefab = null;
-			if (tile.Type == DungeonTileType.Flat || tile.Type == DungeonTileType.Door || tile.Type == DungeonTileType.Target)
+			if (tile.Type == DungeonTileType.Flat || tile.Type == DungeonTileType.Target)
 			{
 				tilePrefab = tileCollection.Center;
 			}
@@ -56,12 +60,44 @@ public class GameManager : MonoBehaviour
 			{
 				tilePrefab = tileCollection.Wall;
 			}
+			else if (tile.Type == DungeonTileType.Door)
+			{
+				tilePrefab = tileCollection.DoorTop;
+			}
 
 			if (tilePrefab != null)
 			{
 				GameObject tileVisual = Instantiate(tilePrefab);
 				tileVisual.transform.position = new Vector3(tile.Column, 0f, tile.Row);
 				tileVisual.transform.SetParent(transform, false);
+				tileVisual.name = tile.ToString();
+
+				// assign color per room
+
+				Color tileColor = Color.white;
+				if (!colorMap.ContainsKey(tile.RoomIndex))
+				{
+					tileColor = new Color(Random.value, Random.value, Random.value);
+					colorMap.Add(tile.RoomIndex, tileColor);
+				}
+				else
+				{
+					tileColor = colorMap[tile.RoomIndex];
+				}
+
+				SpriteRenderer sr = tileVisual.GetComponentInChildren<SpriteRenderer>();
+				if (sr != null)
+				{
+					sr.color = tileColor;
+				}
+				else
+				{
+					Renderer r = tileVisual.GetComponentInChildren<Renderer>();
+					if (r != null)
+					{
+						r.material.color = tileColor;
+					}
+				}
 			}
 		}
 

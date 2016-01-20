@@ -14,6 +14,7 @@ namespace DungeonGeneration
 		Target = 4, // TODO make this an object on top of the grid instead of a tiletype
 	}
 	
+	// THIS NEEDS TO BE A VALUE TYPE: DO NOT CHANGE 
 	public struct DungeonPosition
 	{
 		public DungeonPosition(int column, int row)
@@ -76,6 +77,30 @@ namespace DungeonGeneration
 		public override string ToString()
 		{
 			return string.Format("Column : {0} Row : {1}", column, row);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if(obj is DungeonPosition)
+			{
+				DungeonPosition other = (DungeonPosition)obj;
+				return Equals(other);
+			}
+			else
+			{
+				return false;
+			}
+
+		}
+
+		public bool Equals(DungeonPosition other)
+		{
+			return Column == other.Column && Row == other.Row;
+        }
+
+		public override int GetHashCode()
+		{
+			return Column.GetHashCode() | Row.GetHashCode();
 		}
 	}
 }

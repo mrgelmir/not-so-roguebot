@@ -20,7 +20,7 @@ MonoBehaviour:
   BottomLeft: {fileID: 0}
   Left: {fileID: 0}
   Center: {fileID: 109216, guid: a9009de52a067e34fa5c0482f6940cbe, type: 2}
-  DoorTop: {fileID: 0}
+  DoorTop: {fileID: 168788, guid: 8c9bd2014cbe33241a9a453bf817a2ff, type: 2}
   DoorRight: {fileID: 0}
   DoorBottom: {fileID: 0}
   DoorLeft: {fileID: 0}

@@ -15,15 +15,15 @@ namespace DungeonGeneration
 		private int rows;
 
 		[SerializeField]
-        private List<DungeonRoom> rooms = new List<DungeonRoom>();
+		private List<DungeonRoom> rooms = new List<DungeonRoom>();
 		[SerializeField]
-        private List<DungeonCorridor> corridors = new List<DungeonCorridor>();
+		private List<DungeonCorridor> corridors = new List<DungeonCorridor>();
 
-        public int Columns { get { return columns; } }
-        public int Rows { get { return rows; } }
+		public int Columns { get { return columns; } }
+		public int Rows { get { return rows; } }
 
-        public List<DungeonRoom> Rooms { get { return rooms; } }
-        public List<DungeonCorridor> Corridors { get { return corridors; } }
+		public List<DungeonRoom> Rooms { get { return rooms; } }
+		public List<DungeonCorridor> Corridors { get { return corridors; } }
 
 		public DungeonGenerationData(int columns, int rows)
 		{
@@ -31,20 +31,20 @@ namespace DungeonGeneration
 			this.rows = rows;
 		}
 
-        public DungeonGenerationData(DungeonGenerationData other)
-        {
-            this.columns = other.columns;
-            this.rows = other.rows;
+		public DungeonGenerationData(DungeonGenerationData other)
+		{
+			this.columns = other.columns;
+			this.rows = other.rows;
 
-            this.rooms = new List<DungeonRoom>(other.rooms);
-            this.corridors = new List<DungeonCorridor>(other.corridors);
-        }
+			this.rooms = new List<DungeonRoom>(other.rooms);
+			this.corridors = new List<DungeonCorridor>(other.corridors);
+		}
 
 		public bool AddRoom(DungeonRoom room)
 		{
-			if(room.Row >= 0 && room.Column >= 0 && (room.Column + room.Width) <  columns && (room.Row + room.Height) < rows)
+			if (room.Row >= 0 && room.Column >= 0 && (room.Column + room.Width) < columns && (room.Row + room.Height) < rows)
 			{
-                rooms.Add(room);
+				rooms.Add(room);
 
 				return true;
 			}
@@ -52,13 +52,13 @@ namespace DungeonGeneration
 			return false;
 		}
 
-        public bool AddCorridor(DungeonCorridor corridor)
-        {
-            // TODO check if corridor is within grid
-            corridors.Add(corridor);
+		public bool AddCorridor(DungeonCorridor corridor)
+		{
+			// TODO check if corridor is within grid
+			corridors.Add(corridor);
 
-            return false;
-        }
+			return false;
+		}
 
 		public bool ContainsPosition(DungeonPosition position)
 		{
@@ -71,7 +71,7 @@ namespace DungeonGeneration
 			GridData grid = new GridData(Columns, Rows);
 
 			// Add all rooms
-			for(int i = 0; i < Rooms.Count; ++i)
+			for (int i = 0; i < Rooms.Count; ++i)
 			{
 				AddRoomToGrid(ref grid, Rooms[i], i);
 			}
@@ -88,30 +88,55 @@ namespace DungeonGeneration
 
 		private void AddRoomToGrid(ref GridData grid, DungeonRoom room, int roomIndex)
 		{
-			if(grid.ContainsPosition(room.Column, room.Row) && grid.ContainsPosition(room.Column + room.Width, room.Row + room.Height) )
+			if (grid.ContainsPosition(room.Column, room.Row) && grid.ContainsPosition(room.Column + room.Width, room.Row + room.Height))
 			{
 				for (int col = 0; col < room.Width; col++)
 				{
 					for (int row = 0; row < room.Height; row++)
 					{
-						GridTile tile = grid.GetTile(col, row);
+						GridTile tile = grid.GetTile(room.Column + col, room.Row + row);
 						tile.Type = DungeonTileType.Flat;
 						//tile.Type = room.Tiles[col][row].Type;
 						tile.RoomIndex = roomIndex;
 					}
 				}
 			}
+
+			foreach (DungeonPosition doorPos in room.Doors)
+			{
+				if(grid.ContainsPosition(doorPos.Column, doorPos.Row))
+				{
+					GridTile tile = grid.GetTile(doorPos.Column, doorPos.Row);
+					if(tile.Type == DungeonTileType.None)
+					{
+						tile.Type = DungeonTileType.Door;
+						tile.RoomIndex = roomIndex;
+					}
+					else
+					{
+						Log.Write("AddRoomToGrid -> trying to add a door tile to a tile of type " + tile.Type.ToString() + " at position " + tile.Column + "-" + tile.Row);
+					}
+				}
+			}
 		}
 
-		private void AddCorridorToGrid(ref GridData grid, DungeonCorridor room)
+		private void AddCorridorToGrid(ref GridData grid, DungeonCorridor corridor)
 		{
-			foreach (DungeonPosition position in room.TilePositions)
+			//Log.Write("adding corridor with length " + corridor.TilePositions.Count);
+			foreach (DungeonPosition position in corridor.TilePositions)
 			{
-				if(grid.ContainsPosition(position.Column, position.Row))
+				if (grid.ContainsPosition(position.Column, position.Row))
 				{
 					GridTile tile = grid.GetTile(position.Column, position.Row);
-					tile.Type = DungeonTileType.Flat;
-					tile.RoomIndex = -1; // TODO figure out how to handle corridors
+					if (tile.Type == DungeonTileType.None)
+					{
+						tile.Type = DungeonTileType.Flat;
+						tile.RoomIndex = -1; // TODO figure out how to handle corridors
+					}
+					else
+					{
+						//Log.Write("AddCorridorToGrid -> trying to add a corridor tile to a tile of type " + tile.Type.ToString() + " at position " + tile.Column + "-" + tile.Row);
+					}
 				}
 			}
 		}
@@ -126,12 +151,12 @@ namespace DungeonGeneration
 		{
 			Type = type;
 		}
-		
+
 		public static readonly DungeonTile EmptyTile = new DungeonTile(DungeonTileType.None);
 		public static readonly DungeonTile FlatTile = new DungeonTile(DungeonTileType.Flat);
-        public static readonly DungeonTile WallTile = new DungeonTile(DungeonTileType.Wall);
-        public static readonly DungeonTile DoorTile = new DungeonTile(DungeonTileType.Door);
-        public static readonly DungeonTile TargetTile = new DungeonTile(DungeonTileType.Target);
+		public static readonly DungeonTile WallTile = new DungeonTile(DungeonTileType.Wall);
+		public static readonly DungeonTile DoorTile = new DungeonTile(DungeonTileType.Door);
+		public static readonly DungeonTile TargetTile = new DungeonTile(DungeonTileType.Target);
 	}
 
 	[Serializable]
@@ -149,7 +174,7 @@ namespace DungeonGeneration
 		{
 			get
 			{
-				if(tiles == null)
+				if (tiles == null)
 				{
 					tiles = new List<List<DungeonTile>>(Width);
 					for (int c = 0; c < Width; c++)
@@ -173,7 +198,7 @@ namespace DungeonGeneration
 		}
 
 		[NonSerialized]
-        public List<DungeonRoom> LinkedRooms = new List<DungeonRoom>();
+		public List<DungeonRoom> LinkedRooms = new List<DungeonRoom>();
 
 		public DungeonPosition CenterPos
 		{
@@ -207,20 +232,28 @@ namespace DungeonGeneration
 		public bool AddDoor(DungeonPosition position)
 		{
 			// return false if the door isn't on a border
-			if(IsBorderPosition(position) || Overlaps(position))
+			if (IsBorderPosition(position) || Overlaps(position))
 			{
-				// the door is actually outside of the room
-				Doors.Add(position);
+				if(Doors.Contains(position))
+				{
+					// door does already exist
+					//Log.Write("DungeonRoom::AddDoor - A door already exists at position " + position.ToString());
+				}
+				else
+				{
+					// the door is actually outside of the room and does not exist already
+					Doors.Add(position);
+				}
 				return true;
 			}
 			else
 			{
 				return false;
 			}
-			
+
 		}
 
-        private const int minRoomDistance = 1; // keep a gap of 1 for the walls
+		private const int minRoomDistance = 1; // keep a gap of 1 for the walls
 
 		public bool Overlaps(DungeonPosition position)
 		{
@@ -235,10 +268,10 @@ namespace DungeonGeneration
 		public bool Overlaps(DungeonRoom other)
 		{
 			// TODO maybe use the overlap with two dungeon positions to reduce duplicate code? + define a min/max for the room
-            int offset = -minRoomDistance + 1;
+			int offset = -minRoomDistance + 1;
 
-            bool horizontalOverlap = Column <= other.Column + other.Width - offset && Column + Width - offset >= other.Column;
-            bool verticalOverlap = Row <= other.Row + other.Height - offset && Row + Height - offset >= other.Row;
+			bool horizontalOverlap = Column <= other.Column + other.Width - offset && Column + Width - offset >= other.Column;
+			bool verticalOverlap = Row <= other.Row + other.Height - offset && Row + Height - offset >= other.Row;
 
 			return horizontalOverlap && verticalOverlap;
 		}
@@ -247,7 +280,7 @@ namespace DungeonGeneration
 		{
 			int offset = -minRoomDistance + 1;
 			return ((position.Column == Column + Width - offset) || (position.Column - offset == Column)) &&
-					((position.Row == Row + Height - offset) || (position.Row - offset == Row ));
+					((position.Row == Row + Height - offset) || (position.Row - offset == Row));
 		}
 
 		public bool OverlapsAny(IList<DungeonRoom> otherRooms)
@@ -268,7 +301,7 @@ namespace DungeonGeneration
 			DungeonPosition p = CenterPos;
 
 			// for now we take borders to the left or right side before top or bottom
-			if(dir.ContainsDirection(Direction.Right))
+			if (dir.ContainsDirection(Direction.Right))
 			{
 				p.Column = Column + Width;
 			}
@@ -278,7 +311,7 @@ namespace DungeonGeneration
 			}
 			else
 			{
-				if(dir.ContainsDirection(Direction.Up))
+				if (dir.ContainsDirection(Direction.Up))
 				{
 					p.Row = Row + Height;
 				}
@@ -301,7 +334,7 @@ namespace DungeonGeneration
 
 			return verticalBorder && horizontalBorder;
 		}
-		
+
 		private void SetTileTypes()
 		{
 			//temp: sides are walls, rest are flat
@@ -309,10 +342,10 @@ namespace DungeonGeneration
 			{
 				for (int r = 0; r < Height; r++)
 				{
-                    Tiles[c][r] = DungeonTile.FlatTile;
+					Tiles[c][r] = DungeonTile.FlatTile;
 
-                    // put walls in room itself?
-                    //Tiles[c][r] = IsBorder(c, r) ? DungeonTile.WallTile : DungeonTile.FlatTile;
+					// put walls in room itself?
+					//Tiles[c][r] = IsBorderPosition(new DungeonPosition(c, r)) ? DungeonTile.WallTile : DungeonTile.FlatTile;
 				}
 			}
 
@@ -325,13 +358,13 @@ namespace DungeonGeneration
 	{
 		public List<DungeonPosition> TilePositions = new List<DungeonPosition>();
 
-        public DungeonCorridor(int width, DungeonRoom startRoom, DungeonRoom endRoom)
-        {
+		public DungeonCorridor(int width, DungeonRoom startRoom, DungeonRoom endRoom)
+		{
 
-            startRoom.LinkedRooms.Add(endRoom);
-            endRoom.LinkedRooms.Add(startRoom);
+			startRoom.LinkedRooms.Add(endRoom);
+			endRoom.LinkedRooms.Add(startRoom);
 
-            // temp make path from center to center
+			// temp make path from center to center
 			DungeonPosition startPos = startRoom.CenterPos;
 			DungeonPosition endPos = endRoom.CenterPos;
 
@@ -357,7 +390,7 @@ namespace DungeonGeneration
 				TilePositions.Add(new DungeonPosition(col, row));
 			}
 		}
-		
+
 		public DungeonCorridor(IList<DungeonPosition> tiles)
 		{
 			TilePositions = new List<DungeonPosition>(tiles);
@@ -367,12 +400,12 @@ namespace DungeonGeneration
 		{
 			foreach (DungeonPosition pos in TilePositions)
 			{
-				if(pos.Overlaps(position))
+				if (pos.Overlaps(position))
 				{
 					return true;
 				}
 			}
 			return false;
 		}
-    }
+	}
 }

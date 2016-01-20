@@ -45,7 +45,7 @@ namespace DungeonGeneration
 		public DungeonGenerationData GetCurrentGrid()
 		{
 			// Return a copy of the grid
-            return new DungeonGenerationData(workingData);
+			return new DungeonGenerationData(workingData);
 		}
 
 		public bool NextGenerationStep()
@@ -96,7 +96,7 @@ namespace DungeonGeneration
 			}
 		}
 
-		private const int maxCorridorLength = 200;
+		private const int maxCorridorLength = 300;
 
 		private int consecutiveFailedCorridors = 0;
 
@@ -109,7 +109,21 @@ namespace DungeonGeneration
 
 			// pick a random room and random side to begin from
 			// TODO : prefer rooms without connections
-			DungeonRoom startRoom = workingData.Rooms[r.Next(0, workingData.Rooms.Count)];
+			DungeonRoom startRoom = null;
+
+			foreach (DungeonRoom room in workingData.Rooms)
+			{
+				if (room.Doors.Count <= 0)
+				{
+					startRoom = room;
+					break;
+				}
+			}
+
+			if (startRoom == null)
+			{
+				startRoom = workingData.Rooms[r.Next(0, workingData.Rooms.Count)];
+			}
 
 			Direction currentDirection = DirectionHelper.GetRandomAxisAlignedDirection(r);
 			while (currentDirection == Direction.NONE)
@@ -120,7 +134,7 @@ namespace DungeonGeneration
 			DungeonPosition startPos = startRoom.BorderPosition(currentDirection);
 			DungeonPosition currentPos = startPos;
 
-			
+
 
 			// go on a walk with a changing pseudorandom direction (biased towards current direction and max 90 degree turns) until a room or the edge has been reached
 			List<DungeonPosition> pathTiles = new List<DungeonPosition>();
@@ -135,7 +149,7 @@ namespace DungeonGeneration
 			while (!CheckTileCollision(currentPos) && pathTiles.Count < maxCorridorLength);
 
 			// check if we can use this corridor
-			if(EvaluateCorridor(pathTiles, startRoom))
+			if (EvaluateCorridor(pathTiles, startRoom))
 			{
 				workingData.AddCorridor(new DungeonCorridor(pathTiles));
 				consecutiveFailedCorridors = 0;
@@ -147,8 +161,27 @@ namespace DungeonGeneration
 
 			// set next step here
 			// TODO: determine when to end walks (when all rooms are connected?)
-			if (workingData.Corridors.Count > maxRooms * 2 || consecutiveFailedCorridors > 100)
+
+			bool allRoomsConnected = true;
+			int connectedRoomCount = 0;
+			foreach (DungeonRoom room in workingData.Rooms)
 			{
+				if (room.Doors.Count > 0)
+				{
+					++connectedRoomCount;
+				}
+			}
+			allRoomsConnected = connectedRoomCount == workingData.Rooms.Count;
+
+			if (allRoomsConnected && (workingData.Corridors.Count > maxRooms * 2 || consecutiveFailedCorridors > 100))
+			{
+				if (allRoomsConnected)
+					Log.Write("all rooms connected");
+				else if (workingData.Corridors.Count > maxRooms * 2)
+					Log.Write("too many corridors (" + workingData.Corridors.Count + " corridors vs. " + maxRooms + " max rooms");
+				else if (consecutiveFailedCorridors > 100)
+					Log.Write("too many failed corridors");
+
 				NextStep = null;
 			}
 			else
@@ -157,7 +190,7 @@ namespace DungeonGeneration
 			}
 		}
 
-		private int straightBias = 20;
+		private int straightBias = 25;
 		private bool abortCorridor = false;
 
 		private Direction NextDirection(Direction direction)
@@ -168,11 +201,11 @@ namespace DungeonGeneration
 				// turn left
 				return direction.RotateBy(-90);
 			}
-			else if(number == 1)
+			else if (number == 1)
 			{
 				// turn right
 				return direction.RotateBy(90);
-			}			
+			}
 			return direction;
 		}
 
@@ -181,48 +214,57 @@ namespace DungeonGeneration
 
 			DungeonPosition lastPosition = currentPath[currentPath.Count - 1];
 			// path too long or out of bounds
-			if (currentPath.Count <= 0 || currentPath.Count >= maxCorridorLength || !workingData.ContainsPosition(lastPosition)) 
+			if (currentPath.Count <= 0 || currentPath.Count >= maxCorridorLength || !workingData.ContainsPosition(lastPosition))
 			{
 				return false;
 			}
 
-			if (currentPath.Count <= 2)
-			{
-				startRoom.AddDoor(currentPath[0]);
-			}
+			//// not quite sure why this is here...
+			//if (currentPath.Count <= 2)
+			//{
+			//	startRoom.AddDoor(currentPath[0]);
+			//}
 
 			// collision with room
-			DungeonRoom room = lastPosition.GetOverlappingRoom(workingData.Rooms);
-			if(room != null && room != startRoom)
+			DungeonRoom endRoom = lastPosition.GetOverlappingRoom(workingData.Rooms);
+			if (endRoom != null)
 			{
+				if (endRoom == startRoom)
+				{
+					return false;
+				}
 
-				if (room.IsOuterCorner(lastPosition))
+				if (endRoom.IsOuterCorner(lastPosition))
 				{
 					return false;
 				}
 				else
 				{
-					// add door to end room
-					if (!room.AddDoor(lastPosition))
+					// add door to end room (evaluation fails when door cannot be placed)
+					if (!endRoom.AddDoor(lastPosition))
 						return false;
-					
+
 					// add door to start room
 					startRoom.AddDoor(currentPath[0]);
 
 					return true;
 				}
 			}
-
-			//collision with corridor -> only add start door
-			startRoom.AddDoor(currentPath[0]);
-
-			return true;
+			else
+			{
+				//collision with corridor -> only add start door
+				startRoom.AddDoor(currentPath[0]);
+				return true;
+			}
+			
+			// just to make sure
+			return false;
 		}
 
 		private bool CheckTileCollision(DungeonPosition position)
 		{
 			// check out of grid			
-			if(!workingData.ContainsPosition(position))
+			if (!workingData.ContainsPosition(position))
 			{
 				return true;
 			}
@@ -237,7 +279,7 @@ namespace DungeonGeneration
 
 			foreach (DungeonCorridor corridor in workingData.Corridors)
 			{
-				if(corridor.Overlaps(position))
+				if (corridor.Overlaps(position))
 				{
 					return true;
 				}

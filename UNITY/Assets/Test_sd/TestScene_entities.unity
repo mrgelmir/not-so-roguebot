@@ -347,10 +347,10 @@ MonoBehaviour:
   dungeonInfo:
     Width: 100
     Height: 100
-    MaxRooms: 10
-    MinRoomWidth: 3
-    MinRoomHeight: 3
-    MaxRoomWidth: 8
+    MaxRooms: 50
+    MinRoomWidth: 8
+    MinRoomHeight: 5
+    MaxRoomWidth: 15
     MaxRoomHeight: 8
   tileCollection: {fileID: 11400000, guid: ca1073e6281c2d24396fb0c415e6dae0, type: 2}
   gridMoveManager: {fileID: 0}

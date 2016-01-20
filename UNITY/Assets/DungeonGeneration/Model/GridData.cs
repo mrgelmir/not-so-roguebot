@@ -51,7 +51,7 @@ namespace DungeonGeneration
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			throw new NotImplementedException();
+			return GetEnumerator() as IEnumerator;
 		}
 	}
 
@@ -78,14 +78,13 @@ namespace DungeonGeneration
 		{
 			get
 			{
-				throw new NotImplementedException();
+				return Current as object;
 			}
 		}
 
 		public void Dispose()
 		{
-			//throw new NotImplementedException();
-
+			// nothing to dispose here
 		}
 
 		public bool MoveNext()

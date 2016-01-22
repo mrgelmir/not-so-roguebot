@@ -1,5 +1,4 @@
-﻿using GridUtils;
-using UnityEngine;
+﻿using UnityEngine;
 
 public static class GridTileExtensions
 {

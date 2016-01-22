@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using GridUtils;
+using DungeonGeneration;
 
 [SelectionBase]
 public class GridItem : MonoBehaviour
@@ -94,35 +94,35 @@ public class GridItem : MonoBehaviour
         return randomTile;
     }
 
-    public GridTileView NeigbourForDirection(Direction dir)
+    public GridTileView NeigbourForDirection(GridDirection dir)
     {
         // TODO fix
         GridTileView tile = null;
 
         switch (dir)
         {
-            case Direction.Up:
+            case GridDirection.North:
                 tile = currentTile.Top;
                 break;
-            case Direction.Up | Direction.Right:
+            case GridDirection.North | GridDirection.East:
                 tile = currentTile.TopRight;
                 break;
-            case Direction.Right:
+            case GridDirection.East:
                 tile = currentTile.Right;
                 break;
-            case Direction.Right | Direction.Down:
+            case GridDirection.East | GridDirection.South:
                 tile = currentTile.BottomRight;
                 break;
-            case Direction.Down:
+            case GridDirection.South:
                 tile = currentTile.Bottom;
                 break;
-            case Direction.Down | Direction.Left:
+            case GridDirection.South | GridDirection.West:
                 tile = currentTile.BottomLeft;
                 break;
-            case Direction.Left:
+            case GridDirection.West:
                 tile = currentTile.Left;
                 break;
-            case Direction.Left | Direction.Up:
+            case GridDirection.West | GridDirection.North:
                 tile = currentTile.TopLeft;
                 break;
         }

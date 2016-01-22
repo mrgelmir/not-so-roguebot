@@ -1,9 +1,8 @@
-﻿using DungeonGeneration;
-using GridUtils;
+﻿using DungeonGeneration.Model;
 using System;
 using System.Collections.Generic;
 
-namespace DungeonGeneration
+namespace DungeonGeneration.Generation
 {
 	public class DungeonWalkGenerator : IDungeonGenerator
 	{
@@ -125,10 +124,10 @@ namespace DungeonGeneration
 				startRoom = workingData.Rooms[r.Next(0, workingData.Rooms.Count)];
 			}
 
-			Direction currentDirection = DirectionHelper.GetRandomAxisAlignedDirection(r);
-			while (currentDirection == Direction.NONE)
+			GridDirection currentDirection = GridDirectionHelper.GetRandomAxisAlignedDirection(r);
+			while (currentDirection == GridDirection.None)
 			{
-				currentDirection = DirectionHelper.GetRandomAxisAlignedDirection(r);
+				currentDirection = GridDirectionHelper.GetRandomAxisAlignedDirection(r);
 			}
 
 			DungeonPosition startPos = startRoom.BorderPosition(currentDirection);
@@ -191,7 +190,7 @@ namespace DungeonGeneration
 		private int straightBias = 25;
 		private bool abortCorridor = false;
 
-		private Direction NextDirection(Direction direction)
+		private GridDirection NextDirection(GridDirection direction)
 		{
 			int number = r.Next(0, straightBias + 2);
 			if (number == 0)
@@ -233,7 +232,7 @@ namespace DungeonGeneration
 				else
 				{
 					// add door to end room (evaluation fails when door cannot be placed)
-					if(endRoom.IsBorderPosition(lastPosition))
+					if (endRoom.IsBorderPosition(lastPosition))
 					{
 						if (!endRoom.AddDoor(lastPosition))
 							return false;
@@ -251,9 +250,6 @@ namespace DungeonGeneration
 				startRoom.AddDoor(currentPath[0]);
 				return true;
 			}
-			
-			// just to make sure
-			return false;
 		}
 
 		private bool CheckTileCollision(DungeonPosition position)

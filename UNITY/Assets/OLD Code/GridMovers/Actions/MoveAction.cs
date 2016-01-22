@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using DungeonGeneration;
+using DungeonGeneration.Model;
 using System.Collections;
-using GridUtils;
+using UnityEngine;
 
 public class MoveAction : BaseGameAction 
 {
@@ -9,7 +10,7 @@ public class MoveAction : BaseGameAction
 	[HideInInspector]
 	public GridTileView TargetTile;
 
-	private Direction nextDir = Direction.NONE;
+	private GridDirection nextDir = GridDirection.None;
 
 	public virtual void SetMoveTarget(GridTileView target)
 	{
@@ -30,7 +31,7 @@ public class MoveAction : BaseGameAction
 		}
 		else
 		{
-			nextDir = Direction.NONE;
+			nextDir = GridDirection.None;
 		}
 	}
 
@@ -40,7 +41,7 @@ public class MoveAction : BaseGameAction
 
 		// keep on moving until the target position is reached
 
-		if(nextDir != Direction.NONE)
+		if(nextDir != GridDirection.None)
 		{
 			StartCoroutine(MoveTileRoutine(nextDir));
 		}
@@ -51,7 +52,7 @@ public class MoveAction : BaseGameAction
 
 	}
 
-	protected virtual IEnumerator MoveTileRoutine(Direction dir)
+	protected virtual IEnumerator MoveTileRoutine(GridDirection dir)
 	{
 		// Do the base move here
 		yield return StartCoroutine(actor.MoveToTileRoutine(actor.CurrentTile.GetNeighbour(dir)));

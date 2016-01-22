@@ -1,9 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
-using GridActorSystem;
-using DungeonGeneration;
+﻿using DungeonGeneration;
+using DungeonGeneration.Generation;
 using DungeonVisuals;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +12,8 @@ public class GameManager : MonoBehaviour
 	private DungeonGenerationInfo dungeonInfo;
 
 	[Header("Project References")]
+	[SerializeField]
+	private TileFactory tileFactory;
 	[SerializeField]
 	private TileCollection tileCollection;
 
@@ -26,6 +27,8 @@ public class GameManager : MonoBehaviour
 
 	//[Header("Tweakables")]
 
+	private GameObject[,] gridVisuals;
+
 	private void Start()
 	{
 		InitializeGame();
@@ -37,7 +40,7 @@ public class GameManager : MonoBehaviour
 	/// - create targets/goals
 	/// - spawn characters/items/enemies
 	/// - show intro text/cinematic
-	/// - This method should call thhe StartGame() function
+	/// - This method should call the StartGame() function
 	/// </summary>
 	public virtual void InitializeGame()
 	{
@@ -46,62 +49,23 @@ public class GameManager : MonoBehaviour
 		dungeonGenerator.Setup(dungeonInfo);
 		GridData gridData = dungeonGenerator.GenerateDungeon().GetFlattenedGrid();
 
-		// temp assign color to each index
-		Dictionary<int, Color> colorMap = new Dictionary<int, Color>();
+		// prepare the visuals
+		gridVisuals = new GameObject[gridData.Columns, gridData.Rows];
 
-		foreach (GridTile tile in gridData)
+		// set up factory
+		tileFactory.SetGrid(gridData);
+
+		foreach (TileData tileData in gridData)
 		{
-			GameObject tilePrefab = null;
-			if (tile.Type == DungeonTileType.Flat || tile.Type == DungeonTileType.Target)
-			{
-				tilePrefab = tileCollection.Center;
-			}
-			else if (tile.Type == DungeonTileType.Wall)
-			{
-				tilePrefab = tileCollection.Wall;
-			}
-			else if (tile.Type == DungeonTileType.Door)
-			{
-				tilePrefab = tileCollection.DoorTop;
-			}
-
-			if (tilePrefab != null)
-			{
-				GameObject tileVisual = Instantiate(tilePrefab);
-				tileVisual.transform.position = new Vector3(tile.Column, 0f, tile.Row);
-				tileVisual.transform.SetParent(transform, false);
-				tileVisual.name = tile.ToString();
-
-				// assign color per room
-
-				Color tileColor = Color.white;
-				if (!colorMap.ContainsKey(tile.RoomIndex))
-				{
-					tileColor = new Color(Random.value, Random.value, Random.value);
-					colorMap.Add(tile.RoomIndex, tileColor);
-				}
-				else
-				{
-					tileColor = colorMap[tile.RoomIndex];
-				}
-
-				SpriteRenderer sr = tileVisual.GetComponentInChildren<SpriteRenderer>();
-				if (sr != null)
-				{
-					sr.color = tileColor;
-				}
-				else
-				{
-					Renderer r = tileVisual.GetComponentInChildren<Renderer>();
-					if (r != null)
-					{
-						r.material.color = tileColor;
-					}
-				}
-			}
+			// create all tile visuals and subscribe for further visual updates
+			gridVisuals[tileData.Column, tileData.Row] = tileFactory.GetTileVisual(tileData);
+			tileData.OnTileChanged += UpdateTileVisual;
+			UpdateTileVisual(tileData);
 		}
 
 		//gridMoveManager.OnEndRound += EndOfTurn;
+
+		//StartGame();
 	}
 
 	/// <summary>
@@ -143,4 +107,18 @@ public class GameManager : MonoBehaviour
 	{
 		gridMoveManager.OnEndRound -= EndOfTurn;
 	}
+
+	private void UpdateTileVisual(TileData tileData)
+	{
+		// get current visual
+		GameObject visual = gridVisuals[tileData.Column, tileData.Row];
+
+		if (visual != null)
+		{
+			// release visual
+			tileFactory.ReleaseTileVisual(visual); 
+		}
+
+		gridVisuals[tileData.Column, tileData.Row] = tileFactory.GetTileVisual(tileData);
+    }
 }

@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using DungeonGeneration.Model;
 
-namespace DungeonGeneration
+namespace DungeonGeneration.Generation
 {
 	public class BasicGenerator : IDungeonGenerator
 	{

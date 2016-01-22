@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using GridUtils;
+using DungeonGeneration.Generation;
 
 public class TempGameManager : MonoBehaviour
 {
@@ -68,7 +68,7 @@ public class TempGameManager : MonoBehaviour
 		}
 
 		// TODO move the selection of dungeon generator elsewhere
-		DungeonGeneration.DungeonGenerationInfo info = new DungeonGeneration.DungeonGenerationInfo()
+		DungeonGenerationInfo info = new DungeonGenerationInfo()
 		{
 			Width = 50,
 			Height = 40,
@@ -80,7 +80,7 @@ public class TempGameManager : MonoBehaviour
 			MaxRoomHeight = 8,
 		};
 
-		DungeonGeneration.IDungeonGenerator g = new DungeonGeneration.DungeonWalkGenerator();
+		IDungeonGenerator g = new DungeonWalkGenerator();
 		//DungeonGeneration.IDungeonGenerator g = new DungeonGeneration.BasicGenerator();
 		g.Setup(info);
 		

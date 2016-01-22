@@ -1,8 +1,8 @@
-using System.Collections;
+using DungeonGeneration;
+using DungeonGeneration.Generation;
+using DungeonGeneration.Model;
 using System.Collections.Generic;
 using UnityEngine;
-using DungeonGeneration;
-using GridUtils;
 
 public class GridController : MonoBehaviour
 {
@@ -78,20 +78,20 @@ public class GridController : MonoBehaviour
 		return el;
 	}
 
-	public GridTileView GetNeighbour(GridTileView el, Direction dir)
+	public GridTileView GetNeighbour(GridTileView el, GridDirection dir)
 	{
 		int neighbourRow = el.Row;
 		int neighbourCol = el.Column;
 
 		// get actual neighbour position
-		if ((dir & Direction.Left) == Direction.Left)
+		if ((dir & GridDirection.West) == GridDirection.West)
 			--neighbourCol;
-		else if ((dir & Direction.Right) == Direction.Right)
+		else if ((dir & GridDirection.East) == GridDirection.East)
 			++neighbourCol;
 
-		if ((dir & Direction.Up) == Direction.Up)
+		if ((dir & GridDirection.North) == GridDirection.North)
 			++neighbourRow;
-		else if ((dir & Direction.Down) == Direction.Down)
+		else if ((dir & GridDirection.South) == GridDirection.South)
 			--neighbourRow;
 
 		// clamp
@@ -262,7 +262,7 @@ public class GridController : MonoBehaviour
 	public void DrawGrid(GridData data)
 	{
 		
-		foreach (GridTile tile in data)
+		foreach (TileData tile in data)
 		{
 			gridElements[tile.Column][tile.Row] = CreateGridElement(ConvertType(tile.Type), tile.Column, tile.Row);
 		}
@@ -379,7 +379,7 @@ public class GridController : MonoBehaviour
 
 	private TileType GetFillTileType(int c, int r)
 	{
-		Direction dir = Direction.Up;
+		GridDirection dir = GridDirection.North;
 		for (int numRotations = 0; numRotations < 8; numRotations++)
 		{
 			GridTileView neighbourTile = gridElements[Mathf.Clamp(c + dir.GetHorizontalDirection(), 0, Columns - 1)][Mathf.Clamp(r + dir.GetVerticalDirection(), 0, Rows - 1)];

@@ -1,5 +1,4 @@
-﻿using System;
-using DungeonGeneration;
+﻿using DungeonGeneration.Generation;
 using UnityEngine;
 
 namespace Grid

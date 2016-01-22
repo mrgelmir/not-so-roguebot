@@ -1,5 +1,4 @@
-﻿using DungeonGeneration;
-using System.Collections;
+﻿using DungeonGeneration.Generation;
 using UnityEngine;
 
 [CreateAssetMenu]

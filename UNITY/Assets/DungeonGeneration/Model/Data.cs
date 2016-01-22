@@ -1,4 +1,5 @@
-﻿using GridUtils;
+﻿using DungeonGeneration.Generation;
+using DungeonGeneration.Model;
 using System;
 using System.Collections.Generic;
 
@@ -39,7 +40,7 @@ namespace DungeonGeneration
 			set { row = value; }
 		}
 
-		public void MoveBy(Direction direction, int distance = 1)
+		public void MoveBy(GridDirection direction, int distance = 1)
 		{
 			column += direction.GetHorizontalDirection() * distance;
 			row += direction.GetVerticalDirection() * distance;
@@ -76,7 +77,7 @@ namespace DungeonGeneration
 
 		public override string ToString()
 		{
-			return string.Format("Column : {0} Row : {1}", column, row);
+			return string.Format("{0}:{1}", column, row);
 		}
 
 		public override bool Equals(object obj)

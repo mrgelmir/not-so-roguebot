@@ -205,7 +205,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 47.6740303
+  orthographic size: 55
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -314,6 +314,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1631374361}
   - 114: {fileID: 1631374362}
+  - 114: {fileID: 1631374363}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -352,10 +353,27 @@ MonoBehaviour:
     MinRoomHeight: 5
     MaxRoomWidth: 15
     MaxRoomHeight: 8
+  tileFactory: {fileID: 1631374363}
   tileCollection: {fileID: 11400000, guid: ca1073e6281c2d24396fb0c415e6dae0, type: 2}
   gridMoveManager: {fileID: 0}
   cam: {fileID: 0}
   textPopup: {fileID: 0}
+--- !u!114 &1631374363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1631374360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db900f4a36b147e47a67de05aa5c731d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TileCollections:
+  - {fileID: 11400000, guid: ca1073e6281c2d24396fb0c415e6dae0, type: 2}
+  - {fileID: 11400000, guid: 532fc5121c195a34bb1a636ed0dd0b51, type: 2}
+  Door_NS: {fileID: 168788, guid: 8c9bd2014cbe33241a9a453bf817a2ff, type: 2}
+  Door_EW: {fileID: 116562, guid: 91a5f1de3eec1d94b8108d476053e5f1, type: 2}
 --- !u!1 &2009754099
 GameObject:
   m_ObjectHideFlags: 0

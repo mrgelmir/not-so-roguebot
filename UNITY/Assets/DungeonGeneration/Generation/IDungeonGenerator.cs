@@ -1,4 +1,4 @@
-﻿namespace DungeonGeneration
+﻿namespace DungeonGeneration.Generation
 {
 	interface IDungeonGenerator
 	{

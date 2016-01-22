@@ -1,9 +1,9 @@
 using UnityEngine;
 using System.Collections;
-using GridUtils;
 using System.Collections.Generic;
 using DungeonGeneration;
 using GridActorSystem;
+using DungeonGeneration.Model;
 
 [SelectionBase]
 public class GridTileView : MonoBehaviour, IPathFindeable
@@ -21,14 +21,14 @@ public class GridTileView : MonoBehaviour, IPathFindeable
     public int Column { get { return column; } }
     public GridEntity Actor { get { return actor; } }
 
-	public GridTileView Left { get { return grid.GetNeighbour(this, Direction.Left); } }
-	public GridTileView Right { get { return grid.GetNeighbour(this, Direction.Right); } }
-	public GridTileView Top { get { return grid.GetNeighbour(this, Direction.Up); } }
-	public GridTileView Bottom { get { return grid.GetNeighbour(this, Direction.Down); } }	
-	public GridTileView TopRight { get { return grid.GetNeighbour(this, Direction.Up | Direction.Right); } }
-	public GridTileView TopLeft { get { return grid.GetNeighbour(this, Direction.Up | Direction.Left); } }
-	public GridTileView BottomRight { get { return grid.GetNeighbour(this, Direction.Down | Direction.Right); } }
-	public GridTileView BottomLeft { get { return grid.GetNeighbour(this, Direction.Down | Direction.Left); } }
+	public GridTileView Left { get { return grid.GetNeighbour(this, GridDirection.West); } }
+	public GridTileView Right { get { return grid.GetNeighbour(this, GridDirection.East); } }
+	public GridTileView Top { get { return grid.GetNeighbour(this, GridDirection.North); } }
+	public GridTileView Bottom { get { return grid.GetNeighbour(this, GridDirection.South); } }	
+	public GridTileView TopRight { get { return grid.GetNeighbour(this, GridDirection.North | GridDirection.East); } }
+	public GridTileView TopLeft { get { return grid.GetNeighbour(this, GridDirection.North | GridDirection.West); } }
+	public GridTileView BottomRight { get { return grid.GetNeighbour(this, GridDirection.South | GridDirection.East); } }
+	public GridTileView BottomLeft { get { return grid.GetNeighbour(this, GridDirection.South | GridDirection.West); } }
 
 	private bool isTaken = false;
 	public bool IsTaken{ get { return isTaken; } }
@@ -60,7 +60,7 @@ public class GridTileView : MonoBehaviour, IPathFindeable
 		return !isSelf && isColNeighbour && isRowNeighbour;
 	}
 
-	public GridTileView GetNeighbour(Direction dir)
+	public GridTileView GetNeighbour(GridDirection dir)
 	{
 		return grid.GetNeighbour(this, dir);
 	}
@@ -139,27 +139,27 @@ public class GridTileView : MonoBehaviour, IPathFindeable
 		Gizmos.DrawSphere(transform.position, .3f);
 	}
 
-	public static Direction GetDirection(GridTileView from, GridTileView to)
+	public static GridDirection GetDirection(GridTileView from, GridTileView to)
 	{
-		Direction horizontal = Direction.NONE;
-		Direction vertical = Direction.NONE;
+		GridDirection horizontal = GridDirection.None;
+		GridDirection vertical = GridDirection.None;
 
 		if(from.Column < to.Column)
 		{
-			horizontal = Direction.Right;
+			horizontal = GridDirection.East;
 		}
 		else if (from.Column > to.Column)
 		{
-			horizontal = Direction.Left;
+			horizontal = GridDirection.West;
 		}
 
 		if(from.Row < to.Row)
 		{
-			vertical = Direction.Up;
+			vertical = GridDirection.North;
 		}
 		else if (from.Row > to.Row)
 		{
-			vertical = Direction.Down;
+			vertical = GridDirection.South;
 		}
 
 		return horizontal | vertical;

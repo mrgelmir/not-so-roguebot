@@ -1,25 +1,44 @@
 fileFormatVersion: 2
 guid: f8e7999351efae1498c4ed81d9d99131
-timeCreated: 1434799285
+timeCreated: 1453501503
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Tileset_Test_0
-    21300002: Tileset_Test_1
-    21300004: Tileset_Test_2
-    21300006: Tileset_Test_3
-    21300008: Tileset_Test_4
-    21300010: Tileset_Test_5
-    21300012: Tileset_Test_6
-    21300014: Tileset_Test_7
-    21300016: Tileset_Test_8
-    21300018: Tileset_Test_9
-    21300020: Tileset_Test_10
-    21300022: Tileset_Test_11
-    21300024: Tileset_Test_12
+    21300000: Tileset_Test_EEsS
+    21300002: Tileset_Test_SSwW
+    21300004: Tileset_Test_ES
+    21300006: Tileset_Test_SW
+    21300008: Tileset_Test_NNeE
+    21300010: Tileset_Test_NWNw
+    21300012: Tileset_Test_NE
+    21300014: Tileset_Test_NW
+    21300016: Tileset_Test_NESW
+    21300018: Tileset_Test_NNeEEsSSwWNw
+    21300020: Tileset_Test_NSW
+    21300022: Tileset_Test_ESW
+    21300024: Tileset_Test_X
     21300026: Tileset_Test_13
-    21300028: Tileset_Test_14
-    21300030: Tileset_Test_15
+    21300028: Tileset_Test_NES
+    21300030: Tileset_Test_NEW
+    21300032: Tileset_Test_EESS
+    21300034: Tileset_Test_NSE
+    21300036: Tileset_Test_14
+    21300038: Tileset_Test_NSSwWNw
+    21300040: Tileset_Test_EEsSSwW
+    21300042: Tileset_Test_18
+    21300044: Tileset_Test_19
+    21300046: Tileset_Test_NNeEEsS
+    21300048: Tileset_Test_NNeEWNw
+    21300050: Tileset_Test_22
+    21300052: Tileset_Test_23
+    21300054: Tileset_Test_24
+    21300056: Tileset_Test_25
+    21300058: Tileset_Test_EW
+    21300060: Tileset_Test_NS
+    21300062: Tileset_Test_28
+    21300064: Tileset_Test_29
+    21300066: Tileset_Test_30
+    21300068: Tileset_Test_31
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -53,6 +72,7 @@ TextureImporter:
   lightmap: 0
   rGBM: 0
   compressionQuality: 50
+  allowsAlphaSplitting: 0
   spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
@@ -65,147 +85,307 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     sprites:
-    - name: Tileset_Test_0
+    - name: Tileset_Test_EESS
       rect:
         serializedVersion: 2
         x: 0
-        y: 192
+        y: 448
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_1
+    - name: Tileset_Test_SSwW
       rect:
         serializedVersion: 2
         x: 64
-        y: 192
+        y: 448
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_2
+    - name: Tileset_Test_ES
       rect:
         serializedVersion: 2
         x: 128
-        y: 192
+        y: 448
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_3
+    - name: Tileset_Test_SW
       rect:
         serializedVersion: 2
         x: 192
-        y: 192
+        y: 448
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_4
+    - name: Tileset_Test_NNeE
       rect:
         serializedVersion: 2
         x: 0
-        y: 128
+        y: 384
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_5
+    - name: Tileset_Test_NWNw
       rect:
         serializedVersion: 2
         x: 64
-        y: 128
+        y: 384
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_6
+    - name: Tileset_Test_NE
       rect:
         serializedVersion: 2
         x: 128
-        y: 128
+        y: 384
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_7
+    - name: Tileset_Test_NW
       rect:
         serializedVersion: 2
         x: 192
-        y: 128
+        y: 384
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_8
+    - name: Tileset_Test_NESW
       rect:
         serializedVersion: 2
         x: 0
-        y: 64
+        y: 320
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_9
+    - name: Tileset_Test_NNeEEsSSwWNw
       rect:
         serializedVersion: 2
         x: 64
-        y: 64
+        y: 320
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_10
+    - name: Tileset_Test_NSE
       rect:
         serializedVersion: 2
         x: 128
-        y: 64
+        y: 320
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_11
+    - name: Tileset_Test_ESW
       rect:
         serializedVersion: 2
         x: 192
-        y: 64
+        y: 320
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_12
+    - name: Tileset_Test_X
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 256
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: Tileset_Test_13
       rect:
         serializedVersion: 2
         x: 64
+        y: 256
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_14
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 256
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_NEW
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 256
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_NSSwWNw
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 192
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_EEsSSwW
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 192
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_18
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 192
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_19
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 192
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_NNeEEsS
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_NNeEWNw
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_22
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_23
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_25
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_EW
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_NS
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_28
+      rect:
+        serializedVersion: 2
+        x: 0
         y: 0
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_14
+    - name: Tileset_Test_29
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tileset_Test_30
       rect:
         serializedVersion: 2
         x: 128
@@ -213,9 +393,9 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_15
+    - name: Tileset_Test_31
       rect:
         serializedVersion: 2
         x: 192
@@ -223,7 +403,7 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 

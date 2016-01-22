@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd897b07bda2270418b27a9acaf46aa2, type: 3}
+  m_Name: Set_Floor_Test
+  m_EditorClassIdentifier: 
+  CollectionName: Test Floor
+  Type: 1
+  Tile_X: {fileID: 109216, guid: a9009de52a067e34fa5c0482f6940cbe, type: 2}
+  Tile_NNeEEsSwW: {fileID: 109216, guid: a9009de52a067e34fa5c0482f6940cbe, type: 2}
+  Tile_NESW: {fileID: 109216, guid: a9009de52a067e34fa5c0482f6940cbe, type: 2}
+  Tile_NS: {fileID: 155526, guid: 31abeb21da26f28468673a0fe14520fc, type: 2}
+  Tile_EW: {fileID: 160514, guid: 71c94d8e7af8a5c4d87a39b29ce3eddc, type: 2}
+  Tile_SW: {fileID: 0}
+  Tile_NW: {fileID: 109216, guid: f0f85440f97eb9549a6b3387755d034d, type: 2}
+  Tile_NE: {fileID: 109216, guid: 5662e4e903fa478428bc94b0a2612723, type: 2}
+  Tile_ES: {fileID: 0}
+  Tile_SSwW: {fileID: 0}
+  Tile_NNwW: {fileID: 0}
+  Tile_NNeE: {fileID: 0}
+  Tile_EEsS: {fileID: 0}
+  Tile_ESW: {fileID: 109216, guid: bda28a872c154364d8f5ca8208d04c36, type: 2}
+  Tile_NSW: {fileID: 109216, guid: 1f96217e9e1df9e4eaf6fdfd97cccb63, type: 2}
+  Tile_NEW: {fileID: 109216, guid: 36bb8470a9ac5fe4788570e375ab7bf6, type: 2}
+  Tile_NES: {fileID: 109216, guid: 81f7b72f1a4bb114480aeee293ad5a9a, type: 2}

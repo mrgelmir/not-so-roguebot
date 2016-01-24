@@ -210,7 +210,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Button
+  m_Text: Test button
 --- !u!222 &175036774
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -434,9 +434,9 @@ MonoBehaviour:
     Width: 100
     Height: 100
     MaxRooms: 50
-    MinRoomWidth: 8
-    MinRoomHeight: 5
-    MaxRoomWidth: 15
+    MinRoomWidth: 5
+    MinRoomHeight: 4
+    MaxRoomWidth: 10
     MaxRoomHeight: 8
   tileFactory: {fileID: 1631374363}
   tileCollection: {fileID: 11400000, guid: ca1073e6281c2d24396fb0c415e6dae0, type: 2}
@@ -490,7 +490,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -496.320007, y: -369}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1667472893

@@ -29,7 +29,7 @@ namespace DungeonVisuals
 
 		// temp styling
 		Dictionary<int, Color> colorMap = new Dictionary<int, Color>();
-		
+
 		#region Interface
 		public void SetGrid(GridData gridData)
 		{
@@ -55,7 +55,7 @@ namespace DungeonVisuals
 			if (currentVisual != null)
 			{
 				// release visual
-				ReleaseVisual(currentVisual);
+				ReturnInstanceToPool(currentVisual);
 			}
 
 			// get new visual
@@ -66,7 +66,7 @@ namespace DungeonVisuals
 				Log.Warning("TileFactory::GetTileVisual - tile collections map is not yet initialized or null");
 				newVisual = null;
 			}
-			
+
 			// catch special type cases here
 			switch (tileData.Type)
 			{
@@ -81,9 +81,9 @@ namespace DungeonVisuals
 					break;
 			}
 
-			if(gridTileVisuals.ContainsKey(tileData))
+			if (gridTileVisuals.ContainsKey(tileData))
 			{
-				if(newVisual == null)
+				if (newVisual == null)
 				{
 					gridTileVisuals.Remove(tileData);
 				}
@@ -96,8 +96,8 @@ namespace DungeonVisuals
 			{
 				gridTileVisuals.Add(tileData, newVisual);
 			}
-        }
-		
+		}
+
 		public void UpdateTileObjectVisual(TileData tileData)
 		{
 			TileObjectData objectData = tileData.ObjectData;
@@ -110,9 +110,9 @@ namespace DungeonVisuals
 				// clear the current visual if it exists ...
 				if (currentVisual != null)
 				{
-					ReleaseVisual(currentVisual);
+					ReturnInstanceToPool(currentVisual);
 					gridTileObjectVisuals.Remove(tileData);
-                }
+				}
 
 				// ... and then we are done here
 				return;
@@ -122,7 +122,7 @@ namespace DungeonVisuals
 
 			GameObject newVisual = null;
 
-			if(objectData.ObjectCode == "door")
+			if (objectData.ObjectCode == "door")
 			{
 				newVisual = SpawnObject(tileData, GetDoorTileVisual);
 			}
@@ -142,7 +142,7 @@ namespace DungeonVisuals
 		private GameObject SpawnTile(TileData tileData, System.Func<TileData, GameObject> resourceGetter)
 		{
 			// get the prefab from the provided function 
-			if(resourceGetter == null)
+			if (resourceGetter == null)
 			{
 				Log.Error("TileFactory::SpawnTile - resourceGetter is null");
 			}
@@ -156,9 +156,9 @@ namespace DungeonVisuals
 			else
 			{
 				// Instantiate the Tile and set to correct position
-				// TODO implement pooling here somewhere
-				GameObject tileVisual = Instantiate<GameObject>(tilePrefab);
-				tileVisual.name = tileData.ToString();
+				GameObject tileVisual = GetInstanceFromPool(tilePrefab);
+				// cannot do this here anymore ATM to not hamper pooling workings
+				//tileVisual.name = tileData.ToString();
 				tileVisual.transform.position = new Vector3(tileData.Column, 0f, tileData.Row);
 				tileVisual.transform.SetParent(transform, false);
 
@@ -210,12 +210,11 @@ namespace DungeonVisuals
 			else
 			{
 				// Instantiate the Tile and set to correct position
-				// TODO implement pooling here somewhere
-				GameObject tileVisual = Instantiate<GameObject>(tilePrefab);
+				GameObject tileVisual = GetInstanceFromPool(tilePrefab);
 				tileVisual.name = tileData.ObjectData.ToString();
 				tileVisual.transform.position = new Vector3(tileData.Column, 0f, tileData.Row);
 				tileVisual.transform.SetParent(transform, false);
-								
+
 				// done
 				return tileVisual;
 			}
@@ -254,7 +253,7 @@ namespace DungeonVisuals
 
 			GameObject prefab = TileForOrientation(orientation, collection);
 
-			if(prefab == null)
+			if (prefab == null)
 			{
 				Log.Warning("TileFactory::GetRegularTileVisual - tile collection does not contain tile for orientation " + orientation.ToString());
 			}
@@ -286,12 +285,6 @@ namespace DungeonVisuals
 			return Door_NS;
 		}
 
-		public void ReleaseVisual(GameObject visual)
-		{
-			// TODO add pooling here
-			Destroy(visual);
-		}
-
 		private void UpdateCollections()
 		{
 			// move collections from list to dictionary
@@ -317,7 +310,7 @@ namespace DungeonVisuals
 				default:
 				case GridDirection.None:
 					visual = collection.Tile_X;
-					if(visual == null)
+					if (visual == null)
 					{
 						Debug.LogWarning("TileFactory::TileForOrientation - The default tile (Tile_X) is not set for the collection " + collection.CollectionName);
 					}
@@ -393,5 +386,80 @@ namespace DungeonVisuals
 
 			return visual;
 		}
+
+		#region Pooling
+
+		// holds all pooling data
+		private Dictionary<string, List<GameObject>> pooledItems = new Dictionary<string, List<GameObject>>();
+
+		/// <summary>
+		/// Dynamically creates a Pool for instances of given prefab if it does not exist yet
+		/// Returns a pooled object if available, so variables might need resetting
+		/// Instantiates a new instance if needed, please don't touch the GO's name as it is required to stay the same to re-enter the pool
+		/// </summary>
+		/// <param name="prefab"></param>
+		/// <returns>An instance of the given prefab</returns>
+		private GameObject GetInstanceFromPool(GameObject prefab)
+		{
+			// temp implementation using *buegh* string/name identifiers 
+
+			string poolId = prefab.name;
+
+			// check if pool exists
+			if (pooledItems.ContainsKey(poolId))
+			{
+				// get pool
+				List<GameObject> pool = pooledItems[poolId];
+
+				// check to see if instances are available
+				if (pool.Count > 0)
+				{
+					GameObject pooledInstance = pool[pool.Count - 1];
+					pool.RemoveAt(pool.Count - 1);
+#if UNITY_EDITOR
+					// just to quickly be able to find pooled instances in editor
+					pooledInstance.name = pooledInstance.name.Replace("pooled:", "");
+#endif
+					pooledInstance.SetActive(true);
+					return pooledInstance;
+				}
+			}
+			else
+			{
+				// create pool
+				pooledItems.Add(poolId, new List<GameObject>(5));
+			}
+
+			// if we come here, an instance is needed
+			GameObject instance = Instantiate(prefab);
+			instance.name = poolId;
+			return instance;
+		}
+
+		private void ReturnInstanceToPool(GameObject instance)
+		{
+			string poolId = instance.name;
+
+			if (pooledItems.ContainsKey(poolId))
+			{
+				instance.SetActive(false);
+#if UNITY_EDITOR
+				// just to quickly be able to find pooled instances in editor
+				instance.transform.position = Vector3.left * 5f;
+				instance.name = "pooled:" + instance.name;
+#endif
+				pooledItems[poolId].Add(instance);
+			}
+			else
+			{
+				// should not happen -> destroy instance
+				Log.Error("TileFactory::ReturnInstanceToPool - returned an instance to a pool that does not exist. Either this object is not from a pool, or it's name has been tampered with");
+				Destroy(instance);
+			}
+		}
+
+		#endregion
 	}
+
+
 }

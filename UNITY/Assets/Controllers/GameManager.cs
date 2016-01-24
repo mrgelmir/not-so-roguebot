@@ -9,27 +9,23 @@ public class GameManager : MonoBehaviour
 
 	[Header("Dungeon Generation")]
 	[SerializeField]
-	private DungeonGenerationInfo dungeonInfo;
+	private DungeonGenerationInfo dungeonInfo = null;
 
 	[Header("Project References")]
 	[SerializeField]
-	private TileFactory tileFactory;
+	private TileFactory tileFactory = null;
 	[SerializeField]
 	private TileCollection tileCollection;
 
 	[Header("Scene References")]
 	[SerializeField]
-	protected GridMoveManager gridMoveManager;
-	[SerializeField]
-	private FollowCam cam;
-	[SerializeField]
-	private TextPopup textPopup;
+	private TextPopup textPopup = null;
 
 	//[Header("Tweakables")]
 
-	private GameObject[,] gridVisuals;
+	private GridData gridData = null;
 
-	private void Start()
+	private void Awake()
 	{
 		InitializeGame();
 	}
@@ -44,26 +40,10 @@ public class GameManager : MonoBehaviour
 	/// </summary>
 	public virtual void InitializeGame()
 	{
-		// generate dungeon
-		IDungeonGenerator dungeonGenerator = new DungeonWalkGenerator();
-		dungeonGenerator.Setup(dungeonInfo);
-		GridData gridData = dungeonGenerator.GenerateDungeon().GetFlattenedGrid();
+		GenerateDungeon();
 
-		// prepare the visuals
-		gridVisuals = new GameObject[gridData.Columns, gridData.Rows];
-
-		// set up factory
+		// set up visual factory
 		tileFactory.SetGrid(gridData);
-
-		foreach (TileData tileData in gridData)
-		{
-			// create all tile visuals and subscribe for further visual updates
-			gridVisuals[tileData.Column, tileData.Row] = tileFactory.GetTileVisual(tileData);
-			tileData.OnTileChanged += UpdateTileVisual;
-			UpdateTileVisual(tileData);
-		}
-
-		//gridMoveManager.OnEndRound += EndOfTurn;
 
 		//StartGame();
 	}
@@ -75,7 +55,7 @@ public class GameManager : MonoBehaviour
 	/// </summary>
 	public virtual void StartGame()
 	{
-		gridMoveManager.StartGame();
+
 	}
 
 	/// <summary>
@@ -105,20 +85,23 @@ public class GameManager : MonoBehaviour
 	/// </summary>
 	public virtual void FinishGame()
 	{
-		gridMoveManager.OnEndRound -= EndOfTurn;
+
 	}
 
-	private void UpdateTileVisual(TileData tileData)
+	public void GenerateDungeon()
 	{
-		// get current visual
-		GameObject visual = gridVisuals[tileData.Column, tileData.Row];
+		// generate dungeon
+		IDungeonGenerator dungeonGenerator = new DungeonWalkGenerator();
+		dungeonGenerator.Setup(dungeonInfo);
+		gridData = dungeonGenerator.GenerateDungeon().GetFlattenedGrid();
 
-		if (visual != null)
+	}
+
+	public void MessWithDungeon()
+	{
+		foreach (TileData tile in gridData)
 		{
-			// release visual
-			tileFactory.ReleaseTileVisual(visual); 
+			tile.Type = (tile.Type == DungeonTileType.Wall) ? DungeonTileType.Flat : DungeonTileType.Wall;
 		}
-
-		gridVisuals[tileData.Column, tileData.Row] = tileFactory.GetTileVisual(tileData);
-    }
+	}
 }

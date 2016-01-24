@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: f8e7999351efae1498c4ed81d9d99131
-timeCreated: 1453501503
+timeCreated: 1453646746
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -13,21 +13,21 @@ TextureImporter:
     21300012: Tileset_Test_NE
     21300014: Tileset_Test_NW
     21300016: Tileset_Test_NESW
-    21300018: Tileset_Test_NNeEEsSSwWNw
+    21300018: Tileset_Test_NNeESeSSwWNw
     21300020: Tileset_Test_NSW
     21300022: Tileset_Test_ESW
     21300024: Tileset_Test_X
     21300026: Tileset_Test_13
     21300028: Tileset_Test_NES
     21300030: Tileset_Test_NEW
-    21300032: Tileset_Test_EESS
-    21300034: Tileset_Test_NSE
-    21300036: Tileset_Test_14
+    21300032: Tileset_Test_ESeS
+    21300034: Tileset_Test_NSW
+    21300036: Tileset_Test_NES
     21300038: Tileset_Test_NSSwWNw
-    21300040: Tileset_Test_EEsSSwW
+    21300040: Tileset_Test_ESeSSwW
     21300042: Tileset_Test_18
     21300044: Tileset_Test_19
-    21300046: Tileset_Test_NNeEEsS
+    21300046: Tileset_Test_NNeESeS
     21300048: Tileset_Test_NNeEWNw
     21300050: Tileset_Test_22
     21300052: Tileset_Test_23
@@ -85,7 +85,7 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     sprites:
-    - name: Tileset_Test_EESS
+    - name: Tileset_Test_ESeS
       rect:
         serializedVersion: 2
         x: 0
@@ -175,7 +175,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_NNeEEsSSwWNw
+    - name: Tileset_Test_NNeESeSSwWNw
       rect:
         serializedVersion: 2
         x: 64
@@ -185,7 +185,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_NSE
+    - name: Tileset_Test_NSW
       rect:
         serializedVersion: 2
         x: 128
@@ -225,7 +225,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_14
+    - name: Tileset_Test_NES
       rect:
         serializedVersion: 2
         x: 128
@@ -255,7 +255,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_EEsSSwW
+    - name: Tileset_Test_ESeSSwW
       rect:
         serializedVersion: 2
         x: 64
@@ -285,7 +285,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Tileset_Test_NNeEEsS
+    - name: Tileset_Test_NNeESeS
       rect:
         serializedVersion: 2
         x: 0

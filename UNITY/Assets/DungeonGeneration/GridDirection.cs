@@ -10,7 +10,10 @@
 	[System.Flags]
 	public enum GridDirection
 	{
+		// No direction
 		None = 0,
+
+		// Base Directions (including diagonals)
 		North = 0x1,
 		NorthEast = 0x2,
 		East = 0x4,
@@ -19,6 +22,29 @@
 		SouthWest = 0x20,
 		West = 0x40,
 		NorthWest = 0x80,
+
+		// Composite directions
+
+		NNeEEsSwW = 0xFF, // All directions
+
+		// Composite w/o diagonals
+		NESW = North | East | South | West,
+
+		NS = North | South,
+		EW = East | West,
+
+		SW = South | West,
+		NW = North | West,
+		NE = North | East,
+		ES = East | South,
+
+		ESW = East | South | West,
+        NSW = North | South | West,
+        NEW = North | East | West,
+        NES = North | East | South,
+
+
+
 	}
 
 	public static class GridDirectionHelper

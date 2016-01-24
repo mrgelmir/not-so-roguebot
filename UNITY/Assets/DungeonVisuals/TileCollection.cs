@@ -19,10 +19,16 @@ namespace DungeonVisuals
 		public GameObject Tile_X;
 		
 		// center tile
-		public GameObject Tile_NNeEEsSwW;
+		public GameObject Tile_NNeESeSwW;
 
 		// Cross tile
 		public GameObject Tile_NESW;
+
+		// ends
+		public GameObject Tile_N;
+		public GameObject Tile_E;
+		public GameObject Tile_S;
+		public GameObject Tile_W;
 
 		// straights
 		public GameObject Tile_NS;
@@ -38,7 +44,7 @@ namespace DungeonVisuals
 		public GameObject Tile_SSwW;
 		public GameObject Tile_NNwW;
 		public GameObject Tile_NNeE;
-		public GameObject Tile_EEsS;
+		public GameObject Tile_ESeS;
 
 		// T's
 		public GameObject Tile_ESW;

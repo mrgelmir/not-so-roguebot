@@ -35,8 +35,8 @@ namespace DungeonGeneration.Generation
 			}
 
 			//// temp add a target in a random room
-			DungeonRoom randomRoom = workingData.Rooms[r.Next(workingData.Rooms.Count)];
-			randomRoom.Tiles[r.Next(randomRoom.Width)][r.Next(randomRoom.Height)] = DungeonTile.TargetTile;
+			//DungeonRoom randomRoom = workingData.Rooms[r.Next(workingData.Rooms.Count)];
+			//randomRoom.Tiles[r.Next(randomRoom.Width)][r.Next(randomRoom.Height)] = DungeonTile.TargetTile;
 
 			return GetCurrentGrid();
 		}

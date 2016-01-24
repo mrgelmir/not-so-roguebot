@@ -110,12 +110,15 @@ namespace DungeonGeneration.Generation
 					TileData tile = grid.GetTile(doorPos.Column, doorPos.Row);
 					if (tile.Type == DungeonTileType.None || tile.Type == DungeonTileType.Wall)
 					{
-						tile.Type = DungeonTileType.Door;
+						tile.Type = DungeonTileType.Flat;
 						tile.RoomIndex = roomIndex;
+
+						// TODO find more decent way to do this
+						tile.AddObject(new TileObjectData("door"));
 					}
 					else
 					{
-						Log.Write("AddRoomToGrid -> trying to add a door tile to a tile of type " + tile.Type.ToString() + " at position " + tile.Column + ":" + tile.Row);
+						Log.Write("DungeonGenerationData::AddRoomToGrid - trying to add a door tile to a tile of type " + tile.Type.ToString() + " at position " + tile.Column + ":" + tile.Row);
 					}
 				}
 			}

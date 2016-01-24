@@ -11,8 +11,6 @@ namespace DungeonGeneration
 		None = 0,
 		Flat = 1,
 		Wall = 2,
-		Door = 3,
-		Target = 4, // TODO make this an object on top of the grid instead of a tiletype
 	}
 	
 	// THIS NEEDS TO BE A VALUE TYPE: DO NOT CHANGE (a value type gets copied over, a reference type gets referenced)

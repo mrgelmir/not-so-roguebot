@@ -14,19 +14,23 @@ MonoBehaviour:
   CollectionName: Test walls
   Type: 2
   Tile_X: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
-  Tile_NNeEEsSwW: {fileID: 0}
-  Tile_NESW: {fileID: 0}
-  Tile_NS: {fileID: 0}
-  Tile_EW: {fileID: 0}
-  Tile_SW: {fileID: 0}
-  Tile_NW: {fileID: 0}
-  Tile_NE: {fileID: 0}
-  Tile_ES: {fileID: 0}
-  Tile_SSwW: {fileID: 0}
-  Tile_NNwW: {fileID: 0}
-  Tile_NNeE: {fileID: 0}
-  Tile_EEsS: {fileID: 0}
-  Tile_ESW: {fileID: 0}
-  Tile_NSW: {fileID: 0}
-  Tile_NEW: {fileID: 0}
-  Tile_NES: {fileID: 0}
+  Tile_NNeESeSwW: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_NESW: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_N: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_E: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_S: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_W: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_NS: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_EW: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_SW: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_NW: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_NE: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_ES: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_SSwW: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_NNwW: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_NNeE: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_ESeS: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_ESW: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_NSW: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_NEW: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
+  Tile_NES: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}

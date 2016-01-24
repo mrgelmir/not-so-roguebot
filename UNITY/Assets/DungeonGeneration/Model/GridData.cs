@@ -9,6 +9,9 @@ namespace DungeonGeneration
 		// Contains all gridTiles
 		private TileData[,] tiles;
 
+		// Contains all tile obejcts
+		private List<TileObjectData> tileObjects;
+
 		// TODO make a data structure to hold style info?
 
 		public int Columns
@@ -17,6 +20,8 @@ namespace DungeonGeneration
 		public int Rows
 		{ get { return tiles.GetLength(1); } }
 
+		public Action<TileData> OnTileChanged;
+		public Action<TileData> OnTileObjectChanged;
 
 		public GridData(int columns, int rows)
 		{
@@ -26,7 +31,9 @@ namespace DungeonGeneration
 			{
 				for (int row = 0; row < rows; row++)
 				{
-					tiles[column, row] = new TileData(column, row);
+					tiles[column, row] = new TileData(this, column, row);
+					tiles[column, row].OnTileChanged += TileChanged;
+					tiles[column, row].OnObjectChanged += TileObjectChanged;
 				}
 			}
 		}
@@ -44,6 +51,20 @@ namespace DungeonGeneration
 			return column >= 0 && column < Columns && row >= 0 && row < Rows;
 		}
 
+		private void TileChanged(TileData tileData)
+		{
+			if (OnTileChanged != null)
+				OnTileChanged(tileData);
+		}
+
+		private void TileObjectChanged(TileData tileData)
+		{
+			if (OnTileObjectChanged != null)
+				OnTileObjectChanged(tileData);
+		}
+
+
+		#region IEnumerable implementation
 		public IEnumerator<TileData> GetEnumerator()
 		{
 			return new GridEnumerator(this);
@@ -53,6 +74,7 @@ namespace DungeonGeneration
 		{
 			return GetEnumerator() as IEnumerator;
 		}
+		#endregion
 	}
 
 	public class GridEnumerator : IEnumerator<TileData>

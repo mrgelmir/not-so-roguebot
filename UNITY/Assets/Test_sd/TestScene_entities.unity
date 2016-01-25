@@ -229,6 +229,7 @@ GameObject:
   - 124: {fileID: 400892676}
   - 92: {fileID: 400892675}
   - 81: {fileID: 400892674}
+  - 114: {fileID: 400892679}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -303,6 +304,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
+--- !u!114 &400892679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 400892673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90f72618af99614dbca01b1f333ac6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1050296213
 GameObject:
   m_ObjectHideFlags: 0
@@ -457,6 +469,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 532fc5121c195a34bb1a636ed0dd0b51, type: 2}
   Door_NS: {fileID: 168788, guid: 8c9bd2014cbe33241a9a453bf817a2ff, type: 2}
   Door_EW: {fileID: 116562, guid: 91a5f1de3eec1d94b8108d476053e5f1, type: 2}
+  ChildCount: 0
 --- !u!1 &1667472891
 GameObject:
   m_ObjectHideFlags: 0

@@ -24,6 +24,10 @@ public class GameManager : MonoBehaviour
 	//[Header("Tweakables")]
 
 	private GridData gridData = null;
+	public GridData GridData
+	{
+		get { return gridData; }
+	}
 
 	private void Awake()
 	{
@@ -43,7 +47,7 @@ public class GameManager : MonoBehaviour
 		GenerateDungeon();
 
 		// set up visual factory
-		tileFactory.SetGrid(gridData);
+		//tileFactory.SetGrid(gridData);
 
 		//StartGame();
 	}
@@ -99,9 +103,13 @@ public class GameManager : MonoBehaviour
 
 	public void MessWithDungeon()
 	{
+
+		int count = 1000;
 		foreach (TileData tile in gridData)
 		{
 			tile.Type = (tile.Type == DungeonTileType.Wall) ? DungeonTileType.Flat : DungeonTileType.Wall;
+			if (--count <= 0)
+				break;
 		}
 	}
 }

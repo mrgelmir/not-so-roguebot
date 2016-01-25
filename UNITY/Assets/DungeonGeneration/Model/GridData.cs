@@ -75,6 +75,16 @@ namespace DungeonGeneration
 			return GetEnumerator() as IEnumerator;
 		}
 		#endregion
+
+		#region Indexers
+		public TileData this[int row, int column]
+		{
+			get
+			{
+				return GetTile(row, column);
+			}
+		}
+		#endregion
 	}
 
 	public class GridEnumerator : IEnumerator<TileData>

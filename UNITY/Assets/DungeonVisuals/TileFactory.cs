@@ -13,6 +13,9 @@ namespace DungeonVisuals
 		public GameObject Door_NS;
 		public GameObject Door_EW;
 
+		//TEMP
+		public int ChildCount = 0;
+
 		// a collection of tile collections, by tile type
 		private Dictionary<DungeonTileType, TileCollection> tileCollectionsMap = null;
 
@@ -30,33 +33,31 @@ namespace DungeonVisuals
 		// temp styling
 		Dictionary<int, Color> colorMap = new Dictionary<int, Color>();
 
-		#region Interface
-		public void SetGrid(GridData gridData)
+		protected void Awake()
 		{
 			UpdateCollections();
-			this.gridData = gridData;
-			gridData.OnTileChanged += UpdateTileVisual;
-			gridData.OnTileObjectChanged += UpdateTileObjectVisual;
-
-			// create all tile visuals for the first time
-			foreach (TileData tileData in gridData)
-			{
-				UpdateTileVisual(tileData);
-				UpdateTileObjectVisual(tileData);
-			}
+			FindObjectOfType<TileRenderer>().SubscribeOnVisualTiles(RegisterVisualTile, UnregisterVisualTile);
 		}
+
+		#region Interface
+		//public void SetGrid(GridData gridData)
+		//{
+		//	UpdateCollections();
+		//	this.gridData = gridData;
+		//	gridData.OnTileChanged += UpdateTileVisual;
+		//	gridData.OnTileObjectChanged += UpdateTileObjectVisual;
+
+		//	//// create all tile visuals for the first time
+		//	//foreach (TileData tileData in gridData)
+		//	//{
+		//	//	UpdateTileVisual(tileData);
+		//	//	UpdateTileObjectVisual(tileData);
+		//	//}
+		//}
 
 		public void UpdateTileVisual(TileData tileData)
 		{
-			// get current visual
-			GameObject currentVisual;
-			gridTileVisuals.TryGetValue(tileData, out currentVisual);
-
-			if (currentVisual != null)
-			{
-				// release visual
-				ReturnInstanceToPool(currentVisual);
-			}
+			RemoveCurrentVisual(tileData);
 
 			// get new visual
 			GameObject newVisual = null;
@@ -96,6 +97,9 @@ namespace DungeonVisuals
 			{
 				gridTileVisuals.Add(tileData, newVisual);
 			}
+
+
+			ChildCount = transform.childCount;
 		}
 
 		public void UpdateTileObjectVisual(TileData tileData)
@@ -138,6 +142,23 @@ namespace DungeonVisuals
 			}
 		}
 
+		public void RegisterVisualTile(TileData tileData)
+		{
+			tileData.OnTileChanged += UpdateTileVisual;
+			tileData.OnObjectChanged += UpdateTileVisual;
+
+			// first update
+			UpdateTileVisual(tileData);
+		}
+
+		public void UnregisterVisualTile(TileData tileData)
+		{
+			tileData.OnTileChanged -= UpdateTileVisual;
+			tileData.OnObjectChanged -= UpdateTileVisual;
+
+			RemoveCurrentVisual(tileData);
+		}
+
 		#endregion
 		private GameObject SpawnTile(TileData tileData, System.Func<TileData, GameObject> resourceGetter)
 		{
@@ -157,8 +178,7 @@ namespace DungeonVisuals
 			{
 				// Instantiate the Tile and set to correct position
 				GameObject tileVisual = GetInstanceFromPool(tilePrefab);
-				// cannot do this here anymore ATM to not hamper pooling workings
-				//tileVisual.name = tileData.ToString();
+				tileVisual.name = tileData.ToString();
 				tileVisual.transform.position = new Vector3(tileData.Column, 0f, tileData.Row);
 				tileVisual.transform.SetParent(transform, false);
 
@@ -386,6 +406,19 @@ namespace DungeonVisuals
 
 			return visual;
 		}
+		
+		private void RemoveCurrentVisual(TileData tileData)
+		{
+			// get current visual
+			GameObject currentVisual;
+			gridTileVisuals.TryGetValue(tileData, out currentVisual);
+
+			if (currentVisual != null)
+			{
+				// release visual
+				ReturnInstanceToPool(currentVisual);
+			}
+		}
 
 		#region Pooling
 
@@ -395,7 +428,6 @@ namespace DungeonVisuals
 		/// <summary>
 		/// Dynamically creates a Pool for instances of given prefab if it does not exist yet
 		/// Returns a pooled object if available, so variables might need resetting
-		/// Instantiates a new instance if needed, please don't touch the GO's name as it is required to stay the same to re-enter the pool
 		/// </summary>
 		/// <param name="prefab"></param>
 		/// <returns>An instance of the given prefab</returns>
@@ -414,14 +446,21 @@ namespace DungeonVisuals
 				// check to see if instances are available
 				if (pool.Count > 0)
 				{
-					GameObject pooledInstance = pool[pool.Count - 1];
-					pool.RemoveAt(pool.Count - 1);
+					foreach (GameObject pooledInstance in pool)
+					{
+						if (!pooledInstance.activeSelf)
+						{
+							//GameObject pooledInstance = pool[pool.Count - 1];
+							//pool.RemoveAt(pool.Count - 1);
 #if UNITY_EDITOR
-					// just to quickly be able to find pooled instances in editor
-					pooledInstance.name = pooledInstance.name.Replace("pooled:", "");
+							// just to quickly be able to find pooled instances in editor
+							pooledInstance.name = pooledInstance.name.Replace("pooled:", "");
 #endif
-					pooledInstance.SetActive(true);
-					return pooledInstance;
+							pooledInstance.SetActive(true);
+							return pooledInstance;
+
+						}
+					}
 				}
 			}
 			else
@@ -433,29 +472,31 @@ namespace DungeonVisuals
 			// if we come here, an instance is needed
 			GameObject instance = Instantiate(prefab);
 			instance.name = poolId;
+			pooledItems[poolId].Add(instance);
 			return instance;
 		}
 
 		private void ReturnInstanceToPool(GameObject instance)
 		{
-			string poolId = instance.name;
+			//string poolId = instance.name;
 
-			if (pooledItems.ContainsKey(poolId))
+			//if (pooledItems.ContainsKey(poolId))
 			{
+				// we just disable the pooled item, so the pool knows that it can be re-used
 				instance.SetActive(false);
 #if UNITY_EDITOR
 				// just to quickly be able to find pooled instances in editor
 				instance.transform.position = Vector3.left * 5f;
 				instance.name = "pooled:" + instance.name;
 #endif
-				pooledItems[poolId].Add(instance);
+				//pooledItems[poolId].Add(instance);
 			}
-			else
-			{
-				// should not happen -> destroy instance
-				Log.Error("TileFactory::ReturnInstanceToPool - returned an instance to a pool that does not exist. Either this object is not from a pool, or it's name has been tampered with");
-				Destroy(instance);
-			}
+			//else
+			//{
+			//	// should not happen -> destroy instance
+			//	Log.Error("TileFactory::ReturnInstanceToPool - returned an instance to a pool that does not exist. Either this object is not from a pool, or it's name has been tampered with");
+			//	Destroy(instance);
+			//}
 		}
 
 		#endregion

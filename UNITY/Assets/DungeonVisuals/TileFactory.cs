@@ -12,6 +12,7 @@ namespace DungeonVisuals
 		// TODO object collections
 		public GameObject Door_NS;
 		public GameObject Door_EW;
+		public GameObject Target;
 
 		//TEMP
 		public int ChildCount = 0;
@@ -20,8 +21,9 @@ namespace DungeonVisuals
 		private Dictionary<DungeonTileType, TileCollection> tileCollectionsMap = null;
 
 		// a reference to the grid data object to figure out orientations
-		// TODO once a tile knows of the gridData, remove this reference
-		private GridData gridData = null;
+		// TODO once/if a tile knows of the gridData, remove this reference
+		private GridData gridData
+		{ get { return GameManager.Instance.GridData; } }
 
 		// Container holding the existing grid Tile Visuals
 		private Dictionary<TileData, GameObject> gridTileVisuals = new Dictionary<TileData, GameObject>();
@@ -32,8 +34,8 @@ namespace DungeonVisuals
 
 		// temp styling
 		Dictionary<int, Color> colorMap = new Dictionary<int, Color>();
-
-		protected void Awake()
+		
+		protected void Start()
 		{
 			UpdateCollections();
 			FindObjectOfType<TileRenderer>().SubscribeOnVisualTiles(RegisterVisualTile, UnregisterVisualTile);
@@ -417,6 +419,7 @@ namespace DungeonVisuals
 			{
 				// release visual
 				ReturnInstanceToPool(currentVisual);
+				gridTileVisuals.Remove(tileData);
 			}
 		}
 

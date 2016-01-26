@@ -126,6 +126,22 @@ namespace DungeonGeneration
 			return Type.ToString() + " Tile - " + Column + ":" + Row;
 		}
 
+		public override bool Equals(object other)
+		{
+			TileData otherTile = other as TileData;
+			return otherTile == null ? false : Equals(otherTile);
+		}
+
+		public bool Equals(TileData other)
+		{
+			// simple for now, only works in a single flattened grid
+			return (Column == other.Column && Row == other.Row);
+		}
+
+		public override int GetHashCode()
+		{
+			return Column.GetHashCode() | Row.GetHashCode();
+		}
 		#endregion
 	}
 

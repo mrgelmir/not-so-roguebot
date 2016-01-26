@@ -24,13 +24,37 @@ public class GameManager : MonoBehaviour
 	//[Header("Tweakables")]
 
 	private GridData gridData = null;
+
 	public GridData GridData
 	{
 		get { return gridData; }
 	}
 
-	private void Awake()
+	private static GameManager instance = null;
+	public static GameManager Instance
 	{
+		get
+		{
+			if (instance == null)
+				Log.Warning("GameManager::Instance - the game manager instance is null, so it either has not been created, or you're accessing it from the Awake or OnEnable");
+			return instance;
+		}
+	}
+
+
+	protected void Awake()
+	{
+		// singleton stuff
+		if(instance == null || instance == this)
+		{
+			instance = this;
+		}
+		else
+		{
+			Log.Warning("GameManager::Awake - an instance of GameManager already exists, this should NOT happen");
+			Destroy(this); // Don't destroy gameObject, because other scripts may be attached to it.
+		}
+		
 		InitializeGame();
 	}
 
@@ -98,7 +122,6 @@ public class GameManager : MonoBehaviour
 		IDungeonGenerator dungeonGenerator = new DungeonWalkGenerator();
 		dungeonGenerator.Setup(dungeonInfo);
 		gridData = dungeonGenerator.GenerateDungeon().GetFlattenedGrid();
-
 	}
 
 	public void MessWithDungeon()
@@ -112,4 +135,7 @@ public class GameManager : MonoBehaviour
 				break;
 		}
 	}
+
+
+
 }

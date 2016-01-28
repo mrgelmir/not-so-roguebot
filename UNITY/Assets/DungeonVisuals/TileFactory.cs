@@ -147,16 +147,17 @@ namespace DungeonVisuals
 		public void RegisterVisualTile(TileData tileData)
 		{
 			tileData.OnTileChanged += UpdateTileVisual;
-			tileData.OnObjectChanged += UpdateTileVisual;
+			tileData.OnObjectChanged += UpdateTileObjectVisual;
 
 			// first update
 			UpdateTileVisual(tileData);
+			UpdateTileObjectVisual(tileData);
 		}
 
 		public void UnregisterVisualTile(TileData tileData)
 		{
 			tileData.OnTileChanged -= UpdateTileVisual;
-			tileData.OnObjectChanged -= UpdateTileVisual;
+			tileData.OnObjectChanged -= UpdateTileObjectVisual;
 
 			RemoveCurrentVisual(tileData);
 		}
@@ -420,6 +421,20 @@ namespace DungeonVisuals
 				// release visual
 				ReturnInstanceToPool(currentVisual);
 				gridTileVisuals.Remove(tileData);
+			}
+
+			// remove the tile object as well
+			if(tileData.ObjectData != null)
+			{
+				GameObject currentObjectVisual;
+				gridTileObjectVisuals.TryGetValue(tileData, out currentObjectVisual);
+
+				if (currentObjectVisual != null)
+				{
+					// release visual
+					ReturnInstanceToPool(currentObjectVisual);
+					gridTileObjectVisuals.Remove(tileData);
+				}
 			}
 		}
 

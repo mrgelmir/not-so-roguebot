@@ -18,9 +18,11 @@ namespace DungeonVisuals
 
 		private List<TileData> visibleTiles = new List<TileData>();
 
-		private int currentColumn;
-		private int currentRow;
-		private int currentCameraSize;
+		private int currentColumn = 0;
+		private int currentRow = 0;
+		private int currentCameraSize = 0;
+		private int currentColumnBuffer = 0;
+		private int currentRowBuffer = 0;
 
 		private GridData gridData
 		{ get { return GameManager.Instance.GridData; } }
@@ -66,45 +68,48 @@ namespace DungeonVisuals
 		{
 			// check which tiles are in bounds and which aren't
 
-
+			// get new values
 			int newColumn = Mathf.RoundToInt(transform.position.x);
 			int newRow = Mathf.RoundToInt(transform.position.z);
-			int newSize = Mathf.RoundToInt(boundsCamera.orthographicSize);
+			int newCameraSize = Mathf.RoundToInt(boundsCamera.orthographicSize);
 
-			if (newColumn != currentColumn || newRow != currentRow || newSize != currentCameraSize)
+			if(!(newColumn != currentColumn || newRow != currentRow || newCameraSize != currentCameraSize))
 			{
-				// do the update
-				currentColumn = newColumn;
-				currentRow = newRow;
-				currentCameraSize = newSize;
-			}
-			else
-			{
-				// nothing has changed
+				// nothing has changed -> save processing
 				return;
 			}
+			
+			int newColumnBuffer = Mathf.RoundToInt(currentCameraSize * boundsCamera.aspect) + CameraBuffer;
+			int newRowBuffer = currentCameraSize + CameraBuffer;
 
 
-			int columnBuffer = Mathf.RoundToInt(currentCameraSize * boundsCamera.aspect) + CameraBuffer;
-			int rowBuffer = currentCameraSize + CameraBuffer;
-
-
-			// TODO make this faster if it proves an issue
+			// TODO make this only iterate between the new and current visible tiles
 			for (int col = 0; col < gridData.Columns; col++)
 			{
 				for (int row = 0; row < gridData.Rows; row++)
 				{
-					if (col >= currentColumn - columnBuffer && col <= currentColumn + columnBuffer
-						&& row >= currentRow - rowBuffer && row <= currentRow + rowBuffer)
+					bool wasInBounds = (col >= currentColumn - currentColumnBuffer && col <= currentColumn + currentColumnBuffer
+						&& row >= currentRow - currentRowBuffer && row <= currentRow + currentRowBuffer);
+					bool isInBounds = (col >= newColumn - newColumnBuffer && col <= newColumn + newColumnBuffer
+						&& row >= newRow - newRowBuffer && row <= newRow + newRowBuffer);
+
+					if (isInBounds && !wasInBounds)
 					{
 						ShowTile(gridData[col, row]);
 					}
-					else
+					else if(!isInBounds && wasInBounds)
 					{
 						HideTile(gridData[col, row]);
 					}
 				}
 			}
+
+			// do the update
+			currentColumn = newColumn;
+			currentRow = newRow;
+			currentCameraSize = newCameraSize;
+			currentColumnBuffer = newColumnBuffer;
+			currentRowBuffer = newRowBuffer;
 		}
 
 		private void ShowTile(TileData tileData)

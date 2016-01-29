@@ -37,7 +37,7 @@ namespace DungeonVisuals
 		
 		protected void Start()
 		{
-			UpdateCollections();
+			SetupCollections();
 			FindObjectOfType<TileRenderer>().SubscribeOnVisualTiles(RegisterVisualTile, UnregisterVisualTile);
 		}
 
@@ -308,7 +308,7 @@ namespace DungeonVisuals
 			return Door_NS;
 		}
 
-		private void UpdateCollections()
+		private void SetupCollections()
 		{
 			// move collections from list to dictionary
 			tileCollectionsMap = new Dictionary<DungeonTileType, TileCollection>(TileCollections.Count);

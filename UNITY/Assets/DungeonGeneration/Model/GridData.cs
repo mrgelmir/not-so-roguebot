@@ -9,7 +9,7 @@ namespace DungeonGeneration
 		// Contains all gridTiles
 		private TileData[,] tiles;
 
-		// Contains all tile obejcts
+		// Contains all tile objects
 		private List<TileObjectData> tileObjects;
 
 		// TODO make a data structure to hold style info?

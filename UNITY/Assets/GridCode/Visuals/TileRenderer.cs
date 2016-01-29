@@ -1,10 +1,10 @@
-﻿using DungeonGeneration;
+﻿using GridCode;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DungeonVisuals
+namespace GridCode.Visuals
 {
 	[RequireComponent(typeof(Camera))]
 	class TileRenderer : MonoBehaviour
@@ -18,12 +18,8 @@ namespace DungeonVisuals
 
 		private List<TileData> visibleTiles = new List<TileData>();
 
-		private int currentColumn = 0;
-		private int currentRow = 0;
-		private int currentCameraSize = 0;
-		private int currentColumnBuffer = 0;
-		private int currentRowBuffer = 0;
-
+		GridCameraBounds currentCamBounds = GridCameraBounds.Empty;
+		
 		private GridData gridData
 		{ get { return GameManager.Instance.GridData; } }
 
@@ -68,19 +64,25 @@ namespace DungeonVisuals
 		{
 			// check which tiles are in bounds and which aren't
 
-			// get new values
-			int newColumn = Mathf.RoundToInt(transform.position.x);
-			int newRow = Mathf.RoundToInt(transform.position.z);
-			int newCameraSize = Mathf.RoundToInt(boundsCamera.orthographicSize);
+			// TODO push all functions below into the GridCameraBounds struct
 
-			if(!(newColumn != currentColumn || newRow != currentRow || newCameraSize != currentCameraSize))
+			// get new values
+			GridCameraBounds newBounds = new GridCameraBounds()
+			{
+				Column = Mathf.RoundToInt(transform.position.x),
+				Row = Mathf.RoundToInt(transform.position.z),
+				CameraSize = Mathf.RoundToInt(boundsCamera.orthographicSize),
+			};
+
+			if (newBounds == currentCamBounds)
 			{
 				// nothing has changed -> save processing
 				return;
 			}
-			
-			int newColumnBuffer = Mathf.RoundToInt(currentCameraSize * boundsCamera.aspect) + CameraBuffer;
-			int newRowBuffer = currentCameraSize + CameraBuffer;
+
+			// get other data
+			newBounds.ColumnBuffer = Mathf.RoundToInt(newBounds.CameraSize * boundsCamera.aspect) + CameraBuffer;
+			newBounds.RowBuffer = newBounds.CameraSize + CameraBuffer;
 
 
 			// TODO make this only iterate between the new and current visible tiles
@@ -88,28 +90,24 @@ namespace DungeonVisuals
 			{
 				for (int row = 0; row < gridData.Rows; row++)
 				{
-					bool wasInBounds = (col >= currentColumn - currentColumnBuffer && col <= currentColumn + currentColumnBuffer
-						&& row >= currentRow - currentRowBuffer && row <= currentRow + currentRowBuffer);
-					bool isInBounds = (col >= newColumn - newColumnBuffer && col <= newColumn + newColumnBuffer
-						&& row >= newRow - newRowBuffer && row <= newRow + newRowBuffer);
+					bool wasInBounds = (col >= currentCamBounds.Column - currentCamBounds.ColumnBuffer && col <= currentCamBounds.Column + currentCamBounds.ColumnBuffer
+						&& row >= currentCamBounds.Row - currentCamBounds.RowBuffer && row <= currentCamBounds.Row + currentCamBounds.RowBuffer);
+					bool isInBounds = (col >= newBounds.Column - newBounds.ColumnBuffer && col <= newBounds.Column + newBounds.ColumnBuffer
+						&& row >= newBounds.Row - newBounds.RowBuffer && row <= newBounds.Row + newBounds.RowBuffer);
 
 					if (isInBounds && !wasInBounds)
 					{
 						ShowTile(gridData[col, row]);
 					}
-					else if(!isInBounds && wasInBounds)
+					else if (!isInBounds && wasInBounds)
 					{
 						HideTile(gridData[col, row]);
 					}
 				}
 			}
 
-			// do the update
-			currentColumn = newColumn;
-			currentRow = newRow;
-			currentCameraSize = newCameraSize;
-			currentColumnBuffer = newColumnBuffer;
-			currentRowBuffer = newRowBuffer;
+			// update the current bounds data
+			currentCamBounds = newBounds;
 		}
 
 		private void ShowTile(TileData tileData)
@@ -153,5 +151,63 @@ namespace DungeonVisuals
 			transform.position = newPos;
 		}
 
+	}
+
+	[Serializable]
+	struct GridCameraBounds
+	{
+		public int Column;
+		public int Row;
+		public int CameraSize;
+		public int ColumnBuffer;
+		public int RowBuffer;
+
+		public static GridCameraBounds Empty
+		{
+			get
+			{
+				return new GridCameraBounds()
+				{
+					Column = 0,
+					Row = 0,
+					CameraSize = 0,
+					ColumnBuffer = 0,
+					RowBuffer = 0,
+				};
+
+			}
+		}
+
+		public override int GetHashCode()
+		{
+			return Column ^ Row ^ CameraSize;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj is GridCameraBounds)
+			{
+				return Equals((GridCameraBounds)obj);
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		public bool Equals(GridCameraBounds other)
+		{
+			return this == other;
+		}
+
+		public static bool operator ==(GridCameraBounds b1, GridCameraBounds b2)
+		{
+			return !(b1 != b2);
+		}
+
+		public static bool operator !=(GridCameraBounds b1, GridCameraBounds b2)
+		{
+			return (b1.Column != b2.Column || b1.Row != b2.Row || b1.CameraSize != b2.CameraSize);
+		}
 	}
 }

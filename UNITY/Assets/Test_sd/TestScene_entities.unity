@@ -230,6 +230,8 @@ GameObject:
   - 92: {fileID: 400892675}
   - 81: {fileID: 400892674}
   - 114: {fileID: 400892679}
+  - 95: {fileID: 400892680}
+  - 114: {fileID: 400892681}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -316,6 +318,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CameraBuffer: 2
+--- !u!95 &400892680
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 400892673}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5ad00a6404fa2004ba0fc3d37cf9bb7c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &400892681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 400892673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a4b3146383373242a930ebcceecfabb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Target: {fileID: 0}
 --- !u!1 &1050296213
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,7 +501,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 532fc5121c195a34bb1a636ed0dd0b51, type: 2}
   Door_NS: {fileID: 168788, guid: 8c9bd2014cbe33241a9a453bf817a2ff, type: 2}
   Door_EW: {fileID: 116562, guid: 91a5f1de3eec1d94b8108d476053e5f1, type: 2}
-  Target: {fileID: 0}
+  Target: {fileID: 183654, guid: 3767b2a2c3731c0439d8d822b3e0db3d, type: 2}
+  EntityVisual: {fileID: 140038, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
   ChildCount: 0
 --- !u!1 &1667472891
 GameObject:

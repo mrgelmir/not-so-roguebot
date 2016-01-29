@@ -1,7 +1,7 @@
-﻿using DungeonGeneration;
-using DungeonGeneration.Generation;
-using DungeonVisuals;
-using System.Collections.Generic;
+﻿using GridCode.Entities.Model;
+using GridCode;
+using GridCode.Generation;
+using GridCode.Visuals;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
 	//[Header("Tweakables")]
 
 	private GridData gridData = null;
+	private GridEntities entities = null;
 
 	public GridData GridData
 	{
@@ -45,7 +46,7 @@ public class GameManager : MonoBehaviour
 	protected void Awake()
 	{
 		// singleton stuff
-		if(instance == null || instance == this)
+		if (instance == null || instance == this)
 		{
 			instance = this;
 		}
@@ -54,8 +55,34 @@ public class GameManager : MonoBehaviour
 			Log.Warning("GameManager::Awake - an instance of GameManager already exists, this should NOT happen");
 			Destroy(this); // Don't destroy gameObject, because other scripts may be attached to it.
 		}
-		
+
 		InitializeGame();
+	}
+
+	// temp
+	EntityData playerEntity = null;
+
+	protected void Update()
+	{
+		GridDirection dir = GridDirection.None;
+		if(Input.GetKeyUp(KeyCode.LeftArrow))
+		{
+			dir = dir.AddDirection(GridDirection.West);
+		}
+		if (Input.GetKeyUp(KeyCode.RightArrow))
+		{
+			dir = dir.AddDirection(GridDirection.East);
+		}
+		if (Input.GetKeyUp(KeyCode.UpArrow))
+		{
+			dir = dir.AddDirection(GridDirection.North);
+		}
+		if (Input.GetKeyUp(KeyCode.DownArrow))
+		{
+			dir = dir.AddDirection(GridDirection.South);
+		}
+
+		playerEntity.Position += dir;
 	}
 
 	/// <summary>
@@ -70,8 +97,14 @@ public class GameManager : MonoBehaviour
 	{
 		GenerateDungeon();
 
-		// set up visual factory
-		//tileFactory.SetGrid(gridData);
+		entities = new GridEntities();
+		playerEntity = EntityPrototype.Player(GridPosition.Zero);
+		entities.AddEntity(playerEntity);
+
+		// temp
+		playerEntity.OnPositionChanged += FindObjectOfType<TileFactory>().UpdateEntityVisual;
+		playerEntity.Position = new GridPosition(gridData.Columns /2, gridData.Rows/2);
+		FindObjectOfType<FollowCamera>().Target = FindObjectOfType<TileFactory>().GetEntityVisual(playerEntity).transform;
 
 		//StartGame();
 	}

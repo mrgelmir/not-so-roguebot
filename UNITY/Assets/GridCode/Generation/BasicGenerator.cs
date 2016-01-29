@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using DungeonGeneration.Model;
+using GridCode.Model;
 
-namespace DungeonGeneration.Generation
+namespace GridCode.Generation
 {
 	public class BasicGenerator : IDungeonGenerator
 	{

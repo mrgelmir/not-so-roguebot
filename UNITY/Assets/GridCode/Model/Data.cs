@@ -1,9 +1,9 @@
-﻿using DungeonGeneration.Generation;
-using DungeonGeneration.Model;
+﻿using GridCode.Generation;
+using GridCode.Model;
 using System;
 using System.Collections.Generic;
 
-namespace DungeonGeneration
+namespace GridCode
 {
 
 	public enum DungeonTileType

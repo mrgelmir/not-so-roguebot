@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using DungeonGeneration;
-using DungeonGeneration.Model;
+using GridCode.Entities.Model;
 
-namespace DungeonVisuals
+namespace GridCode.Visuals
 {
 	public class TileFactory : MonoBehaviour
 	{
@@ -13,6 +12,8 @@ namespace DungeonVisuals
 		public GameObject Door_NS;
 		public GameObject Door_EW;
 		public GameObject Target;
+
+		public GameObject EntityVisual;
 
 		//TEMP
 		public int ChildCount = 0;
@@ -32,9 +33,13 @@ namespace DungeonVisuals
 		// TODO how to handle more than one object on a grid tile
 		private Dictionary<TileData, GameObject> gridTileObjectVisuals = new Dictionary<TileData, GameObject>();
 
+		// Container holding existing entity visuals
+		// TODO move somewhere else
+		private Dictionary<EntityData, GameObject> entityVisuals = new Dictionary<EntityData, GameObject>();
+
 		// temp styling
 		Dictionary<int, Color> colorMap = new Dictionary<int, Color>();
-		
+
 		protected void Start()
 		{
 			SetupCollections();
@@ -142,6 +147,36 @@ namespace DungeonVisuals
 			{
 				gridTileObjectVisuals.Add(tileData, newVisual);
 			}
+		}
+
+		// TODO move this to another factory
+		public void UpdateEntityVisual(EntityData entityData)
+		{
+			GameObject currentVisual = GetEntityVisual(entityData);
+
+			if (currentVisual == null)
+			{
+				// Spawn new visual
+
+				// Temp all entities have the same visual
+				currentVisual = Instantiate(EntityVisual);
+
+				currentVisual.name = entityData.ToString();
+				currentVisual.transform.parent = transform;
+
+				entityVisuals.Add(entityData, currentVisual);
+			}
+
+			// Move visual to new position
+			currentVisual.transform.localPosition = new Vector3(entityData.Column, 0, entityData.Row);
+
+		}
+
+		public GameObject GetEntityVisual(EntityData entityData)
+		{
+			GameObject visual;
+			entityVisuals.TryGetValue(entityData, out visual);
+			return visual;
 		}
 
 		public void RegisterVisualTile(TileData tileData)
@@ -409,7 +444,7 @@ namespace DungeonVisuals
 
 			return visual;
 		}
-		
+
 		private void RemoveCurrentVisual(TileData tileData)
 		{
 			// get current visual
@@ -424,7 +459,7 @@ namespace DungeonVisuals
 			}
 
 			// remove the tile object as well
-			if(tileData.ObjectData != null)
+			if (tileData.ObjectData != null)
 			{
 				GameObject currentObjectVisual;
 				gridTileObjectVisuals.TryGetValue(tileData, out currentObjectVisual);

@@ -1,4 +1,4 @@
-﻿namespace DungeonGeneration
+﻿namespace GridCode
 {
 	/// <summary>
 	/// Enum containing 8 main directions

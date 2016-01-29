@@ -1,8 +1,8 @@
-﻿using DungeonGeneration;
+﻿using GridCode;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace DungeonVisuals
+namespace GridCode.Visuals
 {
 	public class TileCollection : ScriptableObject
 	{

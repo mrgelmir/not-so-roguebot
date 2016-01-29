@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DungeonGeneration.Generation
+namespace GridCode.Generation
 {
 	[Serializable]
 	public class DungeonTile

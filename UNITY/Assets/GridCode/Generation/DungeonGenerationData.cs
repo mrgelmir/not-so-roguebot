@@ -1,9 +1,9 @@
-﻿using DungeonGeneration.Model;
+﻿using GridCode.Model;
 using System;
 using System.Collections.Generic;
 using UnityEngine; // TODO remove this dependence by using a custom editor for the gridcontainer
 
-namespace DungeonGeneration.Generation
+namespace GridCode.Generation
 {
 	[Serializable]
 	public class DungeonGenerationData

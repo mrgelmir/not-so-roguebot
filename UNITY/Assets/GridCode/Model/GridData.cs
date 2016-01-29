@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DungeonGeneration
+namespace GridCode
 {
 	public class GridData : IEnumerable<TileData>
 	{

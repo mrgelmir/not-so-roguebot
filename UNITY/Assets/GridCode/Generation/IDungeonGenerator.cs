@@ -1,4 +1,4 @@
-﻿namespace DungeonGeneration.Generation
+﻿namespace GridCode.Generation
 {
 	interface IDungeonGenerator
 	{

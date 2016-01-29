@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace DungeonVisuals
+namespace GridCode.Visuals
 {
 	class TileManager : MonoBehaviour
 	{

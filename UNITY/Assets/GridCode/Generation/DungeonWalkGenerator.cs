@@ -1,8 +1,8 @@
-﻿using DungeonGeneration.Model;
+﻿using GridCode.Model;
 using System;
 using System.Collections.Generic;
 
-namespace DungeonGeneration.Generation
+namespace GridCode.Generation
 {
 	public class DungeonWalkGenerator : IDungeonGenerator
 	{

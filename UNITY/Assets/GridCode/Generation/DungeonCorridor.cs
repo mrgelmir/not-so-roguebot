@@ -1,8 +1,8 @@
-﻿using DungeonGeneration.Generation;
+﻿using GridCode.Generation;
 using System;
 using System.Collections.Generic;
 
-namespace DungeonGeneration.Model
+namespace GridCode.Model
 {
 	[Serializable]
 	public class DungeonCorridor

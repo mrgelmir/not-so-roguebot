@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DungeonGeneration
+namespace GridCode
 {
 	public class TileData
 	{

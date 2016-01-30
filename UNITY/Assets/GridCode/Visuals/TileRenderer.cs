@@ -33,7 +33,7 @@ namespace GridCode.Visuals
 			boundsCamera = GetComponent<Camera>();
 
 			// TEMP set position to center  of grid
-			CenterOnTile(gridData[gridData.Rows / 2, gridData.Columns / 2]);
+			//CenterOnTile(gridData[gridData.Rows / 2, gridData.Columns / 2]);
 			UpdateCameraBounds();
 		}
 

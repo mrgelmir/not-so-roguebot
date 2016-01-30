@@ -169,8 +169,8 @@ namespace GridCode.Visuals
 
 			// Move visual to new position
 			currentVisual.transform.localPosition = new Vector3(entityData.Column, 0, entityData.Row);
-
-		}
+			currentVisual.transform.localEulerAngles = Vector3.up * entityData.Direction.Rotation();
+        }
 
 		public GameObject GetEntityVisual(EntityData entityData)
 		{

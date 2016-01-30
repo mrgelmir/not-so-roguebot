@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd897b07bda2270418b27a9acaf46aa2, type: 3}
+  m_Name: Set_Wall_Test_3D
+  m_EditorClassIdentifier: 
+  CollectionName: Test Walls 3D
+  Type: 2
+  Tile_X: {fileID: 173228, guid: a33100a42b9edae4e8e0fc6b2c6aa252, type: 2}
+  Tile_NNeESeSwW: {fileID: 112086, guid: fa5b520a391992149b4d935bfd18a405, type: 2}
+  Tile_NESW: {fileID: 112086, guid: fa5b520a391992149b4d935bfd18a405, type: 2}
+  Tile_N: {fileID: 197036, guid: 567a766ea0804104aa912c0baecb1bb7, type: 2}
+  Tile_E: {fileID: 188758, guid: 1627e8bac765c96488b5e747e5df24ea, type: 2}
+  Tile_S: {fileID: 170232, guid: 1bb78767443df0341a902fc15a4613cc, type: 2}
+  Tile_W: {fileID: 152572, guid: b000b2e0bef086f4bbfeeb64a2154046, type: 2}
+  Tile_NS: {fileID: 138694, guid: c5b84af204be538468ee55ffebbdedbc, type: 2}
+  Tile_EW: {fileID: 148996, guid: 9a1cd391af2dbb64892f88647dbea3ba, type: 2}
+  Tile_SW: {fileID: 179716, guid: 0e7aede2078eaff47b3d43110a07e36e, type: 2}
+  Tile_NW: {fileID: 162044, guid: c3e6ec3c142bfd74baff1b9fd5831d19, type: 2}
+  Tile_NE: {fileID: 117202, guid: 5a071212b2fb1f749a6b3a871f6098a8, type: 2}
+  Tile_ES: {fileID: 136106, guid: 4c9698417fc82f14da234a934a3de104, type: 2}
+  Tile_SSwW: {fileID: 0}
+  Tile_NNwW: {fileID: 0}
+  Tile_NNeE: {fileID: 0}
+  Tile_ESeS: {fileID: 0}
+  Tile_ESW: {fileID: 104744, guid: 72f4d2875e0f2cc4f889e2753fbbece7, type: 2}
+  Tile_NSW: {fileID: 197152, guid: 4a273c967e4e70948805098169a537f4, type: 2}
+  Tile_NEW: {fileID: 122602, guid: b0346b3f54b1fa74192a3937bea7b61f, type: 2}
+  Tile_NES: {fileID: 107850, guid: 02570630927b84e4387e2a09aceae190, type: 2}

@@ -19,6 +19,26 @@ namespace GridCode
 			get { return new GridPosition { Column = 0, Row = 0 }; }
 		}
 
+		public override bool Equals(object obj)
+		{
+			return obj is GridPosition ? Equals((GridPosition)obj) : false;
+		}
+
+		public bool Equals(GridPosition other)
+		{
+			return Column == other.Column && Row == other.Row;
+		}
+
+		public static bool operator == (GridPosition pos1, GridPosition pos2)
+		{
+			return pos1.Equals(pos2);
+		}
+
+		public static bool operator !=(GridPosition pos1, GridPosition pos2)
+		{
+			return !pos1.Equals(pos2);
+		}
+
 		public static GridPosition operator + (GridPosition pos, GridDirection dir)
 		{
 			return new GridPosition(pos.Column + dir.GetHorizontalDirection(), pos.Row + dir.GetVerticalDirection());

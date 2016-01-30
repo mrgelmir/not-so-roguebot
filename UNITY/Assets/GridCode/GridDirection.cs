@@ -39,9 +39,9 @@
 		ES = East | South,
 
 		ESW = East | South | West,
-        NSW = North | South | West,
-        NEW = North | East | West,
-        NES = North | East | South,
+		NSW = North | South | West,
+		NEW = North | East | West,
+		NES = North | East | South,
 
 
 
@@ -116,6 +116,55 @@
 			return direction.ContainsDirection(GridDirection.North) ? 1 : (direction.ContainsDirection(GridDirection.South) ? -1 : 0);
 		}
 
+		/// <summary>
+		/// Returns the rotation from this direction, assuming North is default orientation
+		/// </summary>
+		/// <param name="direction">the given GridDirection</param>
+		/// <returns>rotation in degrees</returns>
+		public static float Rotation(this GridDirection direction)
+		{
+			//// check if the value is a power of two -> single bit is set
+			//int intVal = ((int)direction);
+			//bool singleBitIsSet = intVal != 0 && (intVal & (intVal - 1)) == 0;
+
+			//// if more than one bit set -> return
+			//if (!singleBitIsSet)
+			//	return 0f;
+
+			float angle = 0f;
+			switch (direction)
+			{
+				default:
+				case GridDirection.None:
+				case GridDirection.North:
+					angle = 0f;
+					break;
+				case GridDirection.NorthEast:
+					angle = 45f;
+					break;
+				case GridDirection.East:
+					angle = 90f;
+					break;
+				case GridDirection.SouthEast:
+					angle = 135f;
+					break;
+				case GridDirection.South:
+					angle = 180f;
+					break;
+				case GridDirection.SouthWest:
+					angle = 225f; 
+					break;
+				case GridDirection.West:
+					angle = 270f;
+					break;
+				case GridDirection.NorthWest:
+					angle = 315f; 
+					break;
+			}
+
+			return angle;
+		}
+
 		private const int bitMask = 0xFF;
 		private const int overflowCount = 8;
 
@@ -137,6 +186,75 @@
 			int part1 = directionInt << numClockwiseRotations; // get the bits shifted to the left
 			int part2 = directionInt >> overflowCount - numClockwiseRotations; // get the overflow for 4 bytes
 			return (GridDirection)((part1 | part2) & bitMask); // throw the bits together and mask
+		}
+
+		public static GridDirection DirectionBetween(GridPosition from, GridPosition to)
+		{
+			GridDirection dir = GridDirection.None;
+
+			if (from == to)
+				return dir;
+
+			// Left
+			if (from.Column > to.Column)
+			{
+				// Down
+				if (from.Row > to.Row)
+				{
+					dir = GridDirection.SouthWest;
+				}
+				// Same Row
+				else if (from.Row == to.Row)
+				{
+					dir = GridDirection.West;
+				}
+				// Up
+				else if (from.Row < to.Row)
+				{
+					dir = GridDirection.NorthWest;
+				}
+			}
+			// Same Column
+			else if (from.Column == to.Column)
+			{
+				// Down
+				if (from.Row > to.Row)
+				{
+					dir = GridDirection.South;
+				}
+				// Same Row
+				else if (from.Row == to.Row)
+				{
+					dir = GridDirection.None;
+				}
+				// Up
+				else if (from.Row < to.Row)
+				{
+					dir = GridDirection.North;
+				}
+			}
+			// Right
+			else if (from.Column < to.Column)
+			{
+				// Down
+				if (from.Row > to.Row)
+				{
+					dir = GridDirection.SouthEast;
+				}
+				// Same Row
+				else if (from.Row == to.Row)
+				{
+					dir = GridDirection.East;
+				}
+				// Up
+				else if (from.Row < to.Row)
+				{
+					dir = GridDirection.NorthEast;
+				}
+			}
+
+
+			return dir;
 		}
 	}
 }

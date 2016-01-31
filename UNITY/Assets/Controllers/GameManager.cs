@@ -61,10 +61,15 @@ public class GameManager : MonoBehaviour
 
 	// temp
 	EntityData playerEntity = null;
+	Vector2 startTouchPos;
+	float minSwipeDistance = .2f;
+	public UnityEngine.UI.Text label;
 
 	protected void Update()
 	{
 		GridDirection dir = GridDirection.None;
+
+#if UNITY_EDITOR
 		if(Input.GetKeyUp(KeyCode.LeftArrow))
 		{
 			dir = dir.AddDirection(GridDirection.West);
@@ -81,7 +86,49 @@ public class GameManager : MonoBehaviour
 		{
 			dir = dir.AddDirection(GridDirection.South);
 		}
+#else
+		if(Input.touchCount > 0)
+		{
+			Touch t = Input.GetTouch(0);
 
+			if(t.phase == TouchPhase.Began)
+			{
+				startTouchPos = t.position;
+			}
+
+			if(t.phase == TouchPhase.Ended)
+			{
+				Vector2 swipe = t.position - startTouchPos;
+				swipe.x /= Screen.width;
+				swipe.y /= Screen.height;
+
+				label.text = swipe.ToString() + " - " + swipe.magnitude;
+
+				if (swipe.sqrMagnitude >= minSwipeDistance * minSwipeDistance)
+				{
+					if(swipe.x > minSwipeDistance)
+					{
+						dir = dir.AddDirection(GridDirection.East);
+					}
+					else if (swipe.x < -minSwipeDistance)
+					{
+						dir = dir.AddDirection(GridDirection.West);
+					}
+
+					if (swipe.y > minSwipeDistance)
+					{
+						dir = dir.AddDirection(GridDirection.North);
+					}
+					else if (swipe.y < -minSwipeDistance)
+					{
+						dir = dir.AddDirection(GridDirection.South);
+					}
+				}
+
+				startTouchPos = Vector2.zero;
+			}
+		}
+#endif
 		playerEntity.Position += dir;
 	}
 

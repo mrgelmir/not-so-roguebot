@@ -19,6 +19,25 @@ namespace GridCode
 			get { return new GridPosition { Column = 0, Row = 0 }; }
 		}
 
+		public bool Neighbours(GridPosition other, bool includeDiagonal = false)
+		{
+			// vertical - horizontal only
+			// this (ab-)uses the fact that the difference between axial adjacent tiles is always 1
+			// if we check for diagonals check for diagonals, both the Col and Row are exactly one apart
+			return (1 == (Math.Abs(Column - other.Column) + Math.Abs(Row - other.Row)) ||
+				(includeDiagonal && (1 == Math.Abs(Column - other.Column) && 1 == Math.Abs(Row - other.Row)))); 
+		}
+
+		public override string ToString()
+		{
+			return Column + ":" + Row;
+		}
+
+		public override int GetHashCode()
+		{
+			return Column.GetHashCode() ^ Row.GetHashCode();
+		}
+
 		public override bool Equals(object obj)
 		{
 			return obj is GridPosition ? Equals((GridPosition)obj) : false;

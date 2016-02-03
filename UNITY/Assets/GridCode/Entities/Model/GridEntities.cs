@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GridCode.Entities.Model
 {
-	class GridEntities : IEnumerable<EntityData>
+	public class GridEntities : IEnumerable<EntityData>
 	{
 		private List<EntityData> entities = new List<EntityData>();
 		
@@ -13,15 +13,57 @@ namespace GridCode.Entities.Model
 			entities.Add(entity);
 		}
 
-		// TODO
+		#region IEnumerable implementation
 		public IEnumerator<EntityData> GetEnumerator()
 		{
-			throw new NotImplementedException();
+			return new EntityEnumerator(entities.GetEnumerator());
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			throw new NotImplementedException();
+			return GetEnumerator() as IEnumerator;
+		}
+		#endregion
+	}
+
+	public class EntityEnumerator : IEnumerator<EntityData>
+	{
+		private IEnumerator<EntityData> entityListEnumerator;
+
+		public EntityEnumerator(IEnumerator<EntityData> entityEnumerator)
+		{
+			entityListEnumerator = entityEnumerator;
+		}
+
+		public EntityData Current
+		{
+			get
+			{
+				return entityListEnumerator.Current;
+			}
+		}
+
+		object IEnumerator.Current
+		{
+			get
+			{
+				return Current as object;
+			}
+		}
+
+		public void Dispose()
+		{
+			// nothing to dispose here
+		}
+
+		public bool MoveNext()
+		{
+			return entityListEnumerator.MoveNext();
+		}
+
+		public void Reset()
+		{
+			entityListEnumerator.Reset();
 		}
 	}
 }

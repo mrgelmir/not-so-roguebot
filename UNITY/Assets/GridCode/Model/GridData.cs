@@ -84,6 +84,14 @@ namespace GridCode
 				return GetTile(row, column);
 			}
 		}
+
+		public TileData this[GridPosition pos]
+		{
+			get
+			{
+				return GetTile(pos.Column, pos.Row);
+			}
+		}
 		#endregion
 	}
 

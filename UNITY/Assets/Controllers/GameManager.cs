@@ -99,8 +99,8 @@ public class GameManager : MonoBehaviour
 			if(t.phase == TouchPhase.Ended)
 			{
 				Vector2 swipe = t.position - startTouchPos;
-				swipe.x /= Screen.width;
-				swipe.y /= Screen.height;
+				swipe.x /= Mathf.Min(Screen.width, Screen.height);
+				swipe.y /= Mathf.Min(Screen.width, Screen.height);
 
 				label.text = swipe.ToString() + " - " + swipe.magnitude;
 
@@ -129,7 +129,23 @@ public class GameManager : MonoBehaviour
 			}
 		}
 #endif
-		playerEntity.Position += dir;
+
+		if(dir != GridDirection.None)
+		{
+
+			TileData targetTile = gridData[playerEntity.Position + dir];
+
+			// validate move before moving
+			if(playerEntity.CanMove(targetTile))
+			{
+				playerEntity.MoveTo(targetTile.Position);
+			}
+			else
+			{
+				playerEntity.Direction = GridDirectionHelper.DirectionBetween(playerEntity.Position, targetTile.Position);
+			}
+		}
+
 	}
 
 	/// <summary>
@@ -150,7 +166,13 @@ public class GameManager : MonoBehaviour
 
 		// temp
 		playerEntity.OnPositionChanged += FindObjectOfType<TileFactory>().UpdateEntityVisual;
-		playerEntity.Position = new GridPosition(gridData.Columns /2, gridData.Rows/2);
+		playerEntity.OnOrientationChanged += FindObjectOfType<TileFactory>().UpdateEntityVisual;
+
+		//find a valid spawn position
+		GridPosition spawnPos = new GridPosition(gridData.Columns / 2, gridData.Rows / 2);
+
+
+		playerEntity.Position = spawnPos;
 		FindObjectOfType<FollowCamera>().Target = FindObjectOfType<TileFactory>().GetEntityVisual(playerEntity).transform;
 
 		//StartGame();
@@ -196,6 +218,7 @@ public class GameManager : MonoBehaviour
 
 	}
 
+	[ContextMenu("Generate dungeon")]
 	public void GenerateDungeon()
 	{
 		// generate dungeon
@@ -216,6 +239,10 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
+	public void Restart()
+	{
+		Application.LoadLevel(Application.loadedLevel);
+	}
 
 
 }

@@ -7,8 +7,7 @@ namespace GridCode
 
 		#region Data
 		private readonly GridData grid;
-		private readonly int column;
-		private readonly int row;
+		private readonly GridPosition pos;
 
 		// determines the functionality of the tile
 		private DungeonTileType type = DungeonTileType.None;
@@ -59,14 +58,19 @@ namespace GridCode
 			set { roomIndex = value; }
 		}
 
+		public GridPosition Position
+		{
+			get { return pos; }
+		}
+
 		public int Column
 		{
-			get { return column; }
+			get { return pos.Column; }
 		}
 
 		public int Row
 		{
-			get { return row; }
+			get { return pos.Row; }
 		}
 
 		public TileObjectData ObjectData
@@ -104,8 +108,8 @@ namespace GridCode
 		public TileData(GridData grid, int column, int row, DungeonTileType type)
 		{
 			this.grid = grid;
-			this.column = column;
-			this.row = row;
+			pos.Column = column;
+			pos.Row = row;
 			this.type = type;
 		}
 

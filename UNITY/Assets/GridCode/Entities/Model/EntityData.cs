@@ -14,6 +14,7 @@ namespace GridCode.Entities.Model
 		private string visual = null;
 
 		public Action<EntityData> OnPositionChanged;
+		public Action<EntityData> OnOrientationChanged;
 
 		public int Column
 		{
@@ -46,16 +47,31 @@ namespace GridCode.Entities.Model
 		public GridDirection Direction
 		{
 			get { return direction; }
-			// TODO set
+			set
+			{
+				if(direction != value)
+				{
+					direction = value;
+					if (OnOrientationChanged != null)
+						OnOrientationChanged(this);
+				}
+			}
 		}
 
-		public bool Move(GridDirection dir)
+		public bool CanMove(TileData targetTile)
 		{
-			// TODO check for possible blocking elements
-
-			Position += dir;
-
-			return true;
+			return targetTile.Type == DungeonTileType.Flat;
 		}
+
+		public void MoveTo(GridPosition pos)
+		{
+			Position = pos;
+		}
+
+		public void MoveBy(GridDirection dir)
+		{
+			Position += dir;			
+		}
+
 	}
 }

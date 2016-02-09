@@ -49,7 +49,7 @@ namespace GridCode.Entities.Model
 			get { return direction; }
 			set
 			{
-				if(direction != value)
+				if (direction != value)
 				{
 					direction = value;
 					if (OnOrientationChanged != null)
@@ -70,7 +70,7 @@ namespace GridCode.Entities.Model
 
 		public void MoveBy(GridDirection dir)
 		{
-			Position += dir;			
+			Position += dir;
 		}
 
 	}

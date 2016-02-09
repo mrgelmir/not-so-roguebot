@@ -4,19 +4,33 @@ using System.Collections.Generic;
 
 namespace GridCode.Entities.Model
 {
-	public class GridEntities : IEnumerable<EntityData>
+	public class GridEntities : IEnumerable<Entity>
 	{
-		private List<EntityData> entities = new List<EntityData>();
-		
-		public void AddEntity(EntityData entity)
+		private Dictionary<int, Entity> entities = new Dictionary<int, Entity>();
+
+		public bool AddEntity(Entity entity)
 		{
-			entities.Add(entity);
+			// TODO check if ID does not already exist
+			entities.Add(entity.ID, entity);
+			return true;
 		}
 
-		#region IEnumerable implementation
-		public IEnumerator<EntityData> GetEnumerator()
+		#region Indexers
+
+		public Entity this[int id]
 		{
-			return new EntityEnumerator(entities.GetEnumerator());
+			get
+			{
+				return entities[id];
+			}
+		}
+
+		#endregion
+
+		#region IEnumerable implementation
+		public IEnumerator<Entity> GetEnumerator()
+		{
+			return new EntityEnumerator(entities.Values.GetEnumerator());
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -26,16 +40,16 @@ namespace GridCode.Entities.Model
 		#endregion
 	}
 
-	public class EntityEnumerator : IEnumerator<EntityData>
+	public class EntityEnumerator : IEnumerator<Entity>
 	{
-		private IEnumerator<EntityData> entityListEnumerator;
+		private IEnumerator<Entity> entityListEnumerator;
 
-		public EntityEnumerator(IEnumerator<EntityData> entityEnumerator)
+		public EntityEnumerator(IEnumerator<Entity> entityEnumerator)
 		{
 			entityListEnumerator = entityEnumerator;
 		}
 
-		public EntityData Current
+		public Entity Current
 		{
 			get
 			{

@@ -3,6 +3,7 @@ using GridCode;
 using GridCode.Generation;
 using GridCode.Visuals;
 using UnityEngine;
+using GridCode.Entities.Model.Components;
 
 public class GameManager : MonoBehaviour
 {
@@ -70,19 +71,19 @@ public class GameManager : MonoBehaviour
 		GridDirection dir = GridDirection.None;
 
 #if UNITY_EDITOR
-		if(Input.GetKeyUp(KeyCode.LeftArrow))
+		if(Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.A))
 		{
 			dir = dir.AddDirection(GridDirection.West);
 		}
-		if (Input.GetKeyUp(KeyCode.RightArrow))
+		if (Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.D))
 		{
 			dir = dir.AddDirection(GridDirection.East);
 		}
-		if (Input.GetKeyUp(KeyCode.UpArrow))
+		if (Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.W))
 		{
 			dir = dir.AddDirection(GridDirection.North);
 		}
-		if (Input.GetKeyUp(KeyCode.DownArrow))
+		if (Input.GetKeyUp(KeyCode.DownArrow) || Input.GetKeyUp(KeyCode.S))
 		{
 			dir = dir.AddDirection(GridDirection.South);
 		}
@@ -161,19 +162,42 @@ public class GameManager : MonoBehaviour
 		GenerateDungeon();
 
 		entities = new GridEntities();
-		playerEntity = EntityPrototype.Player(GridPosition.Zero);
-		entities.AddEntity(playerEntity);
 
-		// temp
-		playerEntity.OnPositionChanged += FindObjectOfType<TileFactory>().UpdateEntityVisual;
-		playerEntity.OnOrientationChanged += FindObjectOfType<TileFactory>().UpdateEntityVisual;
 
-		//find a valid spawn position
+		// find a valid spawn position
 		GridPosition spawnPos = new GridPosition(gridData.Columns / 2, gridData.Rows / 2);
 
+		// Old player creation
+		{
+			playerEntity = EntityPrototype.Player(GridPosition.Zero);
+			//entities.AddEntity(playerEntity);
+			playerEntity.OnPositionChanged += FindObjectOfType<TileFactory>().UpdateEntityVisual;
+			playerEntity.OnOrientationChanged += FindObjectOfType<TileFactory>().UpdateEntityVisual;
+		
+			playerEntity.Position = spawnPos;
+			FindObjectOfType<FollowCamera>().Target = FindObjectOfType<TileFactory>().GetEntityVisual(playerEntity).transform;
+		}
 
-		playerEntity.Position = spawnPos;
-		FindObjectOfType<FollowCamera>().Target = FindObjectOfType<TileFactory>().GetEntityVisual(playerEntity).transform;
+		// New player creation
+		{
+			Entity pEntity = new Entity();
+
+			pEntity.AddComponent(new Name("The Player"));
+			pEntity.AddComponent(new Position(spawnPos, GridDirection.North));
+			pEntity.AddComponent(new Visual("playerVisual"));
+
+			Position playerPos = pEntity.GetComponent<Position>();
+			playerPos.OnPositionChanged += (int id) =>
+			{
+				Debug.Log("player with id " + id + " is moving");
+			};
+
+			pEntity.GetComponent<Position>().Pos += GridDirection.North;
+		}
+
+
+		
+
 
 		//StartGame();
 	}

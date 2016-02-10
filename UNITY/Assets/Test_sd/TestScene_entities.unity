@@ -416,48 +416,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 400892677}
---- !u!1001 &1433666606
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 451114, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 451114, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 451114, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 451114, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 451114, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 451114, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 451114, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 451114, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &1631374360
 GameObject:
   m_ObjectHideFlags: 0
@@ -468,6 +426,7 @@ GameObject:
   - 4: {fileID: 1631374361}
   - 114: {fileID: 1631374362}
   - 114: {fileID: 1631374363}
+  - 114: {fileID: 1631374364}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -529,6 +488,18 @@ MonoBehaviour:
   Target: {fileID: 183654, guid: 3767b2a2c3731c0439d8d822b3e0db3d, type: 2}
   EntityVisual: {fileID: 140038, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
   ChildCount: 0
+--- !u!114 &1631374364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1631374360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88bcd9c15bbd82840b52aa551404616a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MechReference: {fileID: 140038, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
 --- !u!1 &1667472891
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,9 +1,10 @@
-﻿using GridCode.Entities.Model;
+﻿using Entities.Model;
 using GridCode;
 using GridCode.Generation;
 using GridCode.Visuals;
 using UnityEngine;
-using GridCode.Entities.Model.Components;
+using Entities.Model.Components;
+using GridCode.Entities.Model;
 
 public class GameManager : MonoBehaviour
 {
@@ -30,6 +31,11 @@ public class GameManager : MonoBehaviour
 	public GridData GridData
 	{
 		get { return gridData; }
+	}
+
+	public GridEntities Entities
+	{
+		get { return entities; }
 	}
 
 	private static GameManager instance = null;
@@ -61,7 +67,8 @@ public class GameManager : MonoBehaviour
 	}
 
 	// temp
-	EntityData playerEntity = null;
+	Entity playerEntity = null;
+    EntityData oldPlayerEntity = null;
 	Vector2 startTouchPos;
 	float minSwipeDistance = .2f;
 	public UnityEngine.UI.Text label;
@@ -134,16 +141,20 @@ public class GameManager : MonoBehaviour
 		if(dir != GridDirection.None)
 		{
 
-			TileData targetTile = gridData[playerEntity.Position + dir];
+			playerEntity.GetComponent<Position>().Pos += dir;
+
+			// OLD below
+
+			TileData targetTile = gridData[oldPlayerEntity.Position + dir];
 
 			// validate move before moving
-			if(playerEntity.CanMove(targetTile))
+			if(oldPlayerEntity.CanMove(targetTile))
 			{
-				playerEntity.MoveTo(targetTile.Position);
+				oldPlayerEntity.MoveTo(targetTile.Position);
 			}
 			else
 			{
-				playerEntity.Direction = GridDirectionHelper.DirectionBetween(playerEntity.Position, targetTile.Position);
+				oldPlayerEntity.Direction = GridDirectionHelper.DirectionBetween(oldPlayerEntity.Position, targetTile.Position);
 			}
 		}
 
@@ -169,30 +180,32 @@ public class GameManager : MonoBehaviour
 
 		// Old player creation
 		{
-			playerEntity = EntityPrototype.Player(GridPosition.Zero);
-			//entities.AddEntity(playerEntity);
-			playerEntity.OnPositionChanged += FindObjectOfType<TileFactory>().UpdateEntityVisual;
-			playerEntity.OnOrientationChanged += FindObjectOfType<TileFactory>().UpdateEntityVisual;
+			oldPlayerEntity = EntityPrototype.Player(GridPosition.Zero);
+			//entities.AddEntity(oldPlayerEntity);
+			oldPlayerEntity.OnPositionChanged += FindObjectOfType<TileFactory>().UpdateEntityVisual;
+			oldPlayerEntity.OnOrientationChanged += FindObjectOfType<TileFactory>().UpdateEntityVisual;
 		
-			playerEntity.Position = spawnPos;
-			FindObjectOfType<FollowCamera>().Target = FindObjectOfType<TileFactory>().GetEntityVisual(playerEntity).transform;
+			oldPlayerEntity.Position = spawnPos;
+			FindObjectOfType<FollowCamera>().Target = FindObjectOfType<TileFactory>().GetEntityVisual(oldPlayerEntity).transform;
 		}
 
 		// New player creation
 		{
-			Entity pEntity = new Entity();
+			playerEntity = new Entity();
 
-			pEntity.AddComponent(new Name("The Player"));
-			pEntity.AddComponent(new Position(spawnPos, GridDirection.North));
-			pEntity.AddComponent(new Visual("playerVisual"));
+			playerEntity.AddComponent(new EntityName("The Player"));
+			playerEntity.AddComponent(new Position(spawnPos, GridDirection.North));
+			playerEntity.AddComponent(new EntityVisual("playerVisual"));
 
-			Position playerPos = pEntity.GetComponent<Position>();
+			Position playerPos = playerEntity.GetComponent<Position>();
 			playerPos.OnPositionChanged += (int id) =>
 			{
 				Debug.Log("player with id " + id + " is moving");
 			};
 
-			pEntity.GetComponent<Position>().Pos += GridDirection.North;
+			playerEntity.GetComponent<Position>().Pos += GridDirection.North;
+
+			entities.AddEntity(playerEntity);
 		}
 
 

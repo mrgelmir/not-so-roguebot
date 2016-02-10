@@ -1,6 +1,7 @@
-﻿using System;
+﻿using GridCode;
+using System;
 
-namespace GridCode.Entities.Model.Components
+namespace Entities.Model.Components
 {
 	public class Position : Component
 	{
@@ -21,7 +22,7 @@ namespace GridCode.Entities.Model.Components
 					return;
 
 				// TEMP check for orientation change here
-				Direction = GridDirectionHelper.DirectionBetween(position, value);
+				Orientation = GridDirectionHelper.DirectionBetween(position, value);
 
 				position = value;
 				if (OnPositionChanged != null)
@@ -29,7 +30,7 @@ namespace GridCode.Entities.Model.Components
 			}
 		}
 
-		public GridDirection Direction
+		public GridDirection Orientation
 		{
 			get { return direction; }
 			set

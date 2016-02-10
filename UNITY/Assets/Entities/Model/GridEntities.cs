@@ -2,10 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace GridCode.Entities.Model
+namespace Entities.Model
 {
 	public class GridEntities : IEnumerable<Entity>
 	{
+
+		// these are private because people need to get data when they subscribe to these callbacks
+		private Action<int> OnEntityAdded;
+		private Action<int> OnEntityRemoved;
+
 		private Dictionary<int, Entity> entities = new Dictionary<int, Entity>();
 
 		public bool AddEntity(Entity entity)
@@ -13,6 +18,32 @@ namespace GridCode.Entities.Model
 			// TODO check if ID does not already exist
 			entities.Add(entity.ID, entity);
 			return true;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="onEntityAdd">function called when an entity is added</param>
+		/// <param name="onEntityRemove">function called when an entity is removed</param>
+		/// <param name="startUpdated">should the add function be called for all current entities</param>
+		public void SubscribeOnEntities(Action<int> onEntityAdd, Action<int> onEntityRemove, bool startUpdated)
+		{
+			OnEntityAdded += onEntityAdd;
+			OnEntityRemoved += onEntityRemove;
+
+			if (startUpdated && onEntityAdd != null)
+			{
+				foreach (int id in entities.Keys)
+				{
+					onEntityAdd(id);
+				}
+			}
+		}
+
+		public void UnSubscribeFromEntities(Action<int> onEntityAdd, Action<int> onEntityRemove)
+		{
+			OnEntityAdded -= onEntityAdd;
+			OnEntityRemoved -= onEntityRemove;
 		}
 
 		#region Indexers

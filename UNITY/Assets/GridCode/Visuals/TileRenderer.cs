@@ -6,6 +6,10 @@ using UnityEngine;
 
 namespace GridCode.Visuals
 {
+	/// <summary>
+	/// Makes sure all visual tiles are active and rendered
+	/// keeps track of this via a camera
+	/// </summary>
 	[RequireComponent(typeof(Camera))]
 	class TileRenderer : MonoBehaviour
 	{
@@ -13,8 +17,8 @@ namespace GridCode.Visuals
 		private Camera boundsCamera;
 
 		// these are private because people need to get data when they subscribe to these callbacks
-		private Action<TileData> OnTileBecameVisible;
-		private Action<TileData> OnTileBecameInvisible;
+		private Action<TileData> onTileBecameVisible;
+		private Action<TileData> onTileBecameInvisible;
 
 		private List<TileData> visibleTiles = new List<TileData>();
 
@@ -44,8 +48,8 @@ namespace GridCode.Visuals
 
 		public void SubscribeOnVisualTiles(Action<TileData> visibleCallback, Action<TileData> invisibleCallback)
 		{
-			OnTileBecameVisible += visibleCallback;
-			OnTileBecameInvisible += invisibleCallback;
+			onTileBecameVisible += visibleCallback;
+			onTileBecameInvisible += invisibleCallback;
 
 			foreach (TileData tileData in visibleTiles)
 			{
@@ -55,8 +59,8 @@ namespace GridCode.Visuals
 
 		public void UnSubscribeFromVisualTiles(Action<TileData> visibleCallback, Action<TileData> invisibleCallback)
 		{
-			OnTileBecameVisible -= visibleCallback;
-			OnTileBecameInvisible -= invisibleCallback;
+			onTileBecameVisible -= visibleCallback;
+			onTileBecameInvisible -= invisibleCallback;
 		}
 
 		[ContextMenu("Update camera bounds")]
@@ -116,9 +120,9 @@ namespace GridCode.Visuals
 			{
 				visibleTiles.Add(tileData);
 				// TODO maybe make sure this function never gets called when OnTileBecameVisible == null
-				if (OnTileBecameVisible != null)
+				if (onTileBecameVisible != null)
 				{
-					OnTileBecameVisible(tileData);
+					onTileBecameVisible(tileData);
 				}
 			}
 		}
@@ -128,9 +132,9 @@ namespace GridCode.Visuals
 			if (visibleTiles.Contains(tileData))
 			{
 				// TODO maybe make sure this function never gets called when OnTileBecameInvisible == null
-				if (OnTileBecameInvisible != null)
+				if (onTileBecameInvisible != null)
 				{
-					OnTileBecameInvisible(tileData);
+					onTileBecameInvisible(tileData);
 				}
 				visibleTiles.Remove(tileData);
 			}

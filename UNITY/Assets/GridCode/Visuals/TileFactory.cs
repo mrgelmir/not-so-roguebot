@@ -169,7 +169,7 @@ namespace GridCode.Visuals
 
 			// Move visual to new position
 			currentVisual.transform.localPosition = new Vector3(entityData.Column, 0, entityData.Row);
-			currentVisual.transform.localEulerAngles = Vector3.up * entityData.Direction.Rotation();
+			currentVisual.transform.localEulerAngles = entityData.Direction.ToEulerAngles();
         }
 
 		public GameObject GetEntityVisual(EntityData entityData)
@@ -270,7 +270,7 @@ namespace GridCode.Visuals
 				// Instantiate the Tile and set to correct position
 				GameObject tileVisual = GetInstanceFromPool(tilePrefab);
 				tileVisual.name = tileData.ObjectData.ToString();
-				tileVisual.transform.position = new Vector3(tileData.Column, 0f, tileData.Row);
+				tileVisual.transform.position = tileData.Position.ToWorldPos();
 				tileVisual.transform.SetParent(transform, false);
 
 				// done

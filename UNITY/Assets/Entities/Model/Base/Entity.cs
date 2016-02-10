@@ -1,7 +1,7 @@
-﻿using GridCode.Entities.Model.Components;
+﻿using Entities.Model.Components;
 using System.Collections.Generic;
 
-namespace GridCode.Entities.Model
+namespace Entities.Model
 {
 	public class Entity
 	{
@@ -28,6 +28,11 @@ namespace GridCode.Entities.Model
 			}
 		}
 
+		/// <summary>
+		/// Gets the component of the specified type
+		/// </summary>
+		/// <typeparam name="T">The desired Component-derived class</typeparam>
+		/// <returns>The Component if found, null if not found</returns>
 		public T GetComponent<T>() where T : Component
 		{
 			foreach (Component component in components)
@@ -53,6 +58,11 @@ namespace GridCode.Entities.Model
 		}
 
 		#region Comparison
+
+		public override int GetHashCode()
+		{
+			return ID;
+		}
 
 		public override bool Equals(object obj)
 		{

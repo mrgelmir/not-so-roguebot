@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace GridCode.Entities.Model.Components
+namespace Entities.Model.Components
 {
-	public class Name : Component
+	public class EntityName : Component
 	{
 		private string nameString;
 
@@ -11,7 +11,7 @@ namespace GridCode.Entities.Model.Components
 			get { return nameString; }
 		}
 
-		public Name(string name)
+		public EntityName(string name)
 		{
 			nameString = name;
 		}

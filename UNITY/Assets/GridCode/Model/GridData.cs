@@ -12,6 +12,8 @@ namespace GridCode
 		// Contains all tile objects
 		private List<TileObjectData> tileObjects;
 
+		private Random rand;
+
 		// TODO make a data structure to hold style info?
 
 		public int Columns
@@ -25,6 +27,8 @@ namespace GridCode
 
 		public GridData(int columns, int rows)
 		{
+			rand = new Random(DateTime.Now.Millisecond);
+
 			tiles = new TileData[columns, rows];
 
 			for (int column = 0; column < columns; column++)
@@ -37,13 +41,26 @@ namespace GridCode
 				}
 			}
 		}
-
 		public TileData GetTile(int column, int row)
 		{
 			if (ContainsPosition(column, row))
 				return tiles[column, row];
 			else
 				return null;
+		}
+
+		public TileData GetRandomTile(GridTileType tileType = GridTileType.Flat)
+		{
+			TileData tile = null;
+			int maxAttempts = 100;		
+
+			do
+			{
+				tile = tiles[rand.Next(Columns), rand.Next(Rows)];
+			}
+			while (tile.Type != tileType && --maxAttempts > 0);
+
+			return tile;
 		}
 
 		public bool ContainsPosition(int column, int row)

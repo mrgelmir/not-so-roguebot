@@ -59,7 +59,7 @@ namespace GridCode.Generation
 			return false;
 		}
 
-		public bool ContainsPosition(DungeonPosition position)
+		public bool ContainsPosition(DungeonGenerationPosition position)
 		{
 			return (position.Column > 0 && position.Row > 0 && position.Column < columns && position.Row < rows);
 		}
@@ -96,21 +96,21 @@ namespace GridCode.Generation
 					for (int row = 0; row < room.Height; row++)
 					{
 						TileData tile = grid.GetTile(room.Column + col, room.Row + row);
-						tile.Type = DungeonTileType.Flat;
+						tile.Type = GridTileType.Flat;
 						//tile.Type = room.Tiles[col][row].Type;
 						tile.RoomIndex = roomIndex;
 					}
 				}
 			}
 
-			foreach (DungeonPosition doorPos in room.Doors)
+			foreach (DungeonGenerationPosition doorPos in room.Doors)
 			{
 				if (grid.ContainsPosition(doorPos.Column, doorPos.Row))
 				{
 					TileData tile = grid.GetTile(doorPos.Column, doorPos.Row);
-					if (tile.Type == DungeonTileType.None || tile.Type == DungeonTileType.Wall)
+					if (tile.Type == GridTileType.None || tile.Type == GridTileType.Wall)
 					{
-						tile.Type = DungeonTileType.Flat;
+						tile.Type = GridTileType.Flat;
 						tile.RoomIndex = roomIndex;
 
 						// TODO find more decent way to do this
@@ -129,17 +129,17 @@ namespace GridCode.Generation
 				if (grid.ContainsPosition(col, room.Row - 1))
 				{
 					TileData tile = grid.GetTile(col, room.Row - 1);
-					if (tile.Type == DungeonTileType.None)
+					if (tile.Type == GridTileType.None)
 					{
-						tile.Type = DungeonTileType.Wall;
+						tile.Type = GridTileType.Wall;
 					}
 				}
 				if (grid.ContainsPosition(col, room.Row + room.Height))
 				{
 					TileData tile = grid.GetTile(col, room.Row + room.Height);
-					if (tile.Type == DungeonTileType.None)
+					if (tile.Type == GridTileType.None)
 					{
-						tile.Type = DungeonTileType.Wall;
+						tile.Type = GridTileType.Wall;
 					}
 				}
 			}
@@ -149,17 +149,17 @@ namespace GridCode.Generation
 				if (grid.ContainsPosition(room.Column - 1, row))
 				{
 					TileData tile = grid.GetTile(room.Column - 1, row);
-					if (tile.Type == DungeonTileType.None)
+					if (tile.Type == GridTileType.None)
 					{
-						tile.Type = DungeonTileType.Wall;
+						tile.Type = GridTileType.Wall;
 					}
 				}
 				if (grid.ContainsPosition(room.Column + room.Width, row))
 				{
 					TileData tile = grid.GetTile(room.Column + room.Width, row);
-					if (tile.Type == DungeonTileType.None)
+					if (tile.Type == GridTileType.None)
 					{
-						tile.Type = DungeonTileType.Wall;
+						tile.Type = GridTileType.Wall;
 					}
 				}
 			}
@@ -168,14 +168,14 @@ namespace GridCode.Generation
 		private void AddCorridorToGrid(ref GridData grid, DungeonCorridor corridor)
 		{
 			//Log.Write("adding corridor with length " + corridor.TilePositions.Count);
-			foreach (DungeonPosition position in corridor.TilePositions)
+			foreach (DungeonGenerationPosition position in corridor.TilePositions)
 			{
 				if (grid.ContainsPosition(position.Column, position.Row))
 				{
 					TileData tile = grid.GetTile(position.Column, position.Row);
-					if (tile.Type == DungeonTileType.None || tile.Type == DungeonTileType.Wall) // replace only empty and wall tiles
+					if (tile.Type == GridTileType.None || tile.Type == GridTileType.Wall) // replace only empty and wall tiles
 					{
-						tile.Type = DungeonTileType.Flat;
+						tile.Type = GridTileType.Flat;
 						tile.RoomIndex = -1; // TODO figure out how to handle corridors
 					}
 					else

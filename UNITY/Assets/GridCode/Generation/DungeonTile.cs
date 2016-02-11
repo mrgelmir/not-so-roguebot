@@ -5,15 +5,15 @@ namespace GridCode.Generation
 	[Serializable]
 	public class DungeonTile
 	{
-		public DungeonTileType Type;
+		public GridTileType Type;
 
-		private DungeonTile(DungeonTileType type)
+		private DungeonTile(GridTileType type)
 		{
 			Type = type;
 		}
 
-		public static readonly DungeonTile EmptyTile = new DungeonTile(DungeonTileType.None);
-		public static readonly DungeonTile FlatTile = new DungeonTile(DungeonTileType.Flat);
-		public static readonly DungeonTile WallTile = new DungeonTile(DungeonTileType.Wall);
+		public static readonly DungeonTile EmptyTile = new DungeonTile(GridTileType.None);
+		public static readonly DungeonTile FlatTile = new DungeonTile(GridTileType.Flat);
+		public static readonly DungeonTile WallTile = new DungeonTile(GridTileType.Wall);
 	}
 }

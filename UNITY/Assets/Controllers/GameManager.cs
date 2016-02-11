@@ -5,6 +5,7 @@ using GridCode.Visuals;
 using UnityEngine;
 using Entities.Model.Components;
 using GridCode.Entities.Model;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -68,30 +69,64 @@ public class GameManager : MonoBehaviour
 
 	// temp
 	Entity playerEntity = null;
-    EntityData oldPlayerEntity = null;
 	Vector2 startTouchPos;
-	float minSwipeDistance = .2f;
+	float minSwipeDistance = .12f;
 	public UnityEngine.UI.Text label;
+
+	private const float inputDelay = .3f;
+	private float currentInputDelay = 0f;
 
 	protected void Update()
 	{
 		GridDirection dir = GridDirection.None;
 
 #if UNITY_EDITOR
-		if(Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.A))
+
+		if(Input.anyKeyDown)
 		{
+			currentInputDelay = inputDelay;
+		}
+
+		if (Input.anyKey && (currentInputDelay -= Time.deltaTime) < 0f)
+		{
+			currentInputDelay = inputDelay;
+
+			if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+			{
+				dir = dir.AddDirection(GridDirection.West);
+			}
+			if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+			{
+				dir = dir.AddDirection(GridDirection.East);
+			}
+			if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
+			{
+				dir = dir.AddDirection(GridDirection.North);
+			}
+			if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
+			{
+				dir = dir.AddDirection(GridDirection.South);
+			}
+		}
+
+		if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.A))
+		{
+			currentInputDelay = inputDelay;
 			dir = dir.AddDirection(GridDirection.West);
 		}
 		if (Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.D))
 		{
+			currentInputDelay = inputDelay;
 			dir = dir.AddDirection(GridDirection.East);
 		}
 		if (Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.W))
 		{
+			currentInputDelay = inputDelay;
 			dir = dir.AddDirection(GridDirection.North);
 		}
 		if (Input.GetKeyUp(KeyCode.DownArrow) || Input.GetKeyUp(KeyCode.S))
 		{
+			currentInputDelay = inputDelay;
 			dir = dir.AddDirection(GridDirection.South);
 		}
 #else
@@ -138,23 +173,18 @@ public class GameManager : MonoBehaviour
 		}
 #endif
 
-		if(dir != GridDirection.None)
+		if (dir != GridDirection.None)
 		{
 
-			playerEntity.GetComponent<Position>().Pos += dir;
+			Position playerPos = playerEntity.GetComponent<Position>();
 
-			// OLD below
-
-			TileData targetTile = gridData[oldPlayerEntity.Position + dir];
-
-			// validate move before moving
-			if(oldPlayerEntity.CanMove(targetTile))
+			if (playerPos.IsValidTile(gridData[playerPos.Pos + dir].Type))
 			{
-				oldPlayerEntity.MoveTo(targetTile.Position);
+				playerPos.Pos += dir;
 			}
 			else
 			{
-				oldPlayerEntity.Direction = GridDirectionHelper.DirectionBetween(oldPlayerEntity.Position, targetTile.Position);
+				playerPos.Orientation = dir;
 			}
 		}
 
@@ -176,43 +206,33 @@ public class GameManager : MonoBehaviour
 
 
 		// find a valid spawn position
-		GridPosition spawnPos = new GridPosition(gridData.Columns / 2, gridData.Rows / 2);
-
-		// Old player creation
-		{
-			oldPlayerEntity = EntityPrototype.Player(GridPosition.Zero);
-			//entities.AddEntity(oldPlayerEntity);
-			oldPlayerEntity.OnPositionChanged += FindObjectOfType<TileFactory>().UpdateEntityVisual;
-			oldPlayerEntity.OnOrientationChanged += FindObjectOfType<TileFactory>().UpdateEntityVisual;
-		
-			oldPlayerEntity.Position = spawnPos;
-			FindObjectOfType<FollowCamera>().Target = FindObjectOfType<TileFactory>().GetEntityVisual(oldPlayerEntity).transform;
-		}
+		GridPosition spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
+		//GridPosition spawnPos = new GridPosition(gridData.Columns / 2, gridData.Rows / 2);
+		// TODO check validity
 
 		// New player creation
+		playerEntity = EntityPrototype.Player("The Player", spawnPos);
+		entities.AddEntity(playerEntity);
+
+		// dirty, dirty temp
+		StartCoroutine(SetCameraTargetDelayed());
+
+
+		// temp enemy creation
+		for (int i = 0; i < 10; i++)
 		{
-			playerEntity = new Entity();
-
-			playerEntity.AddComponent(new EntityName("The Player"));
-			playerEntity.AddComponent(new Position(spawnPos, GridDirection.North));
-			playerEntity.AddComponent(new EntityVisual("playerVisual"));
-
-			Position playerPos = playerEntity.GetComponent<Position>();
-			playerPos.OnPositionChanged += (int id) =>
-			{
-				Debug.Log("player with id " + id + " is moving");
-			};
-
-			playerEntity.GetComponent<Position>().Pos += GridDirection.North;
-
-			entities.AddEntity(playerEntity);
+			spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
+			Entity enemy = EntityPrototype.Enemy(spawnPos);
+			entities.AddEntity(enemy);
 		}
 
-
-		
-
-
 		//StartGame();
+	}
+
+	private IEnumerator SetCameraTargetDelayed()
+	{
+		yield return null;
+		FindObjectOfType<FollowCamera>().Target = FindObjectOfType<Entities.Visual.EntityRenderer>().GetEntityVisual(playerEntity.ID).transform;
 	}
 
 	/// <summary>
@@ -270,7 +290,7 @@ public class GameManager : MonoBehaviour
 		int count = 1000;
 		foreach (TileData tile in gridData)
 		{
-			tile.Type = (tile.Type == DungeonTileType.Wall) ? DungeonTileType.Flat : DungeonTileType.Wall;
+			tile.Type = (tile.Type == GridTileType.Wall) ? GridTileType.Flat : GridTileType.Wall;
 			if (--count <= 0)
 				break;
 		}

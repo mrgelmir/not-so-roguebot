@@ -9,7 +9,7 @@ namespace GridCode
 	{
 		public static Vector3 ToWorldPos(this GridPosition pos)
 		{
-			return new Vector3(pos.Column, pos.Row);
+			return new Vector3(pos.Column, 0f, pos.Row);
 		}
 
 		public static Vector3 ToEulerAngles(this GridDirection dir)

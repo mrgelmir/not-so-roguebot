@@ -10,7 +10,7 @@ namespace GridCode
 		private readonly GridPosition pos;
 
 		// determines the functionality of the tile
-		private DungeonTileType type = DungeonTileType.None;
+		private GridTileType type = GridTileType.None;
 
 		// to group tiles together
 		private int roomIndex = -1;
@@ -22,7 +22,7 @@ namespace GridCode
 		#endregion
 
 		#region Accessors
-		public DungeonTileType Type
+		public GridTileType Type
 		{
 			get { return type; }
 			set
@@ -94,7 +94,7 @@ namespace GridCode
 		/// </summary>
 		/// <param name="column">Column</param>
 		/// <param name="row">Row</param>
-		public TileData(GridData grid, int column, int row) : this(grid, column, row, DungeonTileType.None)
+		public TileData(GridData grid, int column, int row) : this(grid, column, row, GridTileType.None)
 		{
 
 		}
@@ -105,7 +105,7 @@ namespace GridCode
 		/// <param name="column">Column</param>
 		/// <param name="row">Row</param>
 		/// <param name="type"></param>
-		public TileData(GridData grid, int column, int row, DungeonTileType type)
+		public TileData(GridData grid, int column, int row, GridTileType type)
 		{
 			this.grid = grid;
 			pos.Column = column;

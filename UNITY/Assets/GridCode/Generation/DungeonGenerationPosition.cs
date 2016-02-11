@@ -1,22 +1,13 @@
-﻿using GridCode.Generation;
-using GridCode.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace GridCode
+namespace GridCode.Generation
 {
-
-	public enum DungeonTileType
-	{
-		None = 0,
-		Flat = 1,
-		Wall = 2,
-	}
 	
-	// THIS NEEDS TO BE A VALUE TYPE: DO NOT CHANGE (a value type gets copied over, a reference type gets referenced)
-	public struct DungeonPosition
+	// This needs to be a value type: Do not change to a class (a value type gets copied over, a reference type gets referenced)
+	public struct DungeonGenerationPosition
 	{
-		public DungeonPosition(int column, int row)
+		public DungeonGenerationPosition(int column, int row)
 		{
 			this.column = column;
 			this.row = row;
@@ -61,13 +52,13 @@ namespace GridCode
 			return null;
 		}
 
-		public bool Overlaps(DungeonPosition position)
+		public bool Overlaps(DungeonGenerationPosition position)
 		{
 			// a tile with the same position is also counted as an overlap
 			return position.column == column && position.row == row;
 		}
 
-		public bool Neigbours(DungeonPosition position)
+		public bool Neigbours(DungeonGenerationPosition position)
 		{
 			// a tile with the same position is also counted as an overlap
 			return Math.Abs(position.column - column) <= 1 && Math.Abs(position.row - row) <= 1;
@@ -80,9 +71,9 @@ namespace GridCode
 
 		public override bool Equals(object obj)
 		{
-			if(obj is DungeonPosition)
+			if(obj is DungeonGenerationPosition)
 			{
-				DungeonPosition other = (DungeonPosition)obj;
+				DungeonGenerationPosition other = (DungeonGenerationPosition)obj;
 				return Equals(other);
 			}
 			else
@@ -92,7 +83,7 @@ namespace GridCode
 
 		}
 
-		public bool Equals(DungeonPosition other)
+		public bool Equals(DungeonGenerationPosition other)
 		{
 			return Column == other.Column && Row == other.Row;
         }

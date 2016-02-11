@@ -427,6 +427,7 @@ GameObject:
   - 114: {fileID: 1631374362}
   - 114: {fileID: 1631374363}
   - 114: {fileID: 1631374364}
+  - 114: {fileID: 1631374365}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -499,7 +500,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88bcd9c15bbd82840b52aa551404616a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MechReference: {fileID: 140038, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
+  entityFactory: {fileID: 1631374365}
+--- !u!114 &1631374365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1631374360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0e9a4b84c906c04b98d73f932c8f379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerVisual: {fileID: 140038, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
+  enemyVisual: {fileID: 197736, guid: 765d55d9510c4e04f8a319c17b4cbd8e, type: 2}
+  defaultVisual: {fileID: 102586, guid: eae75bf7744a8c643ad30987ffcbc573, type: 2}
 --- !u!1 &1667472891
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Set_Floor_Test
   m_EditorClassIdentifier: 
   CollectionName: Test Floor
-  Type: 1
+  Type: 2
   Tile_X: {fileID: 109216, guid: 549215d99c9626242a6e0a7aed3dcd42, type: 2}
   Tile_NNeESeSwW: {fileID: 0}
   Tile_NESW: {fileID: 109216, guid: a9009de52a067e34fa5c0482f6940cbe, type: 2}

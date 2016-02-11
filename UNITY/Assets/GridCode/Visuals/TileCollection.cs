@@ -7,7 +7,7 @@ namespace GridCode.Visuals
 	public class TileCollection : ScriptableObject
 	{
 		public string CollectionName = "new Tile Collection";
-		public DungeonTileType Type = DungeonTileType.None;
+		public GridTileType Type = GridTileType.None;
 
 		/* position name reference
 		Nw|N|Ne

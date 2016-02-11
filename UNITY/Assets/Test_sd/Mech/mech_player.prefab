@@ -157,7 +157,7 @@ GameObject:
   - 4: {fileID: 451114}
   - 95: {fileID: 9587030}
   m_Layer: 0
-  m_Name: mech
+  m_Name: mech_player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -514,7 +514,7 @@ Transform:
   m_GameObject: {fileID: 140038}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.84967232, y: 1.84967184, z: 1.84967184}
+  m_LocalScale: {x: 1.5, y: 1.75, z: 1.5}
   m_Children:
   - {fileID: 454850}
   - {fileID: 447250}

@@ -1,4 +1,6 @@
-﻿namespace GridCode
+﻿using System;
+
+namespace GridCode
 {
 	/// <summary>
 	/// Enum containing 8 main directions
@@ -7,7 +9,7 @@
 	///	 W|X|E
 	/// Sw|S|Se
 	/// </summary>
-	[System.Flags]
+	[Flags]
 	public enum GridDirection
 	{
 		// No direction
@@ -43,14 +45,14 @@
 		NEW = North | East | West,
 		NES = North | East | South,
 
-
+		// TODO composite with diagonals?
 
 	}
 
 	public static class GridDirectionHelper
 	{
 		// let the getter use its own random to keep seeds valid
-		public static GridDirection GetRandomDirection(System.Random rand)
+		public static GridDirection GetRandomDirection(Random rand)
 		{
 			GridDirection dir = GridDirection.None;
 
@@ -59,7 +61,7 @@
 			return dir;
 		}
 
-		public static GridDirection GetRandomAxisAlignedDirection(System.Random rand)
+		public static GridDirection GetRandomAxisAlignedDirection(Random rand)
 		{
 			GridDirection dir = GridDirection.None;
 
@@ -152,13 +154,13 @@
 					angle = 180f;
 					break;
 				case GridDirection.SouthWest:
-					angle = 225f; 
+					angle = 225f;
 					break;
 				case GridDirection.West:
 					angle = 270f;
 					break;
 				case GridDirection.NorthWest:
-					angle = 315f; 
+					angle = 315f;
 					break;
 			}
 

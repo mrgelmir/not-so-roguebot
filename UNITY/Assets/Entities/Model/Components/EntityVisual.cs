@@ -5,7 +5,7 @@
 		// Temp 
 		public readonly string visualReference;
 
-		//
+		// also Temp
 		public EntityVisual(string visualReference)
 		{
 			this.visualReference = visualReference;

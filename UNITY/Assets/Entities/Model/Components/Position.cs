@@ -11,6 +11,7 @@ namespace Entities.Model.Components
 
 		private GridPosition position;
 		private GridDirection direction;
+		private GridTileType validTiles;
 
 		public GridPosition Pos
 		{
@@ -26,7 +27,7 @@ namespace Entities.Model.Components
 
 				position = value;
 				if (OnPositionChanged != null)
-					OnPositionChanged(ID);
+					OnPositionChanged(entityID);
 			}
 		}
 
@@ -39,7 +40,7 @@ namespace Entities.Model.Components
 				{
 					direction = value;
 					if (OnOrientationChanged != null)
-						OnOrientationChanged(ID);
+						OnOrientationChanged(entityID);
 				}
 			}
 		}
@@ -48,6 +49,19 @@ namespace Entities.Model.Components
 		{
 			position = pos;
 			direction = dir;
+			validTiles = GridTileType.Flat;
+		}
+
+		public Position(GridPosition pos, GridDirection dir, GridTileType validTiles)
+		{
+			position = pos;
+			direction = dir;
+			this.validTiles = validTiles;
+		}
+
+		public bool IsValidTile(GridTileType tileType)
+		{
+			return validTiles.ContainsTileType(tileType);
 		}
 	}
 }

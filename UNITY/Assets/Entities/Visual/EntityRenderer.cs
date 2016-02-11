@@ -11,10 +11,11 @@ namespace Entities.Visual
 	/// </summary>
 	public class EntityRenderer : MonoBehaviour
 	{
-		// TEMP references
-		public GameObject MechReference;
+		// Scene references
+		[SerializeField]
+		private EntityVisualFactory entityFactory;
 
-
+		// private members
 		private GridEntities entities;
 		private Dictionary<int, GameObject> entityVisuals = new Dictionary<int, GameObject>();
 
@@ -37,15 +38,37 @@ namespace Entities.Visual
 				GameObject visual;
 				if (!entityVisuals.TryGetValue(entityID, out visual))
 				{
-					visual = Instantiate(MechReference);
+					visual = entityFactory.GetVisual(v);
 
-					// create visual
+					visual.transform.SetParent(transform);
+
+					// add visual to collection
 					entityVisuals.Add(entityID, visual);
 				}
 				
 
 				// TEMP visual only gets created, not updated
 
+			}
+			else
+			{
+				// update the unexisting visual of an entity ... ?
+
+				// if a visaul exists for this entity -> remove
+				RemoveVisual(entityID);
+			}
+		}
+
+		public GameObject GetEntityVisual(int entityID)
+		{
+			GameObject visual;
+			if (!entityVisuals.TryGetValue(entityID, out visual))
+			{
+				return null;
+			}
+			else
+			{
+				return visual;
 			}
 		}
 
@@ -81,12 +104,15 @@ namespace Entities.Visual
 			if(p != null)
 			{
 				p.OnPositionChanged += UpdateEntityPosition;
+				p.OnOrientationChanged += UpdateEntityPosition;
 			}
 		}
 
 		private void EntityRemoved(int entityID)
 		{
 			// TODO
+
+			RemoveVisual(entityID);
 		}
 
 		private GameObject GetOrCreateVisual(int entityID)
@@ -118,6 +144,19 @@ namespace Entities.Visual
             }
 
 			return visual;
+		}
+
+		private void RemoveVisual(int entityID)
+		{
+			GameObject visual;
+			if (entityVisuals.TryGetValue(entityID, out visual))
+			{
+				entityVisuals.Remove(entityID);
+
+				// maybe do pooling here
+
+				Destroy(visual);
+			}
 		}
 	}
 }

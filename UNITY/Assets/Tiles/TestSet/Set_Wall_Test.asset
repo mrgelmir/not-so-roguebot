@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Set_Wall_Test
   m_EditorClassIdentifier: 
   CollectionName: Test walls
-  Type: 2
+  Type: 4
   Tile_X: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
   Tile_NNeESeSwW: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}
   Tile_NESW: {fileID: 109216, guid: 5c12ef52c8f82a2408de5e6036bcd5b0, type: 2}

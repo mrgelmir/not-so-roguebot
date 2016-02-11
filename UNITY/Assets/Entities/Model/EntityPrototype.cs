@@ -1,16 +1,37 @@
-﻿using System;
+﻿using Entities.Model;
+using Entities.Model.Components;
+using System;
 using System.Collections.Generic;
 
 namespace GridCode.Entities.Model
 {
 	public static class EntityPrototype
 	{
-		public static EntityData Player(GridPosition pos)
+		// TODO: make a better entity system when this breaks
+		private static int currentID = 0;
+
+		public static Entity Player(string name, GridPosition pos)
 		{
-			return new EntityData()
-			{
-				Position = pos,
-			};
+			// TODO get id somewhere else
+			Entity e = new Entity(++currentID); 
+
+			e.AddComponent(new EntityName(name));
+			e.AddComponent(new Position(pos, GridDirection.North));
+			e.AddComponent(new EntityVisual("playerVisual"));
+
+			return e;
+		}
+
+		public static Entity Enemy(GridPosition pos)
+		{
+			// TODO get id somewhere else
+			Entity e = new Entity(++currentID);
+
+			e.AddComponent(new EntityName("enemy"));
+			e.AddComponent(new Position(pos, GridDirection.North));
+			e.AddComponent(new EntityVisual("enemyVisual"));
+
+			return e;
 		}
 	}
 }

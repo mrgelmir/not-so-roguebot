@@ -7,7 +7,7 @@ namespace GridCode.Model
 	[Serializable]
 	public class DungeonCorridor
 	{
-		public List<DungeonPosition> TilePositions = new List<DungeonPosition>();
+		public List<DungeonGenerationPosition> TilePositions = new List<DungeonGenerationPosition>();
 
 		public DungeonCorridor(int width, DungeonRoom startRoom, DungeonRoom endRoom)
 		{
@@ -16,40 +16,40 @@ namespace GridCode.Model
 			endRoom.LinkedRooms.Add(startRoom);
 
 			// temp make path from center to center
-			DungeonPosition startPos = startRoom.CenterPos;
-			DungeonPosition endPos = endRoom.CenterPos;
+			DungeonGenerationPosition startPos = startRoom.CenterPos;
+			DungeonGenerationPosition endPos = endRoom.CenterPos;
 
 			//// temp go horizontal first, then vertical
 			//int horizontalDistance = startPos.Column - endRoom.CenterPos.Column;
 			//int verticalDistance = startPos.Row - endRoom.CenterPos.Row;
 
 			// horizontal first, then vertical. for now
-			DungeonPosition cornerPos = new DungeonPosition(startPos.Column, endPos.Row);
+			DungeonGenerationPosition cornerPos = new DungeonGenerationPosition(startPos.Column, endPos.Row);
 
-			TilePositions = new List<DungeonPosition>(Math.Abs(startPos.Column - endPos.Column) + Math.Abs(startPos.Row - endPos.Row) - 1);
+			TilePositions = new List<DungeonGenerationPosition>(Math.Abs(startPos.Column - endPos.Column) + Math.Abs(startPos.Row - endPos.Row) - 1);
 
 			int row = startPos.Row;
 			int col = startPos.Column;
 			int counter = startPos.Column > endPos.Column ? -1 : 1;
 			for (; col != endPos.Column; col += counter)
 			{
-				TilePositions.Add(new DungeonPosition(col, row));
+				TilePositions.Add(new DungeonGenerationPosition(col, row));
 			}
 			counter = startPos.Row > endPos.Row ? -1 : 1;
 			for (; row != endPos.Row; row += counter)
 			{
-				TilePositions.Add(new DungeonPosition(col, row));
+				TilePositions.Add(new DungeonGenerationPosition(col, row));
 			}
 		}
 
-		public DungeonCorridor(IList<DungeonPosition> tiles)
+		public DungeonCorridor(IList<DungeonGenerationPosition> tiles)
 		{
-			TilePositions = new List<DungeonPosition>(tiles);
+			TilePositions = new List<DungeonGenerationPosition>(tiles);
 		}
 
-		public bool Overlaps(DungeonPosition position)
+		public bool Overlaps(DungeonGenerationPosition position)
 		{
-			foreach (DungeonPosition pos in TilePositions)
+			foreach (DungeonGenerationPosition pos in TilePositions)
 			{
 				if (pos.Overlaps(position))
 				{

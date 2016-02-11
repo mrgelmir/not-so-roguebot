@@ -12,7 +12,7 @@ namespace GridCode.Generation
 		public int Width;
 		public int Height;
 
-		public List<DungeonPosition> Doors = new List<DungeonPosition>();
+		public List<DungeonGenerationPosition> Doors = new List<DungeonGenerationPosition>();
 
 		private List<List<DungeonTile>> tiles = null;
 		public List<List<DungeonTile>> Tiles
@@ -45,9 +45,9 @@ namespace GridCode.Generation
 		[NonSerialized]
 		public List<DungeonRoom> LinkedRooms = new List<DungeonRoom>();
 
-		public DungeonPosition CenterPos
+		public DungeonGenerationPosition CenterPos
 		{
-			get { return new DungeonPosition(Column + Width / 2, Row + Height / 2); }
+			get { return new DungeonGenerationPosition(Column + Width / 2, Row + Height / 2); }
 		}
 
 		public DungeonRoom(int column, int row, int width, int height)
@@ -74,7 +74,7 @@ namespace GridCode.Generation
 			//SetTileTypes();
 		}
 
-		public bool AddDoor(DungeonPosition position)
+		public bool AddDoor(DungeonGenerationPosition position)
 		{
 			// return false if the door isn't on a border
 			if (IsBorderPosition(position) || Overlaps(position))
@@ -100,7 +100,7 @@ namespace GridCode.Generation
 
 		private const int minRoomDistance = 1; // keep a gap of 1 for the walls
 
-		public bool Overlaps(DungeonPosition position)
+		public bool Overlaps(DungeonGenerationPosition position)
 		{
 			int offset = -minRoomDistance + 1;
 
@@ -121,7 +121,7 @@ namespace GridCode.Generation
 			return horizontalOverlap && verticalOverlap;
 		}
 
-		public bool IsBorderPosition(DungeonPosition position)
+		public bool IsBorderPosition(DungeonGenerationPosition position)
 		{
 			int offset = -minRoomDistance + 1;
 			return ((position.Column == Column + Width - offset) || (position.Column - offset == Column)) &&
@@ -141,9 +141,9 @@ namespace GridCode.Generation
 			return false;
 		}
 
-		public DungeonPosition BorderPosition(GridDirection dir)
+		public DungeonGenerationPosition BorderPosition(GridDirection dir)
 		{
-			DungeonPosition p = CenterPos;
+			DungeonGenerationPosition p = CenterPos;
 
 			// for now we take borders to the left or right side before top or bottom
 			if (dir.ContainsDirection(GridDirection.East))
@@ -169,7 +169,7 @@ namespace GridCode.Generation
 			return p;
 		}
 
-		public bool IsOuterCorner(DungeonPosition position)
+		public bool IsOuterCorner(DungeonGenerationPosition position)
 		{
 			int offset = -minRoomDistance + 1;
 

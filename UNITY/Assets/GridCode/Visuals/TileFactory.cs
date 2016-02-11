@@ -19,7 +19,7 @@ namespace GridCode.Visuals
 		public int ChildCount = 0;
 
 		// a collection of tile collections, by tile type
-		private Dictionary<DungeonTileType, TileCollection> tileCollectionsMap = null;
+		private Dictionary<GridTileType, TileCollection> tileCollectionsMap = null;
 
 		// a reference to the grid data object to figure out orientations
 		// TODO once/if a tile knows of the gridData, remove this reference
@@ -33,10 +33,6 @@ namespace GridCode.Visuals
 		// TODO how to handle more than one object on a grid tile
 		private Dictionary<TileData, GameObject> gridTileObjectVisuals = new Dictionary<TileData, GameObject>();
 
-		// Container holding existing entity visuals
-		// TODO move somewhere else
-		private Dictionary<EntityData, GameObject> entityVisuals = new Dictionary<EntityData, GameObject>();
-
 		// temp styling
 		Dictionary<int, Color> colorMap = new Dictionary<int, Color>();
 
@@ -47,20 +43,6 @@ namespace GridCode.Visuals
 		}
 
 		#region Interface
-		//public void SetGrid(GridData gridData)
-		//{
-		//	UpdateCollections();
-		//	this.gridData = gridData;
-		//	gridData.OnTileChanged += UpdateTileVisual;
-		//	gridData.OnTileObjectChanged += UpdateTileObjectVisual;
-
-		//	//// create all tile visuals for the first time
-		//	//foreach (TileData tileData in gridData)
-		//	//{
-		//	//	UpdateTileVisual(tileData);
-		//	//	UpdateTileObjectVisual(tileData);
-		//	//}
-		//}
 
 		public void UpdateTileVisual(TileData tileData)
 		{
@@ -78,13 +60,13 @@ namespace GridCode.Visuals
 			// catch special type cases here
 			switch (tileData.Type)
 			{
-				case DungeonTileType.None:
+				case GridTileType.None:
 					// No need for a tile visual -> silent fail
 					newVisual = null;
 					break;
 				default:
-				case DungeonTileType.Wall:
-				case DungeonTileType.Flat:
+				case GridTileType.Wall:
+				case GridTileType.Flat:
 					newVisual = SpawnTile(tileData, GetRegularTileVisual);
 					break;
 			}
@@ -147,36 +129,6 @@ namespace GridCode.Visuals
 			{
 				gridTileObjectVisuals.Add(tileData, newVisual);
 			}
-		}
-
-		// TODO move this to another factory
-		public void UpdateEntityVisual(EntityData entityData)
-		{
-			GameObject currentVisual = GetEntityVisual(entityData);
-
-			if (currentVisual == null)
-			{
-				// Spawn new visual
-
-				// Temp all entities have the same visual
-				currentVisual = Instantiate(EntityVisual);
-
-				currentVisual.name = entityData.ToString();
-				currentVisual.transform.parent = transform;
-
-				entityVisuals.Add(entityData, currentVisual);
-			}
-
-			// Move visual to new position
-			currentVisual.transform.localPosition = new Vector3(entityData.Column, 0, entityData.Row);
-			currentVisual.transform.localEulerAngles = entityData.Direction.ToEulerAngles();
-        }
-
-		public GameObject GetEntityVisual(EntityData entityData)
-		{
-			GameObject visual;
-			entityVisuals.TryGetValue(entityData, out visual);
-			return visual;
 		}
 
 		public void RegisterVisualTile(TileData tileData)
@@ -293,7 +245,7 @@ namespace GridCode.Visuals
 
 			// get directions for all neighbouring tiles
 			GridDirection orientation = GridDirection.None;
-			DungeonTileType tileType = tileData.Type;
+			GridTileType tileType = tileData.Type;
 
 			TileData neighbour_North = gridData.GetTile(tileData.Column, tileData.Row + 1);
 			TileData neighbour_South = gridData.GetTile(tileData.Column, tileData.Row - 1);
@@ -327,16 +279,16 @@ namespace GridCode.Visuals
 			TileData neighbour_North = gridData.GetTile(tileData.Column, tileData.Row + 1);
 			TileData neighbour_South = gridData.GetTile(tileData.Column, tileData.Row - 1);
 
-			if (neighbour_North != null && (neighbour_North.Type == DungeonTileType.Wall)
-				&& neighbour_South != null && (neighbour_South.Type == DungeonTileType.Wall))
+			if (neighbour_North != null && (neighbour_North.Type == GridTileType.Wall)
+				&& neighbour_South != null && (neighbour_South.Type == GridTileType.Wall))
 				return Door_EW;
 
 			// East - West are walls/doors -> passage NS
 			TileData neighbour_East = gridData.GetTile(tileData.Column + 1, tileData.Row);
 			TileData neighbour_West = gridData.GetTile(tileData.Column - 1, tileData.Row);
 
-			if (neighbour_East != null && (neighbour_East.Type == DungeonTileType.Wall)
-				&& neighbour_West != null && (neighbour_West.Type == DungeonTileType.Wall))
+			if (neighbour_East != null && (neighbour_East.Type == GridTileType.Wall)
+				&& neighbour_West != null && (neighbour_West.Type == GridTileType.Wall))
 				return Door_NS;
 
 			// return this door until the algorithm doesn't derp out on doors anymore
@@ -346,7 +298,7 @@ namespace GridCode.Visuals
 		private void SetupCollections()
 		{
 			// move collections from list to dictionary
-			tileCollectionsMap = new Dictionary<DungeonTileType, TileCollection>(TileCollections.Count);
+			tileCollectionsMap = new Dictionary<GridTileType, TileCollection>(TileCollections.Count);
 
 			foreach (TileCollection collection in TileCollections)
 			{

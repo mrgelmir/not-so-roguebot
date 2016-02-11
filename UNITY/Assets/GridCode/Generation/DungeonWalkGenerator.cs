@@ -130,13 +130,13 @@ namespace GridCode.Generation
 				currentDirection = GridDirectionHelper.GetRandomAxisAlignedDirection(r);
 			}
 
-			DungeonPosition startPos = startRoom.BorderPosition(currentDirection);
-			DungeonPosition currentPos = startPos;
+			DungeonGenerationPosition startPos = startRoom.BorderPosition(currentDirection);
+			DungeonGenerationPosition currentPos = startPos;
 
 
 
 			// go on a walk with a changing pseudorandom direction (biased towards current direction and max 90 degree turns) until a room or the edge has been reached
-			List<DungeonPosition> pathTiles = new List<DungeonPosition>();
+			List<DungeonGenerationPosition> pathTiles = new List<DungeonGenerationPosition>();
 			pathTiles.Add(currentPos);
 			do
 			{
@@ -206,10 +206,10 @@ namespace GridCode.Generation
 			return direction;
 		}
 
-		private bool EvaluateCorridor(List<DungeonPosition> currentPath, DungeonRoom startRoom)
+		private bool EvaluateCorridor(List<DungeonGenerationPosition> currentPath, DungeonRoom startRoom)
 		{
 
-			DungeonPosition lastPosition = currentPath[currentPath.Count - 1];
+			DungeonGenerationPosition lastPosition = currentPath[currentPath.Count - 1];
 			// path too long or out of bounds
 			if (currentPath.Count <= 0 || currentPath.Count >= maxCorridorLength || !workingData.ContainsPosition(lastPosition))
 			{
@@ -252,7 +252,7 @@ namespace GridCode.Generation
 			}
 		}
 
-		private bool CheckTileCollision(DungeonPosition position)
+		private bool CheckTileCollision(DungeonGenerationPosition position)
 		{
 			// check out of grid			
 			if (!workingData.ContainsPosition(position))

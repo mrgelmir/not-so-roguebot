@@ -12,18 +12,25 @@ namespace Entities.Model
 		{
 			get { return id; }
 		}
+		
+		public Entity(int id)
+		{
+			this.id = id;
+			
+		}
 
 		public bool AddComponent<T>(T component) where T : Component
 		{
 			if (HasComponent<T>())
 			{
+				Log.Warning("Entity::AddComponent - attempt to add duplicate component " + component.GetType().ToString());
 				return false;
 			}
 			else
 			{
 				// Add component to list and mark with personal ID
 				components.Add(component);
-				component.ID = ID;
+				component.entityID = ID;
 				return true;
 			}
 		}

@@ -25,14 +25,14 @@ namespace Entities.Model.Systems
 		/// <returns>Should processing continue for this frame</returns>
 		public bool HandleActor(Actor actor)
 		{
-			Entity entity = entities[actor.entityID];
+			currentEntity = entities[actor.entityID];
 
 			if (actor.InstantActor)
 			{
 				// do stuff here and continue
 
 				// temp assume random for each instant actor
-				Position pos = entity.GetComponent<Position>();
+				Position pos = currentEntity.GetComponent<Position>();
 				if(pos != null)
 				{
 					// let's not care about bumping into walls shall we
@@ -49,8 +49,8 @@ namespace Entities.Model.Systems
 						pos.Orientation = dir;
 					}
 				}
-				
 
+				currentEntity = null;
 				return true;
 			}
 			else
@@ -58,9 +58,36 @@ namespace Entities.Model.Systems
 				// wait for the actor to process and then continue here
 				//actor.ProcessDelayed(ContinueTurn);
 
-				throw new NotImplementedException("waiting for actors is not yet implemented");
+				//throw new NotImplementedException("waiting for actors is not yet implemented");
+				InputController.Instance.OnTileClicked += TileTapped;
 
 				return false;
+			}
+		}
+
+		private Entity currentEntity = null;
+
+		private void TileTapped(TileData tile)
+		{
+			InputController.Instance.OnTileClicked -= TileTapped;
+
+			// TODO use movement component here as well
+			Position pos = currentEntity.GetComponent<Position>();
+
+			if (pos.IsValidTile(tile.Type))
+			{
+				pos.Pos = tile.Position;
+			}
+
+			currentEntity = null;
+
+			if(OnResume != null)
+			{
+				OnResume();
+			}
+			else
+			{
+				Log.Warning("ActorSystem::TileTapped - There is no resume callback available, this will probably break the gameloop");
 			}
 		}
 	}

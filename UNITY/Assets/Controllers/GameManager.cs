@@ -174,20 +174,21 @@ public class GameManager : MonoBehaviour
 		}
 #endif
 
-		if (dir != GridDirection.None)
-		{
+		//// temp moving around code
+		//if (dir != GridDirection.None)
+		//{
 
-			Position playerPos = playerEntity.GetComponent<Position>();
+		//	Position playerPos = playerEntity.GetComponent<Position>();
 
-			if (playerPos.IsValidTile(gridData[playerPos.Pos + dir].Type))
-			{
-				playerPos.Pos += dir;
-			}
-			else
-			{
-				playerPos.Orientation = dir;
-			}
-		}
+		//	if (playerPos.IsValidTile(gridData[playerPos.Pos + dir].Type))
+		//	{
+		//		playerPos.Pos += dir;
+		//	}
+		//	else
+		//	{
+		//		playerPos.Orientation = dir;
+		//	}
+		//}
 
 	}
 
@@ -203,8 +204,13 @@ public class GameManager : MonoBehaviour
 	{
 		GenerateDungeon();
 
+		// -- setup --
+
 		entities = new GridEntities();
 		actorSystem = new ActorSystem(entities, gridData);
+		InputController.Instance.Grid = gridData;
+
+		// -- spawning -- 
 
 		// find a valid spawn position
 		GridPosition spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
@@ -226,6 +232,8 @@ public class GameManager : MonoBehaviour
 			Entity enemy = EntityPrototype.Enemy(spawnPos);
 			entities.AddEntity(enemy);
 		}
+
+		// -- game start -- 
 
 		StartGame();
 
@@ -315,7 +323,7 @@ public class GameManager : MonoBehaviour
 	{
 		// TODO check for deletion
 
-		Invoke("StartTurn", 1f);
+		StartTurn();
 	}
 
 	/// <summary>

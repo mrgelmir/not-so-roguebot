@@ -18,6 +18,11 @@ namespace GridCode.Entities.Model
 			e.AddComponent(new EntityName(name));
 			e.AddComponent(new Position(pos, GridDirection.North));
 			e.AddComponent(new EntityVisual("playerVisual"));
+			e.AddComponent(new Actor()
+			{
+				InstantActor = false,
+				Type = AIType.None,
+			});
 
 			return e;
 		}

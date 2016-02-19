@@ -428,6 +428,7 @@ GameObject:
   - 114: {fileID: 1631374363}
   - 114: {fileID: 1631374364}
   - 114: {fileID: 1631374365}
+  - 65: {fileID: 1631374366}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -515,6 +516,18 @@ MonoBehaviour:
   playerVisual: {fileID: 140038, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
   enemyVisual: {fileID: 197736, guid: 765d55d9510c4e04f8a319c17b4cbd8e, type: 2}
   defaultVisual: {fileID: 102586, guid: eae75bf7744a8c643ad30987ffcbc573, type: 2}
+--- !u!65 &1631374366
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1631374360}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1000, y: .100000001, z: 1000}
+  m_Center: {x: 500, y: 0, z: 500}
 --- !u!1 &1667472891
 GameObject:
   m_ObjectHideFlags: 0

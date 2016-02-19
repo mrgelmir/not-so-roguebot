@@ -30,6 +30,11 @@ namespace GridCode.Entities.Model
 			e.AddComponent(new EntityName("enemy"));
 			e.AddComponent(new Position(pos, GridDirection.North));
 			e.AddComponent(new EntityVisual("enemyVisual"));
+			e.AddComponent(new Actor()
+			{
+				InstantActor = true,
+				Type = AIType.Random,
+			});
 
 			return e;
 		}

@@ -28,10 +28,14 @@ namespace Entities.Visual
 
 		public void UpdateEntityVisual(int entityID)
 		{
-			Log.Write("Entity with id " + entityID + " is updating its visual");
+			//Log.Write("Entity with id " + entityID + " is updating its visual");
 
 			// get id from entitymanager OR pass entity here
-			EntityVisual v = entities[entityID].GetComponent<EntityVisual>();
+			Entity entity = entities[entityID];
+			EntityVisual v = entity.GetComponent<EntityVisual>();
+			EntityName n = entity.GetComponent<EntityName>();
+			Position p = entity.GetComponent<Position>();
+
 			if (v != null)
 			{
 				// check if a visual already exists
@@ -39,8 +43,9 @@ namespace Entities.Visual
 				if (!entityVisuals.TryGetValue(entityID, out visual))
 				{
 					visual = entityFactory.GetVisual(v);
-
 					visual.transform.SetParent(transform);
+
+					visual.name = n != null ? n.NameString : p.Pos.ToString();
 
 					// add visual to collection
 					entityVisuals.Add(entityID, visual);

@@ -5,6 +5,9 @@ namespace Entities.Model
 {
 	public class Entity
 	{
+
+		// TODO see how to handle deletion (do not alter IEnumerations while iterating)
+
 		private readonly int id;
 		private List<Component> components = new List<Component>();
 
@@ -12,11 +15,10 @@ namespace Entities.Model
 		{
 			get { return id; }
 		}
-		
+
 		public Entity(int id)
 		{
 			this.id = id;
-			
 		}
 
 		public bool AddComponent<T>(T component) where T : Component

@@ -6,7 +6,7 @@ namespace Entities.Model.Components
 	{
 		private string nameString;
 
-		public string NameString
+		public virtual string NameString
 		{
 			get { return nameString; }
 		}

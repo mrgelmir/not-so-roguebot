@@ -6,6 +6,7 @@ using UnityEngine;
 using Entities.Model.Components;
 using GridCode.Entities.Model;
 using System.Collections;
+using Entities.Model.Systems;
 
 public class GameManager : MonoBehaviour
 {
@@ -203,7 +204,7 @@ public class GameManager : MonoBehaviour
 		GenerateDungeon();
 
 		entities = new GridEntities();
-
+		actorSystem = new ActorSystem(entities, gridData);
 
 		// find a valid spawn position
 		GridPosition spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
@@ -226,7 +227,22 @@ public class GameManager : MonoBehaviour
 			entities.AddEntity(enemy);
 		}
 
-		//StartGame();
+		StartGame();
+
+
+		//// go over all position components
+		//ComponentEnumerator<Position> posEnumerator = entities.GetComponentEnumerator<Position>();
+		//while(posEnumerator.MoveNext())
+		//{
+		//	Log.Write(posEnumerator.Current.Pos);
+		//}
+
+		//// go over all name components
+		//ComponentEnumerator<EntityName> nameEnumerator = entities.GetComponentEnumerator<EntityName>();
+		//while (nameEnumerator.MoveNext())
+		//{
+		//	Log.Write(nameEnumerator.Current.NameString);
+		//}
 	}
 
 	private IEnumerator SetCameraTargetDelayed()
@@ -242,7 +258,7 @@ public class GameManager : MonoBehaviour
 	/// </summary>
 	public virtual void StartGame()
 	{
-
+		StartTurn();
 	}
 
 	/// <summary>
@@ -255,6 +271,41 @@ public class GameManager : MonoBehaviour
 		// TODO see which functionality should overlap with FinishGame?
 	}
 
+
+
+	private ComponentEnumerator<Actor> actorEnumerator;
+	private ActorSystem actorSystem;
+
+	private void StartTurn()
+	{
+		// start of turn setup
+		actorEnumerator = entities.GetComponentEnumerator<Actor>();
+		actorSystem.OnResume += ContinueTurn;
+
+
+		ContinueTurn();
+	}
+
+	private void ContinueTurn()
+	{
+		while(actorEnumerator.MoveNext())
+		{
+			Actor actor = actorEnumerator.Current;
+
+			if(!actorSystem.HandleActor(actor))
+			{
+				// break processing this turn and wait for OnResume
+				return;
+			}
+		}
+
+		// end of turn cleanup
+		actorEnumerator.Dispose();
+		actorSystem.OnResume -= ContinueTurn;
+
+		EndOfTurn();
+	}
+
 	/// <summary>
 	/// Intermediary callback to catch a the turn progress
 	/// - step-based levels?
@@ -262,7 +313,9 @@ public class GameManager : MonoBehaviour
 	/// </summary>
 	public virtual void EndOfTurn()
 	{
+		// TODO check for deletion
 
+		Invoke("StartTurn", 1f);
 	}
 
 	/// <summary>

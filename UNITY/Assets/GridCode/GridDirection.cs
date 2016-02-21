@@ -56,7 +56,7 @@ namespace GridCode
 		{
 			GridDirection dir = GridDirection.None;
 
-			dir = (GridDirection)rand.Next(0x100);
+			dir = (GridDirection) (1 << rand.Next(7));
 
 			return dir;
 		}

@@ -1,7 +1,7 @@
 ﻿using GridCode;
 using System.Collections.Generic;
 
-namespace PathFinder
+namespace PathFinding
 {
 
 	/// <summary>
@@ -41,7 +41,7 @@ namespace PathFinder
 					if (neighbourTile.Type == GridTileType.Flat)
 					{
 						neigbourEdges.Add(new Edge<TileData>(nodes[neighbourTile]));
-                    }
+					}
 				}
 
 				// add edges to node

@@ -25,7 +25,7 @@ namespace GridCode
 			// this (ab-)uses the fact that the difference between axial adjacent tiles is always 1
 			// if we check for diagonals check for diagonals, both the Col and Row are exactly one apart
 			return (1 == (Math.Abs(Column - other.Column) + Math.Abs(Row - other.Row)) ||
-				(includeDiagonal && (1 == Math.Abs(Column - other.Column) && 1 == Math.Abs(Row - other.Row)))); 
+				(includeDiagonal && (1 == Math.Abs(Column - other.Column) && 1 == Math.Abs(Row - other.Row))));
 		}
 
 		public override string ToString()
@@ -38,6 +38,18 @@ namespace GridCode
 			return Column.GetHashCode() ^ Row.GetHashCode();
 		}
 
+		// move to extensions?
+		public int DistanceTo(TileData otherTile)
+		{
+			return DistanceTo(otherTile.Position);
+		}
+
+		// move to extensions?
+		public int DistanceTo(GridPosition otherPosition)
+		{
+			return Math.Abs(Column - otherPosition.Column) + Math.Abs(Row - otherPosition.Row);
+		}
+
 		public override bool Equals(object obj)
 		{
 			return obj is GridPosition ? Equals((GridPosition)obj) : false;
@@ -48,7 +60,7 @@ namespace GridCode
 			return Column == other.Column && Row == other.Row;
 		}
 
-		public static bool operator == (GridPosition pos1, GridPosition pos2)
+		public static bool operator ==(GridPosition pos1, GridPosition pos2)
 		{
 			return pos1.Equals(pos2);
 		}
@@ -58,7 +70,7 @@ namespace GridCode
 			return !pos1.Equals(pos2);
 		}
 
-		public static GridPosition operator + (GridPosition pos, GridDirection dir)
+		public static GridPosition operator +(GridPosition pos, GridDirection dir)
 		{
 			return new GridPosition(pos.Column + dir.GetHorizontalDirection(), pos.Row + dir.GetVerticalDirection());
 		}

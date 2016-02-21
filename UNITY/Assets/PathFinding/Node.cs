@@ -1,6 +1,8 @@
-﻿using GridCode;
+﻿using System;
+using System.Collections.Generic;
+using GridCode;
 
-namespace PathFinder
+namespace PathFinding
 {
 	public class Node<T>
 	{
@@ -18,5 +20,6 @@ namespace PathFinder
 		{
 			Data = data;
 		}
+		
 	}
 }

@@ -3,44 +3,44 @@ using System.Collections.Generic;
 
 // For reference: http://www.policyalmanac.org/games/aStarTutorial.htm 
 
-namespace PathFinder
+namespace PathFinding
 {
-	public class PathFinder
+	public class PathFinder<T> where T : class, IPathFindable<T>
 	{
-		//public static void GetPath(GridTileView from, GridTileView to, Action<IEnumerable<GridTileView>> OnPath)
-		//{
-		//	//UnityEngine.Debug.Log("requesting path from " + from + " to " + to);
-		//	OnPath(FindPath(from, to));
-		//}
+		public static void GetPath(T from, T to, Action<IEnumerable<T>> OnPath)
+		{
+			//UnityEngine.Debug.Log("requesting path from " + from + " to " + to);
+			OnPath(FindPath(from, to));
+		}
 
 
-		//private static IEnumerable<GridTileView> FindPath(GridTileView from, GridTileView to)
-		//{
-		//	// create pathfinder and let it work its magic
-		//	PathFinder p = new PathFinder(from, to);
+		public static IEnumerable<T> FindPath(T from, T to)
+		{
+			// create pathfinder and let it work its magic
+			PathFinder<T> p = new PathFinder<T>(from, to);
 
-		//	// return values
+			// return values
 
-		//	List<GridTileView> l = new List<GridTileView>();
+			List<T> l = new List<T>();
 
-		//	foreach (IPathFindeable pf in p.Path)
-		//	{
-		//		l.Add(pf as GridTileView);
-		//	}
+			foreach (T pf in p.Path)
+			{
+				l.Add(pf as T);
+			}
 
-		//	return l;
-		//}
+			return l;
+		}
 
 		private Node currentNode = null;
-		private IPathFindeable target = null;
+		private T target = null;
 		private List<Node> OpenList = new List<Node>();
 		private List<Node> ClosedList = new List<Node>(); // TODO calculate a feasible amount to start with?
 
-		protected List<IPathFindeable> Nodes;
+		protected List<T> Nodes;
 		protected List<int> HeuristicValues;
 		protected List<int> MoveValues;
 
-		private PathFinder(IPathFindeable from, IPathFindeable to)
+		private PathFinder(T from, T to)
 		{
 			target = to;
 			OpenList.Add(new Node(from, to, null));
@@ -59,7 +59,7 @@ namespace PathFinder
 
 			if (OpenList.Count == 0)
 			{
-				UnityEngine.Debug.Log("No more open list nodes");
+				Log.Write("No more open list nodes");
 				return;
 			}
 			currentNode = OpenList[0];
@@ -69,7 +69,7 @@ namespace PathFinder
 			ClosedList.Add(currentNode);
 
 			// add its neigbours to open list
-			foreach (IPathFindeable pathFindeable in currentNode.PathFindeable.Neighbours)
+			foreach (T pathFindeable in currentNode.PathFindeable.Neighbours)
 			{
 				Node newNode = new Node(pathFindeable, target, currentNode);
 				if (pathFindeable.Walkeable && !OpenList.Contains(newNode) && !ClosedList.Contains(newNode))
@@ -92,11 +92,11 @@ namespace PathFinder
 			}
 		}
 
-		private IEnumerable<IPathFindeable> Path
+		private IEnumerable<T> Path
 		{
 			get
 			{
-				List<IPathFindeable> itinerary = new List<IPathFindeable>();
+				List<T> itinerary = new List<T>();
 				Node n = currentNode;
 
 				do
@@ -115,17 +115,17 @@ namespace PathFinder
 		private class Node : IComparable
 		{
 			public Node Parent = null;
-			public IPathFindeable PathFindeable;
+			public T PathFindeable;
 			public int G; // total move cost to here
 			public int H; // heuristic move distance to target
 			public int F { get { return G + H; } }
 
-			public Node(IPathFindeable pathFindeable)
+			public Node(T pathFindeable)
 			{
 				PathFindeable = pathFindeable;
 			}
 
-			public Node(IPathFindeable pathFindeable, IPathFindeable target, Node parent)
+			public Node(T pathFindeable, T target, Node parent)
 			{
 				PathFindeable = pathFindeable;
 				H = PathFindeable.HeuristicDistance(target);
@@ -178,13 +178,13 @@ namespace PathFinder
 		}
 	}
 
-	public interface IPathFindeable
+	public interface IPathFindable<T> where T : class
 	{
-		int HeuristicDistance(IPathFindeable other);
-		int MovementCostFrom(IPathFindeable other);
-		IEnumerable<IPathFindeable> Neighbours { get; }
+		int HeuristicDistance(T other);
+		int MovementCostFrom(T other);
+		IEnumerable<T> Neighbours { get; }
 		bool Walkeable { get; }
-		int UniqueIndex { get; }
+		//int UniqueIndex { get; }
 
 	}
 

@@ -7,7 +7,7 @@ using Entities.Model.Components;
 using GridCode.Entities.Model;
 using System.Collections;
 using Entities.Model.Systems;
-using PathFinder;
+using PathFinding;
 
 public class GameManager : MonoBehaviour
 {
@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
 
 	private GridData gridData = null;
 	private GridEntities entities = null;
+	private TileGraph tileGraph = null;
 
 	public GridData GridData
 	{
@@ -39,6 +40,11 @@ public class GameManager : MonoBehaviour
 	public GridEntities Entities
 	{
 		get { return entities; }
+	}
+
+	public TileGraph TileGraph
+	{
+		get { return tileGraph; }
 	}
 
 	private static GameManager instance = null;
@@ -208,14 +214,14 @@ public class GameManager : MonoBehaviour
 
 		GenerateDungeon();
 		entities = new GridEntities();
-		actorSystem = new ActorSystem(entities, gridData);
+		// generate a* grid
+		tileGraph = new TileGraph(gridData);
+		actorSystem = new ActorSystem(entities, gridData, tileGraph);
 		InputController.Instance.Grid = gridData;
 
-		// temp generate a* grid
-		TileGraph graph = new TileGraph(gridData);
 
 		// temp grid editor visualisation
-		foreach (Node<TileData> node in graph.nodes.Values)
+		foreach (Node<TileData> node in tileGraph.nodes.Values)
 		{
 			foreach (Edge<TileData> edge in node.Edges)
 			{
@@ -336,6 +342,14 @@ public class GameManager : MonoBehaviour
 	{
 		// TODO check for deletion
 
+
+		//wait for a while, then start next turn
+		StartCoroutine(StartTurndelayed(.1f));
+	}
+
+	private IEnumerator StartTurndelayed(float delay)
+	{
+		yield return new WaitForSeconds(delay);
 		StartTurn();
 	}
 

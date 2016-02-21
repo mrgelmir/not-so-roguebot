@@ -1,8 +1,10 @@
-﻿using System;
+﻿using PathFinding;
+using System;
+using System.Collections.Generic;
 
 namespace GridCode
 {
-	public class TileData
+	public class TileData : IPathFindable<TileData>
 	{
 
 		#region Data
@@ -78,6 +80,22 @@ namespace GridCode
 			get { return tileObject; }
 		}
 
+		IEnumerable<TileData> IPathFindable<TileData>.Neighbours
+		{
+			get
+			{
+				return grid.GetNeigbours(this);
+			}
+		}
+
+		bool IPathFindable<TileData>.Walkeable
+		{
+			get
+			{
+				return Type == GridTileType.Flat;
+			}
+		}
+
 		#endregion
 
 		#region Callbacks
@@ -145,6 +163,25 @@ namespace GridCode
 		public override int GetHashCode()
 		{
 			return Column.GetHashCode() | Row.GetHashCode();
+		}
+
+		int IPathFindable<TileData>.HeuristicDistance(TileData other)
+		{
+			if (other == null)
+			{
+				// this would mean a non-tiledata IPathFindable would be referenced from a Tiledata
+				throw new NotImplementedException("comparing TileData with non-TileData IPathFindable");
+			}
+			else
+			{
+				return Position.DistanceTo(other.pos);
+			}
+		}
+
+		int IPathFindable<TileData>.MovementCostFrom(TileData other)
+		{
+			// TODO: higher cost for diagonal
+			return (other.Column == Column || other.Row == Row) ? 2 : 3;
 		}
 		#endregion
 	}

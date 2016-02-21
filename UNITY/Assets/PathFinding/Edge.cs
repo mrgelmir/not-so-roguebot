@@ -1,4 +1,4 @@
-﻿namespace PathFinder
+﻿namespace PathFinding
 {
 	public class Edge<T>
 	{

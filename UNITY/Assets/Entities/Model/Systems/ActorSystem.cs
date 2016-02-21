@@ -1,6 +1,8 @@
 ﻿using Entities.Model.Components;
 using GridCode;
+using PathFinding;
 using System;
+using System.Collections.Generic;
 
 namespace Entities.Model.Systems
 {
@@ -10,12 +12,14 @@ namespace Entities.Model.Systems
 
 		private readonly GridEntities entities;
 		private readonly GridData grid;
+		private readonly TileGraph graph;
 		Random rand = new Random();
 
-		public ActorSystem(GridEntities entities, GridData grid)
+		public ActorSystem(GridEntities entities, GridData grid, TileGraph graph)
 		{
 			this.entities = entities;
 			this.grid = grid;
+			this.graph = graph;
 		}
 
 		/// <summary>
@@ -55,17 +59,32 @@ namespace Entities.Model.Systems
 			}
 			else
 			{
-				// wait for the actor to process and then continue here
-				//actor.ProcessDelayed(ContinueTurn);
 
-				//throw new NotImplementedException("waiting for actors is not yet implemented");
-				InputController.Instance.OnTileClicked += TileTapped;
+				// Temp implementation
+				if(playerPath == null || playerPath.Count <= 0)
+				{
+					// start listening to input for a path
+					InputController.Instance.OnTileClicked += TileTapped;
+				}
+				else
+				{
+					// just continue along path
+
+					Position pos = currentEntity.GetComponent<Position>();
+					pos.Pos = playerPath.Dequeue().Position;
+
+					return true;
+				}
+
 
 				return false;
 			}
 		}
 
 		private Entity currentEntity = null;
+
+		// temp
+		private Queue<TileData> playerPath;
 
 		private void TileTapped(TileData tile)
 		{
@@ -76,12 +95,25 @@ namespace Entities.Model.Systems
 
 			if (pos.IsValidTile(tile.Type))
 			{
-				pos.Pos = tile.Position;
+
+				playerPath = new Queue<TileData>(PathFinder<TileData>.FindPath(grid[pos.Pos], tile));
+
+				// remove start pos from path
+				playerPath.Dequeue();
+
+				if (playerPath.Count > 0)
+					pos.Pos = playerPath.Dequeue().Position;
 			}
 
+			FinishTurn();
+		}
+
+
+		private void FinishTurn()
+		{
 			currentEntity = null;
 
-			if(OnResume != null)
+			if (OnResume != null)
 			{
 				OnResume();
 			}

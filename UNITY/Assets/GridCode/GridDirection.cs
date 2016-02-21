@@ -108,14 +108,88 @@ namespace GridCode
 			return (direction & other) == other;
 		}
 
+		/// <summary>
+		/// This is only valid on a uni-directional direction
+		/// </summary>
+		/// <param name="direction">the direction if which to get the horizontal direction</param>
+		/// <returns>the horizontal direction, 1 being East, -1 being West</returns>
 		public static int GetHorizontalDirection(this GridDirection direction)
 		{
-			return direction.ContainsDirection(GridDirection.East) ? 1 : (direction.ContainsDirection(GridDirection.West) ? -1 : 0);
+			switch (direction)
+			{
+				// no horizontal direction, or undecided
+				default:
+				case GridDirection.None:
+				case GridDirection.North:
+				case GridDirection.South:
+				case GridDirection.NNeEEsSwW:
+				case GridDirection.NESW:
+				case GridDirection.NS:
+				case GridDirection.EW:
+				case GridDirection.ESW:
+				case GridDirection.NEW:
+					return 0;
+				// eastern direction
+				case GridDirection.NorthEast:
+				case GridDirection.East:
+				case GridDirection.SouthEast:
+				case GridDirection.NE:
+				case GridDirection.ES:
+				case GridDirection.NES:
+					return 1;
+				// western direction
+				case GridDirection.SouthWest:
+				case GridDirection.West:
+				case GridDirection.NorthWest:
+				case GridDirection.SW:
+				case GridDirection.NW:
+				case GridDirection.NSW:
+					return -1;
+			}
+			// old implementation
+			//return direction.ContainsDirection(GridDirection.East) ? 1 : (direction.ContainsDirection(GridDirection.West) ? -1 : 0);
 		}
 
+		/// <summary>
+		/// This is only valid on a uni-directional direction
+		/// </summary>
+		/// <param name="direction">the direction if which to get the vertical direction</param>
+		/// <returns>the vertical direction, 1 being North, -1 being South</returns>
 		public static int GetVerticalDirection(this GridDirection direction)
 		{
-			return direction.ContainsDirection(GridDirection.North) ? 1 : (direction.ContainsDirection(GridDirection.South) ? -1 : 0);
+			switch (direction)
+			{
+				// no vertical direction, or undecided
+				default:
+				case GridDirection.None:
+				case GridDirection.East:
+				case GridDirection.West:
+				case GridDirection.NNeEEsSwW:
+				case GridDirection.NESW:
+				case GridDirection.NS:
+				case GridDirection.EW:
+				case GridDirection.NSW:
+				case GridDirection.NES:
+					return 0;
+				// northern direction
+				case GridDirection.North:
+				case GridDirection.NorthEast:
+				case GridDirection.NorthWest:
+				case GridDirection.NW:
+				case GridDirection.NE:
+				case GridDirection.NEW:
+					return 1;
+				// southern direction
+				case GridDirection.SouthEast:
+				case GridDirection.South:
+				case GridDirection.SouthWest:
+				case GridDirection.SW:
+				case GridDirection.ES:
+				case GridDirection.ESW:
+					return -1;
+			}
+			// old implementation
+			//return direction.ContainsDirection(GridDirection.North) ? 1 : (direction.ContainsDirection(GridDirection.South) ? -1 : 0);
 		}
 
 		/// <summary>

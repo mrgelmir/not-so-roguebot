@@ -7,6 +7,7 @@ using Entities.Model.Components;
 using GridCode.Entities.Model;
 using System.Collections;
 using Entities.Model.Systems;
+using PathFinder;
 
 public class GameManager : MonoBehaviour
 {
@@ -202,21 +203,33 @@ public class GameManager : MonoBehaviour
 	/// </summary>
 	public virtual void InitializeGame()
 	{
-		GenerateDungeon();
 
 		// -- setup --
 
+		GenerateDungeon();
 		entities = new GridEntities();
 		actorSystem = new ActorSystem(entities, gridData);
 		InputController.Instance.Grid = gridData;
+
+		// temp generate a* grid
+		TileGraph graph = new TileGraph(gridData);
+
+		// temp grid editor visualisation
+		foreach (Node<TileData> node in graph.nodes.Values)
+		{
+			foreach (Edge<TileData> edge in node.Edges)
+			{
+				Vector3 ray = GridDirectionHelper.DirectionBetween(node.Data.Position, edge.Node.Data.Position).ToDirection();
+				Debug.DrawRay(node.Data.Position.ToWorldPos(), ray * .3f, Color.green, float.MaxValue);
+			}
+		}
 
 		// -- spawning -- 
 
 		// find a valid spawn position
 		GridPosition spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
-		//GridPosition spawnPos = new GridPosition(gridData.Columns / 2, gridData.Rows / 2);
-		// TODO check validity
 
+		
 		// New player creation
 		playerEntity = EntityPrototype.Player("The Player", spawnPos);
 		entities.AddEntity(playerEntity);

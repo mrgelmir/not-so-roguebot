@@ -14,7 +14,12 @@ namespace GridCode
 
 		public static Vector3 ToEulerAngles(this GridDirection dir)
 		{
-			return Vector3.up* dir.Rotation();
-        }
+			return Vector3.up * dir.Rotation();
+		}
+
+		public static Vector3 ToDirection(this GridDirection dir)
+		{
+			return new Vector3(dir.GetHorizontalDirection(), 0f, dir.GetVerticalDirection());
+		}
 	}
 }

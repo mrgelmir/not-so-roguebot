@@ -41,12 +41,18 @@ namespace GridCode
 				}
 			}
 		}
+
 		public TileData GetTile(int column, int row)
 		{
 			if (ContainsPosition(column, row))
 				return tiles[column, row];
 			else
 				return null;
+		}
+
+		public TileData GetTile(GridPosition pos)
+		{
+			return GetTile(pos.Column, pos.Row);
 		}
 
 		public TileData GetRandomTile(GridTileType tileType = GridTileType.Flat)
@@ -66,6 +72,32 @@ namespace GridCode
 		public bool ContainsPosition(int column, int row)
 		{
 			return column >= 0 && column < Columns && row >= 0 && row < Rows;
+		}
+
+		public List<TileData> GetNeigbours(TileData tileData, bool allowDiagonals = true)
+		{
+			int maxNeigbours = allowDiagonals ? 8 : 4;
+			int angle = allowDiagonals ? 45 : 90;
+
+			if (tileData == null)
+			{
+				return null;
+			}
+
+			// TODO: find out if this thing is efficient enough?
+
+			List<TileData> neigbours = new List<TileData>(8);
+			TileData neigbourTile;
+			GridDirection dir = GridDirection.North;
+			for (int i = 0; i < maxNeigbours; i++)
+			{
+				neigbourTile = GetTile(tileData.Position + dir.RotateBy(i * angle));
+				if(neigbourTile != null)
+				{
+					neigbours.Add(neigbourTile);
+				}
+			}
+			return neigbours;
 		}
 
 		private void TileChanged(TileData tileData)
@@ -106,7 +138,7 @@ namespace GridCode
 		{
 			get
 			{
-				return GetTile(pos.Column, pos.Row);
+				return GetTile(pos);
 			}
 		}
 		#endregion

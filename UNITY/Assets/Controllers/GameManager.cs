@@ -30,7 +30,6 @@ public class GameManager : MonoBehaviour
 
 	private GridData gridData = null;
 	private GridEntities entities = null;
-	private TileGraph tileGraph = null;
 
 	public GridData GridData
 	{
@@ -41,12 +40,7 @@ public class GameManager : MonoBehaviour
 	{
 		get { return entities; }
 	}
-
-	public TileGraph TileGraph
-	{
-		get { return tileGraph; }
-	}
-
+	
 	private static GameManager instance = null;
 	public static GameManager Instance
 	{
@@ -90,7 +84,7 @@ public class GameManager : MonoBehaviour
 
 #if UNITY_EDITOR
 
-		if(Input.anyKeyDown)
+		if (Input.anyKeyDown)
 		{
 			currentInputDelay = inputDelay;
 		}
@@ -214,28 +208,20 @@ public class GameManager : MonoBehaviour
 
 		GenerateDungeon();
 		entities = new GridEntities();
-		// generate a* grid
-		tileGraph = new TileGraph(gridData);
-		actorSystem = new ActorSystem(entities, gridData, tileGraph);
+		actorSystem = new ActorSystem(entities, gridData);
 		InputController.Instance.Grid = gridData;
 
+		// temp pathfinding
+		Path_AStar testPath = new Path_AStar(gridData, gridData.GetRandomTile(), gridData.GetRandomTile());
 
-		// temp grid editor visualisation
-		foreach (Node<TileData> node in tileGraph.nodes.Values)
-		{
-			foreach (Edge<TileData> edge in node.Edges)
-			{
-				Vector3 ray = GridDirectionHelper.DirectionBetween(node.Data.Position, edge.Node.Data.Position).ToDirection();
-				Debug.DrawRay(node.Data.Position.ToWorldPos(), ray * .3f, Color.green, float.MaxValue);
-			}
-		}
+		
 
 		// -- spawning -- 
 
 		// find a valid spawn position
 		GridPosition spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
 
-		
+
 		// New player creation
 		playerEntity = EntityPrototype.Player("The Player", spawnPos);
 		entities.AddEntity(playerEntity);
@@ -315,11 +301,11 @@ public class GameManager : MonoBehaviour
 
 	private void ContinueTurn()
 	{
-		while(actorEnumerator.MoveNext())
+		while (actorEnumerator.MoveNext())
 		{
 			Actor actor = actorEnumerator.Current;
 
-			if(!actorSystem.HandleActor(actor))
+			if (!actorSystem.HandleActor(actor))
 			{
 				// break processing this turn and wait for OnResume
 				return;
@@ -370,6 +356,18 @@ public class GameManager : MonoBehaviour
 		IDungeonGenerator dungeonGenerator = new DungeonWalkGenerator();
 		dungeonGenerator.Setup(dungeonInfo);
 		gridData = dungeonGenerator.GenerateDungeon().GetFlattenedGrid();
+		
+		gridData.ConstructTileGraph();
+
+		// temp grid editor visualisation
+		foreach (Node<TileData> node in gridData.Graph.Nodes.Values)
+		{
+			foreach (Edge<TileData> edge in node.Edges)
+			{
+				Vector3 ray = GridDirectionHelper.DirectionBetween(node.Data.Position, edge.Node.Data.Position).ToDirection();
+				Debug.DrawRay(node.Data.Position.ToWorldPos(), ray * .3f, Color.green, float.MaxValue);
+			}
+		}
 	}
 
 	public void MessWithDungeon()

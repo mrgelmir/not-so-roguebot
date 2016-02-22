@@ -12,14 +12,12 @@ namespace Entities.Model.Systems
 
 		private readonly GridEntities entities;
 		private readonly GridData grid;
-		private readonly TileGraph graph;
 		Random rand = new Random();
 
-		public ActorSystem(GridEntities entities, GridData grid, TileGraph graph)
+		public ActorSystem(GridEntities entities, GridData grid)
 		{
 			this.entities = entities;
 			this.grid = grid;
-			this.graph = graph;
 		}
 
 		/// <summary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PathFinding;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,6 +13,9 @@ namespace GridCode
 		// Contains all tile objects
 		private List<TileObjectData> tileObjects;
 
+		// The pathfinding graph for the tiles
+		private TileGraph tileGraph;
+
 		private Random rand;
 
 		// TODO make a data structure to hold style info?
@@ -21,6 +25,11 @@ namespace GridCode
 
 		public int Rows
 		{ get { return tiles.GetLength(1); } }
+
+		public TileGraph Graph
+		{
+			get { return tileGraph; }
+		}
 
 		public Action<TileData> OnTileChanged;
 		public Action<TileData> OnTileObjectChanged;
@@ -98,6 +107,12 @@ namespace GridCode
 				}
 			}
 			return neigbours;
+		}
+
+		public void ConstructTileGraph()
+		{
+			// generate a* grid
+			tileGraph = new TileGraph(this);
 		}
 
 		private void TileChanged(TileData tileData)

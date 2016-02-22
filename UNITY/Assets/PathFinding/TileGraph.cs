@@ -12,7 +12,12 @@ namespace PathFinding
 	/// </summary>
 	public class TileGraph
 	{
-		public Dictionary<TileData, Node<TileData>> nodes;
+		private Dictionary<TileData, Node<TileData>> nodes;
+
+		public Dictionary<TileData, Node<TileData>> Nodes
+		{
+			get { return nodes; }
+		}
 
 		public TileGraph(GridData grid)
 		{
@@ -22,7 +27,7 @@ namespace PathFinding
 			foreach (TileData tile in grid)
 			{
 				// TODO: take other types of tiles into account later (ie for flying, lava-walking ...)
-				if(tile.Type == GridTileType.Flat)
+				if (tile.Type == GridTileType.Flat)
 				{
 					nodes.Add(tile, new Node<TileData>(tile));
 				}
@@ -46,6 +51,23 @@ namespace PathFinding
 
 				// add edges to node
 				node.Edges = neigbourEdges.ToArray();
+			}
+		}
+
+		// Indexer
+		public Node<TileData> this[TileData tile]
+		{
+			get
+			{
+				Node<TileData> tileNode;
+				if (nodes.TryGetValue(tile, out tileNode))
+				{
+					return tileNode;
+				}
+				else
+				{
+					return null;
+				}
 			}
 		}
 	}

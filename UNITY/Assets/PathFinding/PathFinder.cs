@@ -1,4 +1,5 @@
-﻿using System;
+﻿//using Priority_Queue;
+using System;
 using System.Collections.Generic;
 
 // For reference: http://www.policyalmanac.org/games/aStarTutorial.htm 
@@ -7,12 +8,6 @@ namespace PathFinding
 {
 	public class PathFinder<T> where T : class, IPathFindable<T>
 	{
-		public static void GetPath(T from, T to, Action<IEnumerable<T>> OnPath)
-		{
-			//UnityEngine.Debug.Log("requesting path from " + from + " to " + to);
-			OnPath(FindPath(from, to));
-		}
-
 
 		public static IEnumerable<T> FindPath(T from, T to)
 		{
@@ -33,8 +28,9 @@ namespace PathFinding
 
 		private Node currentNode = null;
 		private T target = null;
+		//private SimplePriorityQueue<Node> OpenList = new SimplePriorityQueue<Node>();
 		private List<Node> OpenList = new List<Node>();
-		private List<Node> ClosedList = new List<Node>(); // TODO calculate a feasible amount to start with?
+		private HashSet<Node> ClosedList = new HashSet<Node>(); // TODO calculate a feasible amount to start with?
 
 		protected List<T> Nodes;
 		protected List<int> HeuristicValues;
@@ -43,6 +39,7 @@ namespace PathFinding
 		private PathFinder(T from, T to)
 		{
 			target = to;
+			//OpenList.Enqueue(new Node(from, to, null), 0);
 			OpenList.Add(new Node(from, to, null));
 
 			do
@@ -55,7 +52,7 @@ namespace PathFinding
 		private void Calculate() // TODO find better name
 		{
 			// find lowest heuristic value in open list (lowest F value)
-			OpenList.Sort(); // temp sort here (maybe find more performant stuff?)
+			OpenList.Sort(); // temp sort here (maybe us more performant container like priorityqueue)
 
 			if (OpenList.Count == 0)
 			{
@@ -63,6 +60,7 @@ namespace PathFinding
 				return;
 			}
 			currentNode = OpenList[0];
+			//currentNode = OpenList.Dequeue();
 
 			//move node from open list and to closed list
 			OpenList.Remove(currentNode);
@@ -74,6 +72,7 @@ namespace PathFinding
 				Node newNode = new Node(pathFindeable, target, currentNode);
 				if (pathFindeable.Walkeable && !OpenList.Contains(newNode) && !ClosedList.Contains(newNode))
 				{
+					
 					// see if this item exists on open list
 					int currentIndex = OpenList.IndexOf(newNode);
 					if (currentIndex > 0)

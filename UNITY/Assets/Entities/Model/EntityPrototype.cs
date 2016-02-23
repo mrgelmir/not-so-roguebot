@@ -16,7 +16,7 @@ namespace GridCode.Entities.Model
 			Entity e = new Entity(++currentID); 
 
 			e.AddComponent(new EntityName(name));
-			e.AddComponent(new Position(pos, GridDirection.North));
+			e.AddMovement(pos);
 			e.AddComponent(new EntityVisual("playerVisual"));
 			e.AddComponent(new Actor()
 			{
@@ -33,7 +33,7 @@ namespace GridCode.Entities.Model
 			Entity e = new Entity(++currentID);
 
 			e.AddComponent(new EntityName("enemy"));
-			e.AddComponent(new Position(pos, GridDirection.North));
+			e.AddMovement(pos);
 			e.AddComponent(new EntityVisual("enemyVisual"));
 			e.AddComponent(new Actor()
 			{
@@ -42,6 +42,16 @@ namespace GridCode.Entities.Model
 			});
 
 			return e;
+		}
+
+		private static void AddMovement(this Entity e, GridPosition pos)
+		{
+			e.AddComponent(new Position(pos, GridDirection.North));
+			e.AddComponent(new Mover()
+			{
+				MoveType = MovementType.Walk,
+				Speed = 1,
+			});
 		}
 	}
 }

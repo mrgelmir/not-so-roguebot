@@ -168,7 +168,11 @@ namespace GridCode.Visuals
 			{
 				// Instantiate the Tile and set to correct position
 				GameObject tileVisual = GetInstanceFromPool(tilePrefab);
+
+#if UNITY_EDITOR
+				// this takes up quite some processing
 				tileVisual.name = tileData.ToString();
+#endif
 				tileVisual.transform.position = new Vector3(tileData.Column, 0f, tileData.Row);
 				tileVisual.transform.SetParent(transform, false);
 

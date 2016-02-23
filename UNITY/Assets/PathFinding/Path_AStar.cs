@@ -16,12 +16,12 @@ namespace PathFinding
 				return path.Count <= 0;
 			}
 		}
-		
+
 		public Path_AStar(GridData grid, TileData from, TileData to)
 		{
 			TileGraph graph = grid.Graph;
 
-			if(graph == null)
+			if (graph == null)
 			{
 				Log.Error("Path_AStar::ctor - grid does not have a tile graph");
 			}
@@ -38,7 +38,7 @@ namespace PathFinding
 
 			// following code is based on:
 			// https://en.wikipedia.org/wiki/A*_search_algorithm
-			
+
 			List<Node<TileData>> closedSet = new List<Node<TileData>>();
 			SimplePriorityQueue<Node<TileData>> openSet = new SimplePriorityQueue<Node<TileData>>();
 			openSet.Enqueue(fromNode, 0.0);
@@ -61,15 +61,15 @@ namespace PathFinding
 			}
 			fScore[fromNode] = HeuristicCostEstimate(fromNode, toNode);
 
-			while(openSet.Count > 0)
+			while (openSet.Count > 0)
 			{
 				Node<TileData> currentNode = openSet.Dequeue();
 
 				// check if we found the end
-				if(currentNode == toNode)
+				if (currentNode == toNode)
 				{
-					// TODO construct path before return
-					Log.Write("success");
+					// Reached target -> construct path and finish
+					ReconstructPath(cameFrom, currentNode);
 					return;
 				}
 
@@ -77,7 +77,7 @@ namespace PathFinding
 
 				foreach (Edge<TileData> neigbour in currentNode.Edges)
 				{
-					// ignore tile if already in closed list
+					// update g-score or ignore tile if already in closed list
 					if (closedSet.Contains(neigbour.Node))
 						continue;
 
@@ -90,12 +90,12 @@ namespace PathFinding
 					gScore[neigbour.Node] = tentativeGScore;
 					fScore[neigbour.Node] = gScore[neigbour.Node] + HeuristicCostEstimate(neigbour.Node, toNode);
 
-					if(!openSet.Contains(neigbour.Node))
+					if (!openSet.Contains(neigbour.Node))
 					{
 						openSet.Enqueue(neigbour.Node, fScore[neigbour.Node]);
-                    }
+					}
 				}
-            }
+			}
 
 			// openSet is empty and target not found -> no path
 			Log.Write("no success");
@@ -103,7 +103,7 @@ namespace PathFinding
 
 		public TileData GetNextTile()
 		{
-			if(path != null && path.Count > 0)
+			if (path != null && path.Count > 0)
 			{
 				return path.Dequeue();
 			}
@@ -129,7 +129,21 @@ namespace PathFinding
 		private void ReconstructPath(Dictionary<Node<TileData>, Node<TileData>> cameFrom, Node<TileData> current)
 		{
 			// current should be the end point here -> construct path from end to start
+			List<TileData> reversedPath = new List<TileData>();
+			// final tile is this
+			reversedPath.Add(current.Data);
+
+			// add all previous tiles until we reach the first tile 
+			// (ie. a tile without a 'cameFrom' value)
+			while (cameFrom.ContainsKey(current))
+			{
+				current = cameFrom[current];
+				reversedPath.Add(current.Data);
+			}
 			
+			// the final path is the trip we just made, but reverted
+			reversedPath.Reverse();
+			path = new Queue<TileData>(reversedPath);
 
 		}
 	}

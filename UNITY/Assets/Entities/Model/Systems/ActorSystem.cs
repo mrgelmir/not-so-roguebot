@@ -12,7 +12,13 @@ namespace Entities.Model.Systems
 
 		private readonly GridEntities entities;
 		private readonly GridData grid;
-		Random rand = new Random();
+		private Random rand = new Random();
+
+		/// <summary>
+		/// saved reference to the current Entity
+		/// this reference should only be valid 'till the end of the turn
+		/// </summary>
+		private Entity currentEntity = null;
 
 		public ActorSystem(GridEntities entities, GridData grid)
 		{
@@ -27,87 +33,78 @@ namespace Entities.Model.Systems
 		/// <returns>Should processing continue for this frame</returns>
 		public bool HandleActor(Actor actor)
 		{
+
 			currentEntity = entities[actor.entityID];
+			Position pos = currentEntity.GetComponent<Position>();
+			Mover mover = currentEntity.GetComponent<Mover>();
+
+			if (pos == null || mover == null)
+			{
+				// nothing to do here ATM (until other stuff comes around, like turrets)
+				return true;
+			}
+
+
+			// if a path exists -> carry on no matter what type of actor
+			// TODO check for interruptions to movement here
+			if (mover.Path != null && mover.Path.Count > 0)
+			{
+				// just continue along path					
+				pos.Pos = mover.Path.Dequeue().Position;
+				return true;
+			}
 
 			if (actor.InstantActor)
 			{
-				// do stuff here and continue
+				// do stuff here and continue for instant processing
 
-				// temp assume random for each instant actor
-				Position pos = currentEntity.GetComponent<Position>();
-				if(pos != null)
-				{
-					// let's not care about bumping into walls shall we
-					GridDirection dir = GridDirectionHelper.GetRandomDirection(rand);
+				// create a path to a random position
 
-					// TODO this movement code should not be used on position directly
-					// -> use a movement component in the future
-					if (pos.IsValidTile(grid[pos.Pos + dir].Type))
-					{
-						pos.Pos += dir;
-					}
-					else
-					{
-						pos.Orientation = dir;
-					}
-				}
+				TileData tile = grid.GetRandomTile(GridTileType.Flat);
+				
+				SetPath(mover, grid[pos.Pos], tile);
+
+				if (mover.Path.Count > 0)
+					pos.Pos = mover.Path.Dequeue().Position;
+
 
 				currentEntity = null;
 				return true;
 			}
 			else
 			{
-
-				// Temp implementation
-				if(playerPath == null || playerPath.Count <= 0)
-				{
-					// start listening to input for a path
-					InputController.Instance.OnTileClicked += TileTapped;
-				}
-				else
-				{
-					// just continue along path
-
-					Position pos = currentEntity.GetComponent<Position>();
-					pos.Pos = playerPath.Dequeue().Position;
-
-					return true;
-				}
-
-
+				// start listening to input for a path
+				InputController.Instance.OnTileClicked += TileTapped;
 				return false;
 			}
 		}
 
-		private Entity currentEntity = null;
-
-		// temp
-		private Queue<TileData> playerPath;
-
 		private void TileTapped(TileData tile)
 		{
-			InputController.Instance.OnTileClicked -= TileTapped;
 
 			// TODO use movement component here as well
 			Position pos = currentEntity.GetComponent<Position>();
+			Mover mover = currentEntity.GetComponent<Mover>();
 
 			if (pos.IsValidTile(tile.Type))
 			{
+				SetPath(mover, grid[pos.Pos], tile);
 
-				playerPath = new Queue<TileData>(PathFinder<TileData>.FindPath(grid[pos.Pos], tile));
+				if (mover.Path.Count > 0)
+					pos.Pos = mover.Path.Dequeue().Position;
+				
+				// TODO subscribe on some sort of cancel click?
 
-				// remove start pos from path
-				playerPath.Dequeue();
+				// only unsubscribe when everything has been dealt with
+				InputController.Instance.OnTileClicked -= TileTapped;
 
-				if (playerPath.Count > 0)
-					pos.Pos = playerPath.Dequeue().Position;
+				// hand control back over to the game
+				FinishActorHandling();
 			}
 
-			FinishTurn();
 		}
-
-
-		private void FinishTurn()
+		
+		private void FinishActorHandling()
 		{
 			currentEntity = null;
 
@@ -119,6 +116,14 @@ namespace Entities.Model.Systems
 			{
 				Log.Warning("ActorSystem::TileTapped - There is no resume callback available, this will probably break the gameloop");
 			}
+		}
+
+
+		private void SetPath(Mover mover, TileData currentPos, TileData target)
+		{
+			mover.Path = new Queue<TileData>(PathFinder<TileData>.FindPath(currentPos, target));
+			// remove start pos from path
+			mover.Path.Dequeue();
 		}
 	}
 }

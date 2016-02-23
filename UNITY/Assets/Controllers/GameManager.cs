@@ -211,11 +211,6 @@ public class GameManager : MonoBehaviour
 		actorSystem = new ActorSystem(entities, gridData);
 		InputController.Instance.Grid = gridData;
 
-		// temp pathfinding
-		Path_AStar testPath = new Path_AStar(gridData, gridData.GetRandomTile(), gridData.GetRandomTile());
-
-		
-
 		// -- spawning -- 
 
 		// find a valid spawn position
@@ -241,21 +236,7 @@ public class GameManager : MonoBehaviour
 		// -- game start -- 
 
 		StartGame();
-
-
-		//// go over all position components
-		//ComponentEnumerator<Position> posEnumerator = entities.GetComponentEnumerator<Position>();
-		//while(posEnumerator.MoveNext())
-		//{
-		//	Log.Write(posEnumerator.Current.Pos);
-		//}
-
-		//// go over all name components
-		//ComponentEnumerator<EntityName> nameEnumerator = entities.GetComponentEnumerator<EntityName>();
-		//while (nameEnumerator.MoveNext())
-		//{
-		//	Log.Write(nameEnumerator.Current.NameString);
-		//}
+		
 	}
 
 	private IEnumerator SetCameraTargetDelayed()
@@ -305,11 +286,14 @@ public class GameManager : MonoBehaviour
 		{
 			Actor actor = actorEnumerator.Current;
 
+			//Log.Write("Start turn for actor " + actor, Color.green);
 			if (!actorSystem.HandleActor(actor))
 			{
 				// break processing this turn and wait for OnResume
+				//Log.Write("Pause turn for actor " + actor, Color.yellow);
 				return;
 			}
+			//Log.Write("End turn for actor " + actor, Color.red);
 		}
 
 		// end of turn cleanup

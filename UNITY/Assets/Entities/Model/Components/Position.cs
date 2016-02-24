@@ -5,14 +5,18 @@ namespace Entities.Model.Components
 {
 	public class Position : Component
 	{
-		// TODO pass entity or entity ID ??
+
+		// Data
 		public Action<int> OnPositionChanged;
 		public Action<int> OnOrientationChanged;
 
+		public bool Blocking;
+
 		private GridPosition position;
 		private GridDirection direction;
-		private GridTileType validTiles;
 
+
+		// Accessors
 		public GridPosition Pos
 		{
 			get { return position; }
@@ -45,23 +49,18 @@ namespace Entities.Model.Components
 			}
 		}
 
+
+		// Constructors
 		public Position(GridPosition pos, GridDirection dir)
 		{
 			position = pos;
 			direction = dir;
-			validTiles = GridTileType.Flat;
 		}
 
 		public Position(GridPosition pos, GridDirection dir, GridTileType validTiles)
 		{
 			position = pos;
 			direction = dir;
-			this.validTiles = validTiles;
-		}
-
-		public bool IsValidTile(GridTileType tileType)
-		{
-			return validTiles.ContainsTileType(tileType);
 		}
 	}
 }

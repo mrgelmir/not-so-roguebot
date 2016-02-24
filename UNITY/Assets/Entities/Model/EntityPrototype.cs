@@ -22,7 +22,12 @@ namespace GridCode.Entities.Model
 			{
 				InstantActor = false,
 				Type = AIType.None,
+				NeededEnergy = 2,
+				CurrentEnergy = 0,
 			});
+
+			// debug
+			//e.GetComponent<Mover>().MoveType = MovementType.Hack;
 
 			return e;
 		}
@@ -39,6 +44,8 @@ namespace GridCode.Entities.Model
 			{
 				InstantActor = true,
 				Type = AIType.Random,
+				NeededEnergy = 3,
+				CurrentEnergy = 0,
 			});
 
 			return e;
@@ -46,11 +53,13 @@ namespace GridCode.Entities.Model
 
 		private static void AddMovement(this Entity e, GridPosition pos)
 		{
-			e.AddComponent(new Position(pos, GridDirection.North));
+
+			var position = new Position(pos, GridDirection.North);
+			e.AddComponent(position);
 			e.AddComponent(new Mover()
 			{
 				MoveType = MovementType.Walk,
-				Speed = 1,
+				Pos = position,				
 			});
 		}
 	}

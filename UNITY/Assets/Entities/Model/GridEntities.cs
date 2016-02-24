@@ -57,6 +57,21 @@ namespace Entities.Model
 			}
 		}
 
+		public Entity this[GridCode.GridPosition pos]
+		{
+			get
+			{
+				// TODO make faster
+				var positions = GetComponentEnumerator<Position>();
+				while(positions.MoveNext())
+				{
+					if (positions.Current.Pos == pos)
+						return entities[positions.Current.entityID];
+				}
+				return null;
+			}
+		}
+
 		#endregion
 
 		#region IEnumerable implementation
@@ -75,6 +90,11 @@ namespace Entities.Model
 		public ComponentEnumerator<T> GetComponentEnumerator<T>() where T : Component
 		{
 			return new ComponentEnumerator<T>(GetEnumerator());
+		}
+
+		public IEnumerable<T> Components<T>() where T : Component
+		{
+			return new ComponentCollection<T>(this);
 		}
 	}
 
@@ -117,6 +137,26 @@ namespace Entities.Model
 		public void Reset()
 		{
 			entityListEnumerator.Reset();
+		}
+	}
+
+	public class ComponentCollection<T> : IEnumerable<T> where T : Component
+	{
+		private GridEntities entities;
+
+		public ComponentCollection(GridEntities entities)
+		{
+			this.entities = entities;
+		}
+
+		public IEnumerator<T> GetEnumerator()
+		{
+			return new ComponentEnumerator<T>(entities.GetEnumerator());
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator() as IEnumerator;
 		}
 	}
 

@@ -33,6 +33,17 @@ namespace Entities.Model.Systems
 		/// <returns>Should processing continue for this frame</returns>
 		public bool HandleActor(Actor actor)
 		{
+			// check if the actor has enough energy to process this turn
+			if (++actor.CurrentEnergy >= actor.NeededEnergy)
+			{
+				actor.CurrentEnergy -= actor.NeededEnergy;
+			}
+			else
+			{
+				// not enough energy -> abort
+				return true;
+			}
+
 
 			currentEntity = entities[actor.entityID];
 			Position pos = currentEntity.GetComponent<Position>();
@@ -49,8 +60,9 @@ namespace Entities.Model.Systems
 			// TODO check for interruptions to movement here
 			if (mover.Path != null && mover.Path.Count > 0)
 			{
-				// just continue along path					
-				pos.Pos = mover.Path.Dequeue().Position;
+				// just continue along path
+				MoveToTile(mover, mover.Path.Dequeue());
+				
 				return true;
 			}
 
@@ -61,13 +73,11 @@ namespace Entities.Model.Systems
 				// create a path to a random position
 
 				TileData tile = grid.GetRandomTile(GridTileType.Flat);
-				
+
 				SetPath(mover, grid[pos.Pos], tile);
-
-				if (mover.Path.Count > 0)
-					pos.Pos = mover.Path.Dequeue().Position;
-
-
+				
+				MoveToTile(mover, mover.Path.Dequeue());
+				
 				currentEntity = null;
 				return true;
 			}
@@ -86,14 +96,16 @@ namespace Entities.Model.Systems
 			Position pos = currentEntity.GetComponent<Position>();
 			Mover mover = currentEntity.GetComponent<Mover>();
 
-			if (pos.IsValidTile(tile.Type))
+			if (mover.CanEnterTile(tile))
 			{
 				SetPath(mover, grid[pos.Pos], tile);
 
-				if (mover.Path.Count > 0)
-					pos.Pos = mover.Path.Dequeue().Position;
-				
-				// TODO subscribe on some sort of cancel click?
+				if (mover.Path == null || mover.Path.Count <= 0)
+					return;
+
+				MoveToTile(mover, mover.Path.Dequeue());
+
+				// TODO: subscribe on some sort of cancel click?
 
 				// only unsubscribe when everything has been dealt with
 				InputController.Instance.OnTileClicked -= TileTapped;
@@ -103,7 +115,7 @@ namespace Entities.Model.Systems
 			}
 
 		}
-		
+
 		private void FinishActorHandling()
 		{
 			currentEntity = null;
@@ -114,16 +126,48 @@ namespace Entities.Model.Systems
 			}
 			else
 			{
-				Log.Warning("ActorSystem::TileTapped - There is no resume callback available, this will probably break the gameloop");
+				Log.Warning("ActorSystem::FinishActorHandling - There is no resume callback available, this will probably break the gameloop");
 			}
 		}
 
-
-		private void SetPath(Mover mover, TileData currentPos, TileData target)
+		private void SetPath(Mover mover, TileData from, TileData to)
 		{
-			mover.Path = new Queue<TileData>(PathFinder<TileData>.FindPath(currentPos, target));
+			// dynamic grid thing
+			mover.Path = new Queue<TileData>(PathFinder<TileData>.FindPath(from, to, (TileData tile) =>
+			{
+				return mover.CanEnterTile(tile);
+			}));
 			// remove start pos from path
 			mover.Path.Dequeue();
+
+
+			//// graph based version
+			//Path_AStar path = new Path_AStar(grid, currentPos, target);
+
+			//if (path.Done)
+			//{
+			//	mover.Path = path.Path;
+			//}
+
 		}
+
+		private bool MoveToTile(Mover mover, TileData tile)
+		{
+			if (mover.CanEnterTile(tile))
+			{
+				//// TODO use the 
+				//Entity e = entities[tile.Position];
+				//Position pos = e.GetComponent<Position>();
+				//if (pos == null || pos.)
+				{
+					mover.Pos.Pos = tile.Position;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+
 	}
 }

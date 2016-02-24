@@ -354,15 +354,16 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	public void MessWithDungeon()
+	public void TestButton()
 	{
-
-		int count = 1000;
-		foreach (TileData tile in gridData)
+		foreach (EntityName nameComponent in entities.Components<EntityName>())
 		{
-			tile.Type = (tile.Type == GridTileType.Wall) ? GridTileType.Flat : GridTileType.Wall;
-			if (--count <= 0)
-				break;
+			if(nameComponent.NameString == "The Player")
+			{
+				Mover m = entities[nameComponent.entityID].GetComponent<Mover>();
+
+				m.MoveType = (m.MoveType == MovementType.Walk) ? MovementType.Hack : MovementType.Walk;
+			}
 		}
 	}
 

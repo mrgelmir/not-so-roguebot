@@ -9,10 +9,11 @@ namespace PathFinding
 	public class PathFinder<T> where T : class, IPathFindable<T>
 	{
 
-		public static IEnumerable<T> FindPath(T from, T to)
+		public static IEnumerable<T> FindPath(T from, T to, Func<T,bool> validateTileFunction)
 		{
+			
 			// create pathfinder and let it work its magic
-			PathFinder<T> p = new PathFinder<T>(from, to);
+			PathFinder<T> p = new PathFinder<T>(from, to, validateTileFunction);
 
 			// return values
 
@@ -26,6 +27,8 @@ namespace PathFinding
 			return l;
 		}
 
+		private Func<T, bool> validateTile;
+
 		private Node currentNode = null;
 		private T target = null;
 		//private SimplePriorityQueue<Node> OpenList = new SimplePriorityQueue<Node>();
@@ -36,8 +39,10 @@ namespace PathFinding
 		protected List<int> HeuristicValues;
 		protected List<int> MoveValues;
 
-		private PathFinder(T from, T to)
+		private PathFinder(T from, T to, Func<T, bool> validateTileFunction)
 		{
+			validateTile = validateTileFunction;
+
 			target = to;
 			//OpenList.Enqueue(new Node(from, to, null), 0);
 			OpenList.Add(new Node(from, to, null));
@@ -70,7 +75,8 @@ namespace PathFinding
 			foreach (T pathFindeable in currentNode.PathFindeable.Neighbours)
 			{
 				Node newNode = new Node(pathFindeable, target, currentNode);
-				if (pathFindeable.Walkeable && !OpenList.Contains(newNode) && !ClosedList.Contains(newNode))
+				if (validateTile(pathFindeable) && !OpenList.Contains(newNode) && !ClosedList.Contains(newNode))
+				//if (pathFindeable.Walkeable && !OpenList.Contains(newNode) && !ClosedList.Contains(newNode))
 				{
 					
 					// see if this item exists on open list

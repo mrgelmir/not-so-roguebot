@@ -9,11 +9,16 @@ namespace PathFinding
 	{
 		private Queue<TileData> path;
 
+		public Queue<TileData> Path
+		{
+			get { return path; }
+		}
+
 		public bool Done
 		{
 			get
 			{
-				return path.Count <= 0;
+				return path.Count >= 0;
 			}
 		}
 
@@ -98,7 +103,7 @@ namespace PathFinding
 			}
 
 			// openSet is empty and target not found -> no path
-			Log.Write("no success");
+			Log.Write("Path_AStar - pathfinding failed");
 		}
 
 		public TileData GetNextTile()

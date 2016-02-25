@@ -1,0 +1,16 @@
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\obj\Debug\UNITY.CSharpTests.csprojResolveAssemblyReference.cache
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\bin\Debug\UNITY.CSharpTests.dll
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\bin\Debug\UNITY.CSharpTests.pdb
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\bin\Debug\Assembly-CSharp.dll
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\bin\Debug\UnityEngine.dll
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\bin\Debug\UnityEngine.UI.dll
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\bin\Debug\UnityEditor.dll
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\bin\Debug\Mono.Cecil.dll
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\bin\Debug\Assembly-CSharp.pdb
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\bin\Debug\UnityEngine.xml
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\bin\Debug\UnityEngine.UI.xml
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\bin\Debug\UnityEditor.xml
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\bin\Debug\Mono.Cecil.xml
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\obj\Debug\UNITY.CSharpTests.dll
+D:\ROOT\PROJECTS\not-so-roguebot\UNITY\UNITY.CSharpTests\obj\Debug\UNITY.CSharpTests.pdb

@@ -1,5 +1,6 @@
 ﻿using Entities.Model.Components;
 using System.Collections.Generic;
+using System;
 
 namespace Entities.Model
 {
@@ -14,6 +15,11 @@ namespace Entities.Model
 		public int ID
 		{
 			get { return id; }
+		}
+
+		public int ComponentCount
+		{
+			get { return components.Count; }
 		}
 
 		public Entity(int id)
@@ -32,9 +38,27 @@ namespace Entities.Model
 			{
 				// Add component to list and mark with personal ID
 				components.Add(component);
-				component.entityID = ID;
+				component.Entity = this;
 				return true;
 			}
+		}
+
+		public bool RemoveComponent<T>()
+		{
+			bool removed = false;
+			for (int i = 0; i < components.Count;)
+			{
+				if(components[i] is T)
+				{
+					components.RemoveAt(i);
+					removed = true;
+					continue;
+				}
+
+				++i;
+			}
+
+			return removed;
 		}
 
 		/// <summary>

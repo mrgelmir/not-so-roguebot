@@ -9,8 +9,15 @@ namespace Entities.Model
 	{
 
 		// these are private because people need to get data when they subscribe to these callbacks
-		private Action<int> OnEntityAdded;
-		private Action<int> OnEntityRemoved;
+		private Action<Entity> onEntityAdded;
+		private Action<Entity> onEntityRemoved;
+
+		// TODO: change Subscribe and Unsubscribe to something like below?
+		//public event Action<int> temp
+		//{
+		//	add { }
+		//	remove { }
+		//}
 
 		private Dictionary<int, Entity> entities = new Dictionary<int, Entity>();
 
@@ -27,24 +34,24 @@ namespace Entities.Model
 		/// <param name="onEntityAdd">function called when an entity is added</param>
 		/// <param name="onEntityRemove">function called when an entity is removed</param>
 		/// <param name="startUpdated">should the add function be called for all current entities</param>
-		public void SubscribeOnEntities(Action<int> onEntityAdd, Action<int> onEntityRemove, bool startUpdated)
+		public void SubscribeOnEntities(Action<Entity> onEntityAdd, Action<Entity> onEntityRemove, bool startUpdated)
 		{
-			OnEntityAdded += onEntityAdd;
-			OnEntityRemoved += onEntityRemove;
+			onEntityAdded += onEntityAdd;
+			onEntityRemoved += onEntityRemove;
 
 			if (startUpdated && onEntityAdd != null)
 			{
-				foreach (int id in entities.Keys)
+				foreach (Entity e in entities.Values)
 				{
-					onEntityAdd(id);
+					onEntityAdd(e);
 				}
 			}
 		}
 
-		public void UnSubscribeFromEntities(Action<int> onEntityAdd, Action<int> onEntityRemove)
+		public void UnSubscribeFromEntities(Action<Entity> onEntityAdd, Action<Entity> onEntityRemove)
 		{
-			OnEntityAdded -= onEntityAdd;
-			OnEntityRemoved -= onEntityRemove;
+			onEntityAdded -= onEntityAdd;
+			onEntityRemoved -= onEntityRemove;
 		}
 
 		#region Indexers
@@ -66,7 +73,7 @@ namespace Entities.Model
 				while(positions.MoveNext())
 				{
 					if (positions.Current.Pos == pos)
-						return entities[positions.Current.entityID];
+						return positions.Current.Entity;
 				}
 				return null;
 			}

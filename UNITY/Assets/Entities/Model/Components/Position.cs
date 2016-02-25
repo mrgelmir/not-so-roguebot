@@ -7,8 +7,8 @@ namespace Entities.Model.Components
 	{
 
 		// Data
-		public Action<int> OnPositionChanged;
-		public Action<int> OnOrientationChanged;
+		public Action<Entity> OnPositionChanged;
+		public Action<Entity> OnOrientationChanged;
 
 		public bool Blocking;
 
@@ -31,7 +31,7 @@ namespace Entities.Model.Components
 
 				position = value;
 				if (OnPositionChanged != null)
-					OnPositionChanged(entityID);
+					OnPositionChanged(Entity);
 			}
 		}
 
@@ -44,7 +44,7 @@ namespace Entities.Model.Components
 				{
 					direction = value;
 					if (OnOrientationChanged != null)
-						OnOrientationChanged(entityID);
+						OnOrientationChanged(Entity);
 				}
 			}
 		}

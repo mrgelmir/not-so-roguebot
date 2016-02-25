@@ -26,12 +26,11 @@ namespace Entities.Visual
 			entities.SubscribeOnEntities(EntityAdded, EntityRemoved, true);
 		}
 
-		public void UpdateEntityVisual(int entityID)
+		public void UpdateEntityVisual(Entity entity)
 		{
 			//Log.Write("Entity with id " + entityID + " is updating its visual");
 
 			// get id from entitymanager OR pass entity here
-			Entity entity = entities[entityID];
 			EntityVisual v = entity.GetComponent<EntityVisual>();
 			EntityName n = entity.GetComponent<EntityName>();
 			Position p = entity.GetComponent<Position>();
@@ -40,7 +39,7 @@ namespace Entities.Visual
 			{
 				// check if a visual already exists
 				GameObject visual;
-				if (!entityVisuals.TryGetValue(entityID, out visual))
+				if (!entityVisuals.TryGetValue(entity.ID, out visual))
 				{
 					visual = entityFactory.GetVisual(v);
 					visual.transform.SetParent(transform);
@@ -48,7 +47,7 @@ namespace Entities.Visual
 					visual.name = n != null ? n.NameString : p.Pos.ToString();
 
 					// add visual to collection
-					entityVisuals.Add(entityID, visual);
+					entityVisuals.Add(entity.ID, visual);
 				}
 				
 
@@ -60,7 +59,7 @@ namespace Entities.Visual
 				// update the unexisting visual of an entity ... ?
 
 				// if a visaul exists for this entity -> remove
-				RemoveVisual(entityID);
+				RemoveVisual(entity);
 			}
 		}
 
@@ -77,15 +76,15 @@ namespace Entities.Visual
 			}
 		}
 
-		public void UpdateEntityPosition(int entityID)
+		public void UpdateEntityPosition(Entity entity)
 		{
-			Position position = entities[entityID].GetComponent<Position>();
+			Position position = entity.GetComponent<Position>();
 
 			if(position!= null)
 			{
 				// Check if a visual already exists (visual can be an empty GameObject)
 				// TODO: should we be subscribed to a non-visual entity? 
-				GameObject visual = GetOrCreateVisual(entityID);
+				GameObject visual = GetOrCreateVisual(entity);
 
 				// update the position
 				visual.transform.position = position.Pos.ToWorldPos();
@@ -97,15 +96,15 @@ namespace Entities.Visual
 			}
 		}
 
-		private void EntityAdded(int entityID)
+		private void EntityAdded(Entity entity)
 		{
 			// update visual
-			UpdateEntityVisual(entityID);
-			UpdateEntityPosition(entityID);
+			UpdateEntityVisual(entity);
+			UpdateEntityPosition(entity);
 
 			// subscribe to all hooks etc here
 
-			Position p = entities[entityID].GetComponent<Position>();
+			Position p = entity.GetComponent<Position>();
 			if(p != null)
 			{
 				p.OnPositionChanged += UpdateEntityPosition;
@@ -113,22 +112,21 @@ namespace Entities.Visual
 			}
 		}
 
-		private void EntityRemoved(int entityID)
+		private void EntityRemoved(Entity entity)
 		{
 			// TODO
 
-			RemoveVisual(entityID);
+			RemoveVisual(entity);
 		}
 
-		private GameObject GetOrCreateVisual(int entityID)
+		private GameObject GetOrCreateVisual(Entity entity)
 		{
 			GameObject visual;
-			if (!entityVisuals.TryGetValue(entityID, out visual))
+			if (!entityVisuals.TryGetValue(entity.ID, out visual))
 			{
 				// entity not found -> create new one
 
 				// get needed data
-				Entity entity = entities[entityID];
                 EntityName name = entity.GetComponent<EntityName>();
                 Position position = entity.GetComponent<Position>();
 
@@ -145,18 +143,18 @@ namespace Entities.Visual
 				visual.transform.eulerAngles = position.Orientation.ToEulerAngles();
 
 				// add visual reference
-				entityVisuals.Add(entityID, visual);
+				entityVisuals.Add(entity.ID, visual);
             }
 
 			return visual;
 		}
 
-		private void RemoveVisual(int entityID)
+		private void RemoveVisual(Entity entity)
 		{
 			GameObject visual;
-			if (entityVisuals.TryGetValue(entityID, out visual))
+			if (entityVisuals.TryGetValue(entity.ID, out visual))
 			{
-				entityVisuals.Remove(entityID);
+				entityVisuals.Remove(entity.ID);
 
 				// maybe do pooling here
 

@@ -360,7 +360,7 @@ public class GameManager : MonoBehaviour
 		{
 			if(nameComponent.NameString == "The Player")
 			{
-				Mover m = entities[nameComponent.entityID].GetComponent<Mover>();
+				Mover m = nameComponent.Entity.GetComponent<Mover>();
 
 				m.MoveType = (m.MoveType == MovementType.Walk) ? MovementType.Hack : MovementType.Walk;
 			}

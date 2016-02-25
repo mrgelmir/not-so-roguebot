@@ -45,7 +45,7 @@ namespace Entities.Model.Systems
 			}
 
 
-			currentEntity = entities[actor.entityID];
+			currentEntity = actor.Entity;
 			Position pos = currentEntity.GetComponent<Position>();
 			Mover mover = currentEntity.GetComponent<Mover>();
 

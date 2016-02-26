@@ -1,4 +1,5 @@
-﻿using PathFinding;
+﻿using Entities.Model;
+using PathFinding;
 using System;
 using System.Collections.Generic;
 
@@ -16,8 +17,9 @@ namespace GridCode
 
 		// to group tiles together
 		private int roomIndex = -1;
-		
 
+		// TODO add linked entities here
+		public List<Entity> LinkedEntities = new List<Entity>();
 
 		// TODO determine the style of the tile?
 		#endregion

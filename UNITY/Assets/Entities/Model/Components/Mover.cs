@@ -36,21 +36,39 @@ namespace Entities.Model.Components
 
 	public class WalkMoveBehaviour : MovementBehaviour
 	{
-		internal WalkMoveBehaviour() { }
-
 		public override bool CanEnterTile(TileData tile)
 		{
+			bool canEnter = false;
 			switch (tile.Type)
 			{
 				case GridTileType.Flat:
-					return true;
+					canEnter = true;
+					break;
 				default:
-					return false;
+					canEnter = false;
+					break;
 			}
+
+			foreach (Entity entity in tile.LinkedEntities)
+			{
+				// TODO make exception for doors?
+
+				Position position = entity.GetComponent<Position>();
+				if(position != null)
+				{
+					if(position.Blocking)
+					{
+						canEnter = false;
+						break;
+					}
+				}
+			}
+
+			return canEnter;
 		}
 	}
 
-	public class HackMoveBahaviour : MovementBehaviour
+	public class HackMoveBehaviour : MovementBehaviour
 	{
 		public override bool CanEnterTile(TileData tile)
 		{

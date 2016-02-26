@@ -97,7 +97,7 @@ namespace Entities.Model.Systems
 			Position pos = currentEntity.GetComponent<Position>();
 			Mover mover = currentEntity.GetComponent<Mover>();
 
-			if (IsValidTile(mover, tile))
+			if (mover.MoveBehaviour.CanEnterTile(tile))
 			{
 				GetPath(mover, grid[pos.Pos], tile);
 
@@ -135,10 +135,7 @@ namespace Entities.Model.Systems
 		{
 			// dynamic grid thing
 			mover.Path = new Queue<TileData>(PathFinder<TileData>.FindPath(
-				from, to, (TileData tile) =>
-			{
-				return mover.MoveBehaviour.CanEnterTile(tile);
-			}));
+				from, to, mover.MoveBehaviour.CanEnterTile));
 			// remove start pos from path
 			mover.Path.Dequeue();
 
@@ -155,7 +152,7 @@ namespace Entities.Model.Systems
 
 		private bool MoveToTile(Mover mover, TileData tile)
 		{
-			if (IsValidTile(mover, tile))
+			if (mover.MoveBehaviour.CanEnterTile(tile))
 			{
 				mover.Pos.Pos = tile.Position;
 				return true;
@@ -170,28 +167,7 @@ namespace Entities.Model.Systems
 		private bool IsValidTile(Mover mover, TileData tile)
 		{
 			// check if tile is valid
-			if (mover.MoveBehaviour.CanEnterTile(tile))
-			{
-				// check for blocking entities on target tile
-				bool isBlocked = false;
-				foreach (Entity e in entities[tile.Position])
-				{
-					Position p = e.GetComponent<Position>();
-
-					if (p != null && p.Blocking)
-					{
-						isBlocked = true;
-						break;
-					}
-				}
-
-				if (!isBlocked)
-				{
-					return true;
-				}
-			}
-
-			return false;
+			return mover.MoveBehaviour.CanEnterTile(tile);
 		}
 
 

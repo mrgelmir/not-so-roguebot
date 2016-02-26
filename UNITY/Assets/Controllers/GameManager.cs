@@ -210,6 +210,7 @@ public class GameManager : MonoBehaviour
 		GenerateDungeon();
 		actorSystem = new ActorSystem(entities, gridData);
 		healthSystem = new HealthSystem(entities);
+		gridLink = new GridLink(entities, gridData);
         InputController.Instance.Grid = gridData;
 
 		// -- spawning -- 
@@ -235,10 +236,13 @@ public class GameManager : MonoBehaviour
 		}
 
 		// temp triggers
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < 30; i++)
 		{
 			spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
-			entities.AddEntity(EntityPrototype.TestTrigger(spawnPos));
+
+			Entity e = EntityPrototype.TestTrigger(spawnPos);
+
+			entities.AddEntity(e);
 		}
 
 
@@ -279,6 +283,7 @@ public class GameManager : MonoBehaviour
 	private ComponentEnumerator<Actor> actorEnumerator;
 	private ActorSystem actorSystem;
 	private HealthSystem healthSystem;
+	private GridLink gridLink;
 
 	private void StartTurn()
 	{
@@ -383,6 +388,10 @@ public class GameManager : MonoBehaviour
 				Mover m = nameComponent.Entity.GetComponent<Mover>();
 				
 				if(m.MoveBehaviour is WalkMoveBehaviour)
+				{
+					m.MoveBehaviour = new HackMoveBehaviour();
+				}
+				else
 				{
 					m.MoveBehaviour = new WalkMoveBehaviour();
 				}

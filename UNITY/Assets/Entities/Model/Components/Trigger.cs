@@ -14,9 +14,9 @@ namespace Entities.Model.Components
 
 		public void OnTriggerEnter(Entity entity)
 		{
-			// temp
+			//// temp
 			HitPoints hp = entity.GetComponent<HitPoints>();
-			if(hp != null)
+			if (hp != null)
 			{
 				hp.CurrentHitpoints -= 1;
 			}

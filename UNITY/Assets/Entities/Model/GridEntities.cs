@@ -13,6 +13,9 @@ namespace Entities.Model
 		private Action<Entity> onEntityAdded;
 		private Action<Entity> onEntityRemoved;
 
+		private Action<Component> onComponentAdded;
+		private Action<Component> onComponentRemoved;
+
 		private Dictionary<int, Entity> entities = new Dictionary<int, Entity>();
 
 		public bool AddEntity(Entity entity)
@@ -29,13 +32,13 @@ namespace Entities.Model
 			}
 
 			// Subscribe on adding/removing of components
-			entity.OnComponentAdded += OnComponentAdded;
-			entity.OnComponentRemoved += OnComponentRemoved;
+			entity.OnComponentAdded += ComponentAdded;
+			entity.OnComponentRemoved += ComponentRemoved;
 
 			// Make up for already added components
 			foreach (Component component in entity.Components)
 			{
-				OnComponentAdded(component);
+				ComponentAdded(component);
 			}			
 
 			return true;
@@ -64,30 +67,51 @@ namespace Entities.Model
 		/// <summary>
 		/// Subscribe on all events of entities getting added to the game
 		/// </summary>
-		/// <param name="onEntityAdd">function called when an entity is added</param>
-		/// <param name="onEntityRemove">function called when an entity is removed</param>
+		/// <param name="onEntityAdded">function called when an entity is added</param>
+		/// <param name="onEntityRemoved">function called when an entity is removed</param>
 		/// <param name="startUpdated">should the add function be called for all current entities</param>
-		public void SubscribeOnEntities(Action<Entity> onEntityAdd, Action<Entity> onEntityRemove, bool startUpdated)
+		public void SubscribeOnEntities(Action<Entity> onEntityAdded, Action<Entity> onEntityRemoved, bool startUpdated)
 		{
-			onEntityAdded += onEntityAdd;
-			onEntityRemoved += onEntityRemove;
+			this.onEntityAdded += onEntityAdded;
+			this.onEntityRemoved += onEntityRemoved;
 
-			if (startUpdated && onEntityAdd != null)
+			if (startUpdated && onEntityAdded != null)
 			{
 				foreach (Entity e in entities.Values)
 				{
-					onEntityAdd(e);
+					onEntityAdded(e);
 				}
 			}
 		}
 
-		public void UnSubscribeFromEntities(Action<Entity> onEntityAdd, Action<Entity> onEntityRemove)
+		public void UnSubscribeFromEntities(Action<Entity> onEntityAdded, Action<Entity> onEntityRemoved)
 		{
-			onEntityAdded -= onEntityAdd;
-			onEntityRemoved -= onEntityRemove;
+			this.onEntityAdded -= onEntityAdded;
+			this.onEntityRemoved -= onEntityRemoved;
 		}
 
-		private void OnComponentAdded(Component component)
+		public void SubscribeOnComponents(Action<Component> onComponentAdded, Action<Component> onComponentRemoved, bool startUpdated)
+		{
+			this.onComponentAdded += onComponentAdded;
+			this.onComponentRemoved += onComponentRemoved;
+
+			// do we want this?
+			if(startUpdated)
+			{
+				foreach (Component component in Components<Component>())
+				{
+					onComponentAdded(component);
+				}
+			}
+		}
+
+		public void UnSubscribeFromComponents(Action<Component> onComponentAdded, Action<Component> onComponentRemoved)
+		{
+			this.onComponentAdded -= onComponentAdded;
+			this.onComponentRemoved -= onComponentRemoved;
+		}
+
+		private void ComponentAdded(Component component)
 		{
 			// Temp keep track of added positions here
 			if(component is Position)
@@ -97,9 +121,11 @@ namespace Entities.Model
 				PositionChanged(position, GridPosition.Zero);
 			}
 
+			if (onComponentAdded != null)
+				onComponentAdded(component);
 		}
 
-		private void OnComponentRemoved(Component component)
+		private void ComponentRemoved(Component component)
 		{
 			// unsubscribe
 			if (component is Position)
@@ -108,6 +134,9 @@ namespace Entities.Model
 				position.OnPositionUpdated -= PositionChanged;
 				RemoveEntityAtPosition(position.Entity, position.Pos);
 			}
+
+			if (onComponentRemoved != null)
+				onComponentRemoved(component);
 		}
 
 

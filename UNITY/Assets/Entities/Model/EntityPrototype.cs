@@ -63,6 +63,8 @@ namespace GridCode.Entities.Model
 		{
 			Entity e = GetNewEntity();
 
+			// Keep door non-blockable until we can 
+			// figure out how to handle opening doors in pathfinder
 			e.AddComponent(new Position(pos, GridDirection.None, false));
 			e.AddComponent(new EntityVisual("door"));
 
@@ -82,9 +84,8 @@ namespace GridCode.Entities.Model
 				position = pos,
 			});
 
-#if UNITY_EDITOR
 			e.AddComponent(new EntityVisual("test"));
-#endif
+
 			return e;
 		}
 

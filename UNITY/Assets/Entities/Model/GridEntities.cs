@@ -41,9 +41,24 @@ namespace Entities.Model
 			return true;
 		}
 
-		public bool RemoveEntity()
+		public void RemoveEntity(int id)
 		{
-			throw new NotImplementedException("removal of entities not yet implemented");
+			RemoveEntity(entities[id]);
+		}
+
+		public void RemoveEntity(Entity entity)
+		{
+			// step 1: remove components
+			entity.Remove();
+			// step 2: remove entity
+			entities.Remove(entity.ID);
+			// step 3: ??
+			// step 4: profit
+
+			if(onEntityRemoved != null)
+			{
+				onEntityRemoved(entity);
+			}
 		}
 
 		/// <summary>
@@ -89,21 +104,21 @@ namespace Entities.Model
 			// unsubscribe
 			if (component is Position)
 			{
-				(component as Position).OnPositionUpdated -= PositionChanged;
+				Position position = (component as Position);
+				position.OnPositionUpdated -= PositionChanged;
+				RemoveEntityAtPosition(position.Entity, position.Pos);
 			}
 		}
 
 
 		private Dictionary<GridPosition, int[]> positionRef = new Dictionary<GridPosition, int[]>();
+
 		private void PositionChanged(Position position, GridPosition previousPos)
 		{
+			// 1. Keeping references of positions of entities in grid
+
 			// check if previous pos should be removed
-			if(positionRef.ContainsKey(previousPos))
-			{
-				List<int> idsAtPos = new List<int>(positionRef[previousPos]);
-				idsAtPos.Remove(position.Entity.ID);
-				positionRef[previousPos] = idsAtPos.ToArray();
-            }
+			RemoveEntityAtPosition(position.Entity, previousPos);
 
 			// add new position
 			if(positionRef.ContainsKey(position.Pos))
@@ -127,6 +142,35 @@ namespace Entities.Model
 			{
 				positionRef.Add(position.Pos, new int[] { position.Entity.ID });
 			}
+
+			// 2. Activating triggers or whatever
+			// TODO move to trigger system later
+			// TODO trigger for blocking/non blocking positions?
+
+			foreach (Trigger trigger in Components<Trigger>())
+			{
+				// alert trigger of entry
+				if(position.Pos == trigger.position)
+				{
+					trigger.OnTriggerEnter(position.Entity);
+				}
+				// alert trigger of exit
+				else if(previousPos == trigger.position)
+				{
+					trigger.OnTriggerExit(position.Entity);
+				}
+			}
+
+		}
+
+		private void RemoveEntityAtPosition(Entity entity, GridPosition position)
+		{
+			if (positionRef.ContainsKey(position))
+			{
+				List<int> idsAtPos = new List<int>(positionRef[position]);
+				idsAtPos.Remove(entity.ID);
+				positionRef[position] = idsAtPos.ToArray();
+			}
 		}
 
 		#region Indexers
@@ -143,14 +187,6 @@ namespace Entities.Model
 		{
 			get
 			{
-				// TODO make faster
-				//var positions = GetComponentEnumerator<Position>();
-				//while (positions.MoveNext())
-				//{
-				//	if (positions.Current.Pos == pos)
-				//		return positions.Current.Entity;
-				//}
-
 				int[] entityIDs;
 				if(positionRef.TryGetValue(pos, out entityIDs))
 				{

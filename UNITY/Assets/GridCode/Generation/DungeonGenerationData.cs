@@ -105,21 +105,22 @@ namespace GridCode.Generation
 
 			foreach (DungeonGenerationPosition doorPos in room.Doors)
 			{
-				if (grid.ContainsPosition(doorPos.Column, doorPos.Row))
+				if (grid.ContainsPosition(doorPos.ToGridPos()))
 				{
-					TileData tile = grid.GetTile(doorPos.Column, doorPos.Row);
-					if (tile.Type == GridTileType.None || tile.Type == GridTileType.Wall)
-					{
-						tile.Type = GridTileType.Flat;
-						tile.RoomIndex = roomIndex;
+					grid.DoorPositions.Add(doorPos.ToGridPos());
+					//TileData tile = grid.GetTile(doorPos.Column, doorPos.Row);
+					//if (tile.Type == GridTileType.None || tile.Type == GridTileType.Wall)
+					//{
+					//	tile.Type = GridTileType.Flat;
+					//	tile.RoomIndex = roomIndex;
 
-						// TODO find more decent way to do this
-						tile.AddObject(new TileObjectData("door"));
-					}
-					else
-					{
-						Log.Write("DungeonGenerationData::AddRoomToGrid - trying to add a door tile to a tile of type " + tile.Type.ToString() + " at position " + tile.Column + ":" + tile.Row);
-					}
+					//	// TODO find more decent way to do this
+					//	tile.AddObject(new TileObjectData("door"));
+					//}
+					//else
+					//{
+					//	Log.Write("DungeonGenerationData::AddRoomToGrid - trying to add a door tile to a tile of type " + tile.Type.ToString() + " at position " + tile.Column + ":" + tile.Row);
+					//}
 				}
 			}
 
@@ -184,6 +185,14 @@ namespace GridCode.Generation
 					}
 				}
 			}
+		}
+	}
+
+	public static class GlueFunctions
+	{
+		public static GridPosition ToGridPos(this DungeonGenerationPosition dgPos)
+		{
+			return new GridPosition(dgPos.Column, dgPos.Row);
 		}
 	}
 }

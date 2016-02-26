@@ -1,7 +1,5 @@
 ﻿using Entities.Model;
 using Entities.Model.Components;
-using System;
-using System.Collections.Generic;
 
 namespace GridCode.Entities.Model
 {
@@ -16,7 +14,12 @@ namespace GridCode.Entities.Model
 			Entity e = new Entity(++currentID); 
 
 			e.AddComponent(new EntityName(name));
-			e.AddMovement(pos);
+			e.AddMovementComponents(pos);
+			e.AddComponent(new HitPoints()
+			{
+				CurrentHitpoints = 5,
+				MaxHitPoints = 5,
+			});
 			e.AddComponent(new EntityVisual("playerVisual"));
 			e.AddComponent(new Actor()
 			{
@@ -35,10 +38,15 @@ namespace GridCode.Entities.Model
 		public static Entity Enemy(GridPosition pos)
 		{
 			// TODO get id somewhere else
-			Entity e = new Entity(++currentID);
+			Entity e = GetNewEntity();
 
 			e.AddComponent(new EntityName("enemy"));
-			e.AddMovement(pos);
+			e.AddMovementComponents(pos);
+			e.AddComponent(new HitPoints()
+			{
+				CurrentHitpoints = 1,
+				MaxHitPoints = 2,
+			});
 			e.AddComponent(new EntityVisual("enemyVisual"));
 			e.AddComponent(new Actor()
 			{
@@ -51,15 +59,52 @@ namespace GridCode.Entities.Model
 			return e;
 		}
 
-		private static void AddMovement(this Entity e, GridPosition pos)
+		public static Entity SimpleDoor(GridPosition pos)
+		{
+			Entity e = GetNewEntity();
+
+			e.AddComponent(new Position(pos, GridDirection.None, false));
+			e.AddComponent(new EntityVisual("door"));
+
+			// TODO: make this doorInteractable or whatever
+			e.AddComponent(new Interactable());
+			
+			return e;
+		}
+
+		public static Entity TestTrigger(GridPosition pos)
+		{
+			Entity e = GetNewEntity();
+
+			e.AddComponent(new Position(pos, GridDirection.None, false));
+			e.AddComponent(new Trigger()
+			{
+				position = pos,
+			});
+
+#if UNITY_EDITOR
+			e.AddComponent(new EntityVisual("test"));
+#endif
+			return e;
+		}
+
+		// Helper functions
+
+		private static Entity GetNewEntity()
+		{
+			return new Entity(++currentID);
+		}
+
+		private static void AddMovementComponents(this Entity e, GridPosition pos)
 		{
 
 			var position = new Position(pos, GridDirection.North, true);
 			e.AddComponent(position);
 			e.AddComponent(new Mover()
 			{
-				MoveType = MovementType.Walk,
-				Pos = position,	
+				//MoveType = MovementType.Walk,
+				MoveBehaviour = new WalkMoveBehaviour(),
+				Pos = position,
 			});
 		}
 	}

@@ -16,9 +16,8 @@ namespace GridCode
 
 		// to group tiles together
 		private int roomIndex = -1;
+		
 
-		// the object living in this tile
-		private TileObjectData tileObject = null;
 
 		// TODO determine the style of the tile?
 		#endregion
@@ -75,24 +74,11 @@ namespace GridCode
 			get { return pos.Row; }
 		}
 
-		public TileObjectData ObjectData
-		{
-			get { return tileObject; }
-		}
-
 		IEnumerable<TileData> IPathFindable<TileData>.Neighbours
 		{
 			get
 			{
 				return grid.GetNeigbours(this);
-			}
-		}
-
-		bool IPathFindable<TileData>.Walkeable
-		{
-			get
-			{
-				return Type == GridTileType.Flat;
 			}
 		}
 
@@ -129,18 +115,6 @@ namespace GridCode
 			pos.Column = column;
 			pos.Row = row;
 			this.type = type;
-		}
-
-		public bool AddObject(TileObjectData tileOjbectData)
-		{
-			// TODO
-			tileObject = tileOjbectData;
-
-			// if the object has changed -> do the callback for visuals etc
-			if (OnObjectChanged != null)
-				OnObjectChanged(this);
-
-			return true;
 		}
 
 		public override string ToString()

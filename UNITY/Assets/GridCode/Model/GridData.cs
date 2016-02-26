@@ -9,15 +9,15 @@ namespace GridCode
 	{
 		// Contains all gridTiles
 		private TileData[,] tiles;
-
-		// Contains all tile objects
-		private List<TileObjectData> tileObjects;
-
+		
 		// The pathfinding graph for the tiles
 		private TileGraph tileGraph;
 
 		private Random rand;
 
+		// Contains all tile objects
+		public List<GridPosition> DoorPositions = new List<GridPosition>();
+		
 		// TODO make a data structure to hold style info?
 
 		public int Columns
@@ -76,6 +76,11 @@ namespace GridCode
 			while (tile.Type != tileType && --maxAttempts > 0);
 
 			return tile;
+		}
+
+		public bool ContainsPosition(GridPosition pos)
+		{
+			return ContainsPosition(pos.Column, pos.Row);
 		}
 
 		public bool ContainsPosition(int column, int row)

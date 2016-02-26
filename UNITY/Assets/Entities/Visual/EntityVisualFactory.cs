@@ -12,6 +12,8 @@ namespace Entities.Visual
 		[SerializeField]
 		private GameObject enemyVisual;
 		[SerializeField]
+		private GameObject doorVisual;
+		[SerializeField]
 		private GameObject defaultVisual;
 
 		/// <summary>
@@ -32,6 +34,9 @@ namespace Entities.Visual
 					break;
 				case "playerVisual":
 					visualPrefab = playerVisual;
+					break;
+				case "door":
+					visualPrefab = doorVisual;
 					break;
 			}
 

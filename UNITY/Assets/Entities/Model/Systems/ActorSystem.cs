@@ -75,7 +75,7 @@ namespace Entities.Model.Systems
 
 				TileData tile = grid.GetRandomTile(GridTileType.Flat);
 
-				SetPath(mover, grid[pos.Pos], tile);
+				GetPath(mover, grid[pos.Pos], tile);
 
 				MoveToTile(mover, mover.Path.Dequeue());
 
@@ -99,7 +99,7 @@ namespace Entities.Model.Systems
 
 			if (IsValidTile(mover, tile))
 			{
-				SetPath(mover, grid[pos.Pos], tile);
+				GetPath(mover, grid[pos.Pos], tile);
 
 				if (mover.Path == null || mover.Path.Count <= 0)
 					return;
@@ -131,12 +131,13 @@ namespace Entities.Model.Systems
 			}
 		}
 
-		private void SetPath(Mover mover, TileData from, TileData to)
+		private void GetPath(Mover mover, TileData from, TileData to)
 		{
 			// dynamic grid thing
-			mover.Path = new Queue<TileData>(PathFinder<TileData>.FindPath(from, to, (TileData tile) =>
+			mover.Path = new Queue<TileData>(PathFinder<TileData>.FindPath(
+				from, to, (TileData tile) =>
 			{
-				return mover.CanEnterTile(tile);
+				return mover.MoveBehaviour.CanEnterTile(tile);
 			}));
 			// remove start pos from path
 			mover.Path.Dequeue();
@@ -169,7 +170,7 @@ namespace Entities.Model.Systems
 		private bool IsValidTile(Mover mover, TileData tile)
 		{
 			// check if tile is valid
-			if (mover.CanEnterTile(tile))
+			if (mover.MoveBehaviour.CanEnterTile(tile))
 			{
 				// check for blocking entities on target tile
 				bool isBlocked = false;

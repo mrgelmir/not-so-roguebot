@@ -2,6 +2,9 @@
 
 namespace GridCode
 {
+	// TODO move to flyweight pattern
+	// http://gameprogrammingpatterns.com/flyweight.html
+
 	[Flags]
 	public enum GridTileType
 	{

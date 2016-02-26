@@ -91,60 +91,17 @@ namespace GridCode.Visuals
 			ChildCount = transform.childCount;
 		}
 
-		public void UpdateTileObjectVisual(TileData tileData)
-		{
-			TileObjectData objectData = tileData.ObjectData;
-
-			GameObject currentVisual;
-			gridTileObjectVisuals.TryGetValue(tileData, out currentVisual);
-
-			if (objectData == null)
-			{
-				// clear the current visual if it exists ...
-				if (currentVisual != null)
-				{
-					ReturnInstanceToPool(currentVisual);
-					gridTileObjectVisuals.Remove(tileData);
-				}
-
-				// ... and then we are done here
-				return;
-			}
-
-			// hardcoded implementation for now
-
-			GameObject newVisual = null;
-
-			if (objectData.ObjectCode == "door")
-			{
-				newVisual = SpawnObject(tileData, GetDoorTileVisual);
-			}
-
-			// ATM only one object per tile
-			if (gridTileObjectVisuals.ContainsKey(tileData))
-			{
-				gridTileObjectVisuals[tileData] = newVisual;
-			}
-			else
-			{
-				gridTileObjectVisuals.Add(tileData, newVisual);
-			}
-		}
-
 		public void RegisterVisualTile(TileData tileData)
 		{
 			tileData.OnTileChanged += UpdateTileVisual;
-			tileData.OnObjectChanged += UpdateTileObjectVisual;
 
 			// first update
 			UpdateTileVisual(tileData);
-			UpdateTileObjectVisual(tileData);
 		}
 
 		public void UnregisterVisualTile(TileData tileData)
 		{
 			tileData.OnTileChanged -= UpdateTileVisual;
-			tileData.OnObjectChanged -= UpdateTileObjectVisual;
 
 			RemoveCurrentVisual(tileData);
 		}
@@ -225,7 +182,7 @@ namespace GridCode.Visuals
 			{
 				// Instantiate the Tile and set to correct position
 				GameObject tileVisual = GetInstanceFromPool(tilePrefab);
-				tileVisual.name = tileData.ObjectData.ToString();
+				tileVisual.name = tileData.ToString();
 				tileVisual.transform.position = tileData.Position.ToWorldPos();
 				tileVisual.transform.SetParent(transform, false);
 
@@ -412,21 +369,7 @@ namespace GridCode.Visuals
 				// release visual
 				ReturnInstanceToPool(currentVisual);
 				gridTileVisuals.Remove(tileData);
-			}
-
-			// remove the tile object as well
-			if (tileData.ObjectData != null)
-			{
-				GameObject currentObjectVisual;
-				gridTileObjectVisuals.TryGetValue(tileData, out currentObjectVisual);
-
-				if (currentObjectVisual != null)
-				{
-					// release visual
-					ReturnInstanceToPool(currentObjectVisual);
-					gridTileObjectVisuals.Remove(tileData);
-				}
-			}
+			}			
 		}
 
 		#region Pooling

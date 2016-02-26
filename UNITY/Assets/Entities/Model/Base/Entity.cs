@@ -66,7 +66,7 @@ namespace Entities.Model
 				components.Add(component);
 				component.Entity = this;
 
-				if(onComponentAdded != null)
+				if (onComponentAdded != null)
 				{
 					onComponentAdded(component);
 				}
@@ -85,7 +85,7 @@ namespace Entities.Model
 					components.RemoveAt(i);
 					removed = true;
 
-					if(onComponentRemoved != null)
+					if (onComponentRemoved != null)
 					{
 						onComponentRemoved(components[i]);
 					}
@@ -127,6 +127,24 @@ namespace Entities.Model
 			}
 			return false;
 		}
+
+
+		/// <summary>
+		/// WARNING: this should only be called from the GridEntities class
+		/// </summary>
+		public void Remove()
+		{
+			// this means the entity will be destroyed -> remove all components
+			if (onComponentRemoved != null)
+			{
+				foreach (Component component in components)
+				{
+					onComponentRemoved(component);
+				}
+			}
+
+			components.Clear();
+		}
 		#endregion
 
 		#region Comparison
@@ -148,5 +166,10 @@ namespace Entities.Model
 		}
 
 		#endregion
+
+		public override string ToString()
+		{
+			return "Entity with ID " + ID;
+		}
 	}
 }

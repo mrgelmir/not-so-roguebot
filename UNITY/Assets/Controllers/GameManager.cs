@@ -206,10 +206,11 @@ public class GameManager : MonoBehaviour
 
 		// -- setup --
 
-		GenerateDungeon();
 		entities = new GridEntities();
+		GenerateDungeon();
 		actorSystem = new ActorSystem(entities, gridData);
-		InputController.Instance.Grid = gridData;
+		healthSystem = new HealthSystem(entities);
+        InputController.Instance.Grid = gridData;
 
 		// -- spawning -- 
 
@@ -232,6 +233,14 @@ public class GameManager : MonoBehaviour
 			entities.AddEntity(enemy);
 
 		}
+
+		// temp triggers
+		for (int i = 0; i < 100; i++)
+		{
+			spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
+			entities.AddEntity(EntityPrototype.TestTrigger(spawnPos));
+		}
+
 
 		// -- game start -- 
 
@@ -269,6 +278,7 @@ public class GameManager : MonoBehaviour
 
 	private ComponentEnumerator<Actor> actorEnumerator;
 	private ActorSystem actorSystem;
+	private HealthSystem healthSystem;
 
 	private void StartTurn()
 	{
@@ -282,7 +292,7 @@ public class GameManager : MonoBehaviour
 
 	private void ContinueTurn()
 	{
-		// TODO see how to handle deletion (do not alter IEnumerations while iterating)
+		// TODO move this logic to the ActorSystem or another System
 		while (actorEnumerator.MoveNext())
 		{
 			Actor actor = actorEnumerator.Current;
@@ -301,6 +311,9 @@ public class GameManager : MonoBehaviour
 		actorEnumerator.Dispose();
 		actorSystem.OnResume -= ContinueTurn;
 
+		// remove all destroyed entities
+		healthSystem.HandleHealth();
+
 		EndOfTurn();
 	}
 
@@ -311,8 +324,6 @@ public class GameManager : MonoBehaviour
 	/// </summary>
 	public virtual void EndOfTurn()
 	{
-		// TODO check for deletion
-
 
 		//wait for a while, then start next turn
 		StartCoroutine(StartTurndelayed(.1f));
@@ -341,6 +352,14 @@ public class GameManager : MonoBehaviour
 		IDungeonGenerator dungeonGenerator = new DungeonWalkGenerator();
 		dungeonGenerator.Setup(dungeonInfo);
 		gridData = dungeonGenerator.GenerateDungeon().GetFlattenedGrid();
+
+		// TODO re-create room objects (flood-fill) and determine doors
+		// ie. a door is added when a gap with width 1 (or 2) is first found
+		
+		foreach (GridPosition doorPos in gridData.DoorPositions)
+		{
+			entities.AddEntity(EntityPrototype.SimpleDoor(doorPos));
+		}
 		
 		gridData.ConstructTileGraph();
 
@@ -362,8 +381,13 @@ public class GameManager : MonoBehaviour
 			if(nameComponent.NameString == "The Player")
 			{
 				Mover m = nameComponent.Entity.GetComponent<Mover>();
+				
+				if(m.MoveBehaviour is WalkMoveBehaviour)
+				{
+					m.MoveBehaviour = new WalkMoveBehaviour();
+				}
 
-				m.MoveType = (m.MoveType == MovementType.Walk) ? MovementType.Hack : MovementType.Walk;
+				//m.MoveType = (m.MoveType == MovementType.Walk) ? MovementType.Hack : MovementType.Walk;
 			}
 		}
 	}

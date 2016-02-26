@@ -111,7 +111,7 @@ Light:
   serializedVersion: 6
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: .689999998
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -708,6 +708,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerVisual: {fileID: 140038, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
   enemyVisual: {fileID: 197736, guid: 765d55d9510c4e04f8a319c17b4cbd8e, type: 2}
+  doorVisual: {fileID: 116562, guid: 91a5f1de3eec1d94b8108d476053e5f1, type: 2}
   defaultVisual: {fileID: 102586, guid: eae75bf7744a8c643ad30987ffcbc573, type: 2}
 --- !u!65 &1631374366
 BoxCollider:

@@ -188,9 +188,8 @@ namespace PathFinding
 		int HeuristicDistance(T other);
 		int MovementCostFrom(T other);
 		IEnumerable<T> Neighbours { get; }
-		bool Walkeable { get; }
-		//int UniqueIndex { get; }
 
 	}
+	
 
 }

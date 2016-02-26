@@ -29,6 +29,12 @@ namespace Entities.Model.Components
 	// TODO: move this class elsewhere if file gets too big
 	public static class MoverFunctionality
 	{
+		/// <summary>
+		/// Warning: this does not take other actors into account!
+		/// </summary>
+		/// <param name="mover"></param>
+		/// <param name="tile"></param>
+		/// <returns></returns>
 		public static bool CanEnterTile(this Mover mover, TileData tile)
 		{
 

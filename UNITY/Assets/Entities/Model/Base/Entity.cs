@@ -6,21 +6,47 @@ namespace Entities.Model
 {
 	public class Entity
 	{
-
-		// TODO see how to handle deletion (do not alter IEnumerations while iterating)
+		#region Members
 
 		private readonly int id;
 		private List<Component> components = new List<Component>();
+
+		private Action<Component> onComponentAdded;
+		private Action<Component> onComponentRemoved;
+		#endregion
+
+		#region Accessors
 
 		public int ID
 		{
 			get { return id; }
 		}
 
+		public IList<Component> Components
+		{
+			// let's try out the readonly list, if we bump into issues, see what we can do
+			get { return components.AsReadOnly(); }
+		}
+
 		public int ComponentCount
 		{
 			get { return components.Count; }
 		}
+
+		public event Action<Component> OnComponentAdded
+		{
+			add { onComponentAdded += value; }
+			remove { onComponentAdded -= value; }
+		}
+
+		public event Action<Component> OnComponentRemoved
+		{
+			add { onComponentRemoved += value; }
+			remove { onComponentRemoved -= value; }
+		}
+		#endregion
+
+		#region Public Methods
 
 		public Entity(int id)
 		{
@@ -39,6 +65,12 @@ namespace Entities.Model
 				// Add component to list and mark with personal ID
 				components.Add(component);
 				component.Entity = this;
+
+				if(onComponentAdded != null)
+				{
+					onComponentAdded(component);
+				}
+
 				return true;
 			}
 		}
@@ -48,10 +80,16 @@ namespace Entities.Model
 			bool removed = false;
 			for (int i = 0; i < components.Count;)
 			{
-				if(components[i] is T)
+				if (components[i] is T)
 				{
 					components.RemoveAt(i);
 					removed = true;
+
+					if(onComponentRemoved != null)
+					{
+						onComponentRemoved(components[i]);
+					}
+
 					continue;
 				}
 
@@ -89,6 +127,7 @@ namespace Entities.Model
 			}
 			return false;
 		}
+		#endregion
 
 		#region Comparison
 

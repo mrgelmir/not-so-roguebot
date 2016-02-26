@@ -220,17 +220,17 @@ public class GameManager : MonoBehaviour
 		// New player creation
 		playerEntity = EntityPrototype.Player("The Player", spawnPos);
 		entities.AddEntity(playerEntity);
-
-		// dirty, dirty temp
+		
+		// dirty, dirty temp -> refactor to camera component
 		StartCoroutine(SetCameraTargetDelayed());
-
-
+		
 		// temp enemy creation
 		for (int i = 0; i < 10; i++)
 		{
 			spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
 			Entity enemy = EntityPrototype.Enemy(spawnPos);
 			entities.AddEntity(enemy);
+
 		}
 
 		// -- game start -- 
@@ -282,6 +282,7 @@ public class GameManager : MonoBehaviour
 
 	private void ContinueTurn()
 	{
+		// TODO see how to handle deletion (do not alter IEnumerations while iterating)
 		while (actorEnumerator.MoveNext())
 		{
 			Actor actor = actorEnumerator.Current;

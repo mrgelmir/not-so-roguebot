@@ -60,10 +60,11 @@ namespace Entities.Model.Systems
 			// TODO check for interruptions to movement here
 			if (mover.Path != null && mover.Path.Count > 0)
 			{
-				// just continue along path
-				MoveToTile(mover, mover.Path.Dequeue());
-				
-				return true;
+				// just continue along path if not blocked
+				if (MoveToTile(mover, mover.Path.Dequeue()))
+				{
+					return true;
+				}
 			}
 
 			if (actor.InstantActor)
@@ -75,9 +76,9 @@ namespace Entities.Model.Systems
 				TileData tile = grid.GetRandomTile(GridTileType.Flat);
 
 				SetPath(mover, grid[pos.Pos], tile);
-				
+
 				MoveToTile(mover, mover.Path.Dequeue());
-				
+
 				currentEntity = null;
 				return true;
 			}
@@ -96,7 +97,7 @@ namespace Entities.Model.Systems
 			Position pos = currentEntity.GetComponent<Position>();
 			Mover mover = currentEntity.GetComponent<Mover>();
 
-			if (mover.CanEnterTile(tile))
+			if (IsValidTile(mover, tile))
 			{
 				SetPath(mover, grid[pos.Pos], tile);
 
@@ -153,14 +154,38 @@ namespace Entities.Model.Systems
 
 		private bool MoveToTile(Mover mover, TileData tile)
 		{
+			if (IsValidTile(mover, tile))
+			{
+				mover.Pos.Pos = tile.Position;
+				return true;
+			}
+
+			// invalidate path
+			mover.InvalidatePath();
+
+			return false;
+		}
+
+		private bool IsValidTile(Mover mover, TileData tile)
+		{
+			// check if tile is valid
 			if (mover.CanEnterTile(tile))
 			{
-				//// TODO use the 
-				//Entity e = entities[tile.Position];
-				//Position pos = e.GetComponent<Position>();
-				//if (pos == null || pos.)
+				// check for blocking entities on target tile
+				bool isBlocked = false;
+				foreach (Entity e in entities[tile.Position])
 				{
-					mover.Pos.Pos = tile.Position;
+					Position p = e.GetComponent<Position>();
+
+					if (p != null && p.Blocking)
+					{
+						isBlocked = true;
+						break;
+					}
+				}
+
+				if (!isBlocked)
+				{
 					return true;
 				}
 			}

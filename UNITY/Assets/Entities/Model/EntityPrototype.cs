@@ -54,12 +54,12 @@ namespace GridCode.Entities.Model
 		private static void AddMovement(this Entity e, GridPosition pos)
 		{
 
-			var position = new Position(pos, GridDirection.North);
+			var position = new Position(pos, GridDirection.North, true);
 			e.AddComponent(position);
 			e.AddComponent(new Mover()
 			{
 				MoveType = MovementType.Walk,
-				Pos = position,				
+				Pos = position,	
 			});
 		}
 	}

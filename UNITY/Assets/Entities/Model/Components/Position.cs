@@ -37,7 +37,7 @@ namespace Entities.Model.Components
 				GridPosition previousPosition = Pos;
 
 				// TEMP check for orientation change here
-				Orientation = GridDirectionHelper.DirectionBetween(position, value);
+				Orientation = GridDirectionUtil.DirectionBetween(position, value);
 
 				position = value;
 

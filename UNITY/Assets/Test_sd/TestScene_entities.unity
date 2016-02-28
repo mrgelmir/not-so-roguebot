@@ -653,8 +653,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dungeonInfo:
-    Width: 100
-    Height: 100
+    Width: 101
+    Height: 101
     MaxRooms: 50
     MinRoomWidth: 5
     MinRoomHeight: 4
@@ -709,6 +709,7 @@ MonoBehaviour:
   playerVisual: {fileID: 140038, guid: f6e62ac5af1856944bc50199d19c61ff, type: 2}
   enemyVisual: {fileID: 197736, guid: 765d55d9510c4e04f8a319c17b4cbd8e, type: 2}
   doorVisual: {fileID: 116562, guid: 91a5f1de3eec1d94b8108d476053e5f1, type: 2}
+  triggerVisual: {fileID: 145912, guid: 10a537f3e872d33438b51b18311903a3, type: 2}
   defaultVisual: {fileID: 102586, guid: eae75bf7744a8c643ad30987ffcbc573, type: 2}
 --- !u!65 &1631374366
 BoxCollider:

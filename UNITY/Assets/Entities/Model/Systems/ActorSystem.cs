@@ -135,7 +135,7 @@ namespace Entities.Model.Systems
 		{
 			// dynamic grid thing
 			mover.Path = new Queue<TileData>(PathFinder<TileData>.FindPath(
-				from, to, mover.MoveBehaviour.CanEnterTile));
+				from, to, mover.MoveBehaviour.CanPathThroughTile));
 			// remove start pos from path
 			mover.Path.Dequeue();
 

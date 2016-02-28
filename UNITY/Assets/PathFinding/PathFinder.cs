@@ -23,7 +23,7 @@ namespace PathFinding
 			{
 				l.Add(pf as T);
 			}
-
+			
 			return l;
 		}
 
@@ -34,6 +34,7 @@ namespace PathFinding
 		//private SimplePriorityQueue<Node> OpenList = new SimplePriorityQueue<Node>();
 		private List<Node> OpenList = new List<Node>();
 		private HashSet<Node> ClosedList = new HashSet<Node>(); // TODO calculate a feasible amount to start with?
+		private bool finished = true;
 
 		protected List<T> Nodes;
 		protected List<int> HeuristicValues;
@@ -62,7 +63,8 @@ namespace PathFinding
 			if (OpenList.Count == 0)
 			{
 				Log.Write("No more open list nodes");
-				return;
+				finished = false;
+                return;
 			}
 			currentNode = OpenList[0];
 			//currentNode = OpenList.Dequeue();
@@ -101,6 +103,9 @@ namespace PathFinding
 		{
 			get
 			{
+				if (!finished)
+					return null;
+
 				List<T> itinerary = new List<T>();
 				Node n = currentNode;
 

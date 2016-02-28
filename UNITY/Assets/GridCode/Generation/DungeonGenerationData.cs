@@ -72,20 +72,30 @@ namespace GridCode.Generation
 			// Add all rooms
 			for (int i = 0; i < Rooms.Count; ++i)
 			{
-				AddRoomToGrid(ref grid, Rooms[i], i);
+				DungeonGenerationHelpers.AddRoomToGrid(ref grid, Rooms[i], i);
 			}
 
 			// Add all corridors
 			for (int i = 0; i < Corridors.Count; i++)
 			{
-				AddCorridorToGrid(ref grid, Corridors[i]);
+				DungeonGenerationHelpers.AddCorridorToGrid(ref grid, Corridors[i]);
 			}
 
 
 			return grid;
 		}
 
-		private void AddRoomToGrid(ref GridData grid, DungeonRoom room, int roomIndex)
+		
+	}
+
+	public static class DungeonGenerationHelpers
+	{
+		public static GridPosition ToGridPos(this DungeonGenerationPosition dgPos)
+		{
+			return new GridPosition(dgPos.Column, dgPos.Row);
+		}
+
+		public static void AddRoomToGrid(ref GridData grid, DungeonRoom room, int roomIndex)
 		{
 
 			// add grid tiles
@@ -145,7 +155,7 @@ namespace GridCode.Generation
 				}
 			}
 
-			for (int row = room.Row - 1; row < room.Row + room.Height + 1; row++) // top and bottom wall
+			for (int row = room.Row - 1; row < room.Row + room.Height + 1; row++) // left and right wall
 			{
 				if (grid.ContainsPosition(room.Column - 1, row))
 				{
@@ -166,7 +176,7 @@ namespace GridCode.Generation
 			}
 		}
 
-		private void AddCorridorToGrid(ref GridData grid, DungeonCorridor corridor)
+		public static void AddCorridorToGrid(ref GridData grid, DungeonCorridor corridor)
 		{
 			//Log.Write("adding corridor with length " + corridor.TilePositions.Count);
 			foreach (DungeonGenerationPosition position in corridor.TilePositions)
@@ -185,14 +195,6 @@ namespace GridCode.Generation
 					}
 				}
 			}
-		}
-	}
-
-	public static class GlueFunctions
-	{
-		public static GridPosition ToGridPos(this DungeonGenerationPosition dgPos)
-		{
-			return new GridPosition(dgPos.Column, dgPos.Row);
 		}
 	}
 }

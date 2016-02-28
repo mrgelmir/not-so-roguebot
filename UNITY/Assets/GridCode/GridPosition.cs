@@ -43,7 +43,7 @@ namespace GridCode
 		{
 			return DistanceTo(otherTile.Position);
 		}
-
+		
 		// move to extensions?
 		public int DistanceTo(GridPosition otherPosition)
 		{
@@ -78,6 +78,20 @@ namespace GridCode
 		public static GridPosition operator -(GridPosition pos, GridDirection dir)
 		{
 			return new GridPosition(pos.Column - dir.GetHorizontalDirection(), pos.Row - dir.GetVerticalDirection());
+		}
+
+		
+	}
+
+	public static class GridPositionExtensions
+	{
+		public static GridPosition MoveBy(this GridPosition pos, GridDirection dir, int v)
+		{
+			for (int i = 0; i < Math.Abs(v); i++)
+			{
+				pos += dir;
+			}
+			return pos;
 		}
 	}
 }

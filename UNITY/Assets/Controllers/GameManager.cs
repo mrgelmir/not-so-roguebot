@@ -225,14 +225,13 @@ public class GameManager : MonoBehaviour
 		
 		// dirty, dirty temp -> refactor to camera component
 		StartCoroutine(SetCameraTargetDelayed());
-		
+
 		// temp enemy creation
 		for (int i = 0; i < 10; i++)
 		{
 			spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
 			Entity enemy = EntityPrototype.Enemy(spawnPos);
 			entities.AddEntity(enemy);
-
 		}
 
 		// temp triggers
@@ -241,6 +240,16 @@ public class GameManager : MonoBehaviour
 			spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
 
 			Entity e = EntityPrototype.TestTrigger(spawnPos);
+
+			entities.AddEntity(e);
+		}
+
+		// temp blockers
+		for (int i = 0; i < 20; i++)
+		{
+			spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
+
+			Entity e = EntityPrototype.BlockingObject(spawnPos);
 
 			entities.AddEntity(e);
 		}
@@ -353,30 +362,57 @@ public class GameManager : MonoBehaviour
 	[ContextMenu("Generate dungeon")]
 	public void GenerateDungeon()
 	{
+
+		// Dungeon generation
+
+		//GenerateDungeonOld();
+		GenerateDungeonNew();
+
+		// Add doors/other entities from generation
+		// TODO re-create room objects (flood-fill) and determine doors
+		// ie. a door is added when a gap with width 1 (or 2) is first found
+		foreach (GridPosition doorPos in gridData.DoorPositions)
+		{
+			entities.AddEntity(EntityPrototype.SimpleDoor(doorPos));
+		}
+
+		//Dungeon post-processing
+        gridData.ConstructTileGraph();
+
+		//temp grid editor visualisation
+        foreach (Node<TileData> node in gridData.Graph.Nodes.Values)
+		{
+			foreach (Edge<TileData> edge in node.Edges)
+			{
+				Vector3 ray = GridDirectionUtil.DirectionBetween(node.Data.Position, edge.Node.Data.Position).ToDirection();
+				Debug.DrawRay(node.Data.Position.ToWorldPos(), ray * .3f, Color.green, float.MaxValue);
+			}
+		}
+	}
+
+	private void GenerateDungeonNew()
+	{
+		FilledGenerator generator = new FilledGenerator()
+		{
+			ExtraConnectorPercent = 10,
+			FillTile = GridTileType.None,
+			BorderTile = GridTileType.Wall,
+			WindingPercent = 10,
+		};
+		generator.Generate(dungeonInfo);
+		gridData = generator.GetDungeon();
+		
+	}
+
+	private void GenerateDungeonOld()
+	{
 		// generate dungeon
 		IDungeonGenerator dungeonGenerator = new DungeonWalkGenerator();
 		dungeonGenerator.Setup(dungeonInfo);
 		gridData = dungeonGenerator.GenerateDungeon().GetFlattenedGrid();
 
-		// TODO re-create room objects (flood-fill) and determine doors
-		// ie. a door is added when a gap with width 1 (or 2) is first found
 		
-		foreach (GridPosition doorPos in gridData.DoorPositions)
-		{
-			entities.AddEntity(EntityPrototype.SimpleDoor(doorPos));
-		}
 		
-		gridData.ConstructTileGraph();
-
-		// temp grid editor visualisation
-		foreach (Node<TileData> node in gridData.Graph.Nodes.Values)
-		{
-			foreach (Edge<TileData> edge in node.Edges)
-			{
-				Vector3 ray = GridDirectionHelper.DirectionBetween(node.Data.Position, edge.Node.Data.Position).ToDirection();
-				Debug.DrawRay(node.Data.Position.ToWorldPos(), ray * .3f, Color.green, float.MaxValue);
-			}
-		}
 	}
 
 	public void TestButton()

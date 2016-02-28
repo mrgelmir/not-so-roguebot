@@ -49,8 +49,11 @@ namespace GridCode
 
 	}
 
-	public static class GridDirectionHelper
+	public static class GridDirectionUtil
 	{
+		public static readonly GridDirection[] AxialDirections = { GridDirection.North, GridDirection.East, GridDirection.South, GridDirection.West };
+		public static readonly GridDirection[] DiagonalDirections = { GridDirection.North, GridDirection.NorthEast, GridDirection.East, GridDirection.SouthEast, GridDirection.South, GridDirection.SouthWest, GridDirection.West, GridDirection.NorthWest };
+
 		// let the getter use its own random to keep seeds valid
 		public static GridDirection GetRandomDirection(Random rand)
 		{

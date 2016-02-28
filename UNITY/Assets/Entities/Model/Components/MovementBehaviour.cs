@@ -15,6 +15,8 @@ namespace Entities.Model.Components
 
 	public abstract class MovementBehaviour
 	{
+		// Interface
+
 		public abstract MoveType Type
 		{
 			get;
@@ -22,13 +24,17 @@ namespace Entities.Model.Components
 
 		public abstract bool CanEnterTile(TileData tile);
 
+		public abstract bool CanPathThroughTile(TileData tile);
+
+		// factory component
+
 		public static Dictionary<MoveType, MovementBehaviour> moveBehaviours = new Dictionary<MoveType, MovementBehaviour>();
 
 		public static MovementBehaviour GetMoveBehaviour(MoveType moveType)
 		{
 			MovementBehaviour m;
 
-			if(moveBehaviours.ContainsKey(moveType))
+			if (moveBehaviours.ContainsKey(moveType))
 			{
 				m = moveBehaviours[moveType];
 			}
@@ -61,6 +67,9 @@ namespace Entities.Model.Components
 			return m;
 		}
 
+		// Private classes to represent different movement behaviours
+		// TODO refactor by compressing duplicate functionality
+
 		private class NotMoveBehaviour : MovementBehaviour
 		{
 			public override MoveType Type
@@ -72,6 +81,11 @@ namespace Entities.Model.Components
 			}
 
 			public override bool CanEnterTile(TileData tile)
+			{
+				return false;
+			}
+
+			public override bool CanPathThroughTile(TileData tile)
 			{
 				return false;
 			}
@@ -129,6 +143,29 @@ namespace Entities.Model.Components
 
 				return canEnter;
 			}
+
+			public override bool CanPathThroughTile(TileData tile)
+			{
+				bool canEnter = false;
+				switch (tile.Type)
+				{
+					case GridTileType.Flat:
+						canEnter = true;
+						break;
+					default:
+						canEnter = false;
+						break;
+				}
+
+				foreach (Entity entity in tile.LinkedEntities)
+				{
+					PathBlocker blocker = entity.GetComponent<PathBlocker>();
+					if (blocker != null && blocker.Block)
+						canEnter = false;
+				}
+
+				return canEnter;
+			}
 		}
 
 		private class FlyMoveBehaviour : MovementBehaviour
@@ -180,6 +217,33 @@ namespace Entities.Model.Components
 
 				return canEnter;
 			}
+
+			public override bool CanPathThroughTile(TileData tile)
+			{
+				bool canEnter = false;
+				switch (tile.Type)
+				{
+					case GridTileType.Flat:
+					case GridTileType.Lava:
+					case GridTileType.Water:
+					case GridTileType.Wall:
+					case GridTileType.None:
+						canEnter = true;
+						break;
+					default:
+						canEnter = false;
+						break;
+				}
+
+				foreach (Entity entity in tile.LinkedEntities)
+				{
+					PathBlocker blocker = entity.GetComponent<PathBlocker>();
+					if (blocker != null && blocker.Block)
+						canEnter = false;
+				}
+
+				return canEnter;
+			}
 		}
 
 		private class HackMoveBehaviour : MovementBehaviour
@@ -193,6 +257,11 @@ namespace Entities.Model.Components
 			}
 
 			public override bool CanEnterTile(TileData tile)
+			{
+				return true;
+			}
+
+			public override bool CanPathThroughTile(TileData tile)
 			{
 				return true;
 			}

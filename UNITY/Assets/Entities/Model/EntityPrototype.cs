@@ -84,6 +84,18 @@ namespace GridCode.Entities.Model
 				position = pos,
 			});
 
+			e.AddComponent(new EntityVisual("triggerVisual"));
+
+			return e;
+		}
+
+		public static Entity BlockingObject(GridPosition pos)
+		{
+			Entity e = GetNewEntity();
+
+			e.AddComponent(new Position(pos, GridDirection.None, false));
+			e.AddComponent(new PathBlocker() { Block = true, });
+
 			e.AddComponent(new EntityVisual("test"));
 
 			return e;

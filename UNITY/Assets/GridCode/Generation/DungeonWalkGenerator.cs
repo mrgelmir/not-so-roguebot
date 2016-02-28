@@ -124,10 +124,10 @@ namespace GridCode.Generation
 				startRoom = workingData.Rooms[r.Next(0, workingData.Rooms.Count)];
 			}
 
-			GridDirection currentDirection = GridDirectionHelper.GetRandomAxisAlignedDirection(r);
+			GridDirection currentDirection = GridDirectionUtil.GetRandomAxisAlignedDirection(r);
 			while (currentDirection == GridDirection.None)
 			{
-				currentDirection = GridDirectionHelper.GetRandomAxisAlignedDirection(r);
+				currentDirection = GridDirectionUtil.GetRandomAxisAlignedDirection(r);
 			}
 
 			DungeonGenerationPosition startPos = startRoom.BorderPosition(currentDirection);

@@ -4,7 +4,6 @@ using System;
 
 namespace Entities.Model.Components
 {
-
 	/// <summary>
 	/// Contains info about how the entity will move
 	/// </summary>
@@ -26,65 +25,11 @@ namespace Entities.Model.Components
 		public MovementBehaviour MoveBehaviour;
     }
 
-	// TODO write some proper way to access these instead of creating new references each time
-	public abstract class MovementBehaviour
-	{
-		protected MovementBehaviour() { }
-
-		public abstract bool CanEnterTile(TileData tile);
-	}
-
-	public class WalkMoveBehaviour : MovementBehaviour
-	{
-		public override bool CanEnterTile(TileData tile)
-		{
-			bool canEnter = false;
-			switch (tile.Type)
-			{
-				case GridTileType.Flat:
-					canEnter = true;
-					break;
-				default:
-					canEnter = false;
-					break;
-			}
-
-			foreach (Entity entity in tile.LinkedEntities)
-			{
-				// TODO make exception for doors?
-
-				Position position = entity.GetComponent<Position>();
-				if(position != null)
-				{
-					if(position.Blocking)
-					{
-						canEnter = false;
-						break;
-					}
-				}
-			}
-
-			return canEnter;
-		}
-	}
-
-	public class HackMoveBehaviour : MovementBehaviour
-	{
-		public override bool CanEnterTile(TileData tile)
-		{
-			return true;
-		}
-	}
+	
 
 	// TODO: move this class elsewhere if file gets too big
 	public static class MoverFunctionality
 	{
-		/// <summary>
-		/// Warning: this does not take other actors into account!
-		/// </summary>
-		/// <param name="mover"></param>
-		/// <param name="tile"></param>
-		/// <returns></returns>
 		public static bool CanEnterTile(this Mover mover, TileData tile)
 		{
 

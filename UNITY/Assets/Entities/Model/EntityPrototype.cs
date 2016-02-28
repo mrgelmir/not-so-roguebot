@@ -104,7 +104,7 @@ namespace GridCode.Entities.Model
 			e.AddComponent(new Mover()
 			{
 				//MoveType = MovementType.Walk,
-				MoveBehaviour = new WalkMoveBehaviour(),
+				MoveBehaviour = MovementBehaviour.GetMoveBehaviour(MoveType.WalkSmart),
 				Pos = position,
 			});
 		}

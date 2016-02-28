@@ -16,5 +16,7 @@
 		private int currentHitPoints;
 		private int maxHitPoints;
 
+		// TODO: an OnDestroy delegate?
+
 	}
 }

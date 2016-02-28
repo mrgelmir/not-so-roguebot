@@ -23,6 +23,7 @@ namespace Entities.Visual
 		/// <returns>An instance of the given entity's visual</returns>
 		public GameObject GetVisual(EntityVisual visual)
 		{
+			// TODO: fix all of this :-)
 			GameObject visualPrefab;
 			switch (visual.visualReference)
 			{

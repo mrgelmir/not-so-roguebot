@@ -387,16 +387,15 @@ public class GameManager : MonoBehaviour
 			{
 				Mover m = nameComponent.Entity.GetComponent<Mover>();
 				
-				if(m.MoveBehaviour is WalkMoveBehaviour)
+				if(m.MoveBehaviour.Type == MoveType.Walk)
 				{
-					m.MoveBehaviour = new HackMoveBehaviour();
+					m.MoveBehaviour = MovementBehaviour.GetMoveBehaviour(MoveType.Hack);
 				}
 				else
 				{
-					m.MoveBehaviour = new WalkMoveBehaviour();
+					m.MoveBehaviour = MovementBehaviour.GetMoveBehaviour(MoveType.Walk);
 				}
 
-				//m.MoveType = (m.MoveType == MovementType.Walk) ? MovementType.Hack : MovementType.Walk;
 			}
 		}
 	}

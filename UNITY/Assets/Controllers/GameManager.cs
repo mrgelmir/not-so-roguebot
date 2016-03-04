@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
 	{
 		get { return entities; }
 	}
-	
+
 	private static GameManager instance = null;
 	public static GameManager Instance
 	{
@@ -211,54 +211,90 @@ public class GameManager : MonoBehaviour
 		actorSystem = new ActorSystem(entities, gridData);
 		healthSystem = new HealthSystem(entities);
 		gridLink = new GridLink(entities, gridData);
-        InputController.Instance.Grid = gridData;
+		InputController.Instance.Grid = gridData;
 
 		// -- spawning -- 
 
 		// find a valid spawn position
 		GridPosition spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
 
+		// temp while using the test dungeon
+		spawnPos = SetupTestDungeon();
 
 		// New player creation
 		playerEntity = EntityPrototype.Player("The Player", spawnPos);
 		entities.AddEntity(playerEntity);
-		
+
 		// dirty, dirty temp -> refactor to camera component
 		StartCoroutine(SetCameraTargetDelayed());
 
-		// temp enemy creation
-		for (int i = 0; i < 10; i++)
-		{
-			spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
-			Entity enemy = EntityPrototype.Enemy(spawnPos);
-			entities.AddEntity(enemy);
-		}
 
-		// temp triggers
-		for (int i = 0; i < 30; i++)
-		{
-			spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
 
-			Entity e = EntityPrototype.TestTrigger(spawnPos);
 
-			entities.AddEntity(e);
-		}
+		//// temp enemy creation
+		//for (int i = 0; i < 10; i++)
+		//{
+		//	spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
+		//	Entity enemy = EntityPrototype.Enemy(spawnPos);
+		//	entities.AddEntity(enemy);
+		//}
 
-		// temp blockers
-		for (int i = 0; i < 20; i++)
-		{
-			spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
+		//// temp triggers
+		//for (int i = 0; i < 30; i++)
+		//{
+		//	spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
 
-			Entity e = EntityPrototype.BlockingObject(spawnPos);
+		//	Entity e = EntityPrototype.TestTrigger(spawnPos);
 
-			entities.AddEntity(e);
-		}
+		//	entities.AddEntity(e);
+		//}
+
+		//// temp blockers
+		//for (int i = 0; i < 20; i++)
+		//{
+		//	spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
+
+		//	Entity e = EntityPrototype.BlockingObject(spawnPos);
+
+		//	entities.AddEntity(e);
+		//}
 
 
 		// -- game start -- 
 
 		StartGame();
-		
+
+	}
+
+	private GridPosition SetupTestDungeon()
+	{
+		GridPosition spawnPos = new GridPosition(1, 2);
+
+		Entity door = EntityPrototype.SimpleDoor(new GridPosition(4, 2), false, true);
+
+		Entity openDoorTrigger = EntityPrototype.TestTrigger(new GridPosition(3, 1));
+		Entity endTrigger = EntityPrototype.TestTrigger(new GridPosition(7, 1));
+
+		// just assume a trigger object should have a trigger
+		Trigger t = openDoorTrigger.GetComponent<Trigger>();
+		t.OnTriggerEnter += (Entity e) =>
+		{
+			door.GetComponent<Position>().Blocking = false;
+			door.GetComponent<PathBlocker>().Block = false;
+		};
+
+		t = endTrigger.GetComponent<Trigger>();
+		t.OnTriggerEnter += (Entity e) =>
+		{
+			Log.Write("made it trough to the other side");
+		};
+
+
+		entities.AddEntity(door);
+		entities.AddEntity(openDoorTrigger);
+		entities.AddEntity(endTrigger);
+
+		return spawnPos;
 	}
 
 	private IEnumerator SetCameraTargetDelayed()
@@ -366,21 +402,22 @@ public class GameManager : MonoBehaviour
 		// Dungeon generation
 
 		//GenerateDungeonOld();
-		GenerateDungeonNew();
+		//GenerateDungeonNew();
+		GenerateTempDungeon();
 
 		// Add doors/other entities from generation
 		// TODO re-create room objects (flood-fill) and determine doors
 		// ie. a door is added when a gap with width 1 (or 2) is first found
 		foreach (GridPosition doorPos in gridData.DoorPositions)
 		{
-			entities.AddEntity(EntityPrototype.SimpleDoor(doorPos));
+			entities.AddEntity(EntityPrototype.SimpleDoor(doorPos, false, false));
 		}
 
 		//Dungeon post-processing
-        gridData.ConstructTileGraph();
+		gridData.ConstructTileGraph();
 
 		//temp grid editor visualisation
-        foreach (Node<TileData> node in gridData.Graph.Nodes.Values)
+		foreach (Node<TileData> node in gridData.Graph.Nodes.Values)
 		{
 			foreach (Edge<TileData> edge in node.Edges)
 			{
@@ -388,6 +425,32 @@ public class GameManager : MonoBehaviour
 				Debug.DrawRay(node.Data.Position.ToWorldPos(), ray * .3f, Color.green, float.MaxValue);
 			}
 		}
+	}
+
+	private void GenerateTempDungeon()
+	{
+		gridData = new GridData(9, 5);
+
+		// fill with walls
+		foreach (TileData tile in gridData)
+		{
+			tile.Type = GridTileType.Wall;
+		}
+
+		// generate 2 rooms with a door in between
+
+		// room 1
+		for (int col = 0; col < 3; col++)
+		{
+			for (int row = 0; row < 3; row++)
+			{
+				gridData[col + 1, row + 1].Type = GridTileType.Flat;
+				gridData[col + 5, row + 1].Type = GridTileType.Flat;
+			}
+		}
+
+		// doorway + door
+		gridData[4, 2].Type = GridTileType.Flat;
 	}
 
 	private void GenerateDungeonNew()
@@ -401,7 +464,7 @@ public class GameManager : MonoBehaviour
 		};
 		generator.Generate(dungeonInfo);
 		gridData = generator.GetDungeon();
-		
+
 	}
 
 	private void GenerateDungeonOld()
@@ -411,19 +474,19 @@ public class GameManager : MonoBehaviour
 		dungeonGenerator.Setup(dungeonInfo);
 		gridData = dungeonGenerator.GenerateDungeon().GetFlattenedGrid();
 
-		
-		
+
+
 	}
 
 	public void TestButton()
 	{
 		foreach (EntityName nameComponent in entities.Components<EntityName>())
 		{
-			if(nameComponent.NameString == "The Player")
+			if (nameComponent.NameString == "The Player")
 			{
 				Mover m = nameComponent.Entity.GetComponent<Mover>();
-				
-				if(m.MoveBehaviour.Type == MoveType.Walk)
+
+				if (m.MoveBehaviour.Type == MoveType.Walk)
 				{
 					m.MoveBehaviour = MovementBehaviour.GetMoveBehaviour(MoveType.Hack);
 				}

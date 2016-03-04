@@ -34,52 +34,6 @@ namespace Entities.Model.Components
 		{
 
 			return mover.MoveBehaviour.CanEnterTile(tile);
-
-			//bool canEnter = false;
-
-			//// check if Mover can enter tile
-			//if (mover.MoveType == MovementType.Hack)
-			//{
-			//	return true;
-			//}
-			//else if (mover.MoveType == MovementType.None)
-			//{
-			//	return false;
-			//}
-			//else if (mover.MoveType == MovementType.Walk)
-			//{
-			//	switch (tile.Type)
-			//	{
-			//		case GridTileType.Flat:
-			//			canEnter = true;
-			//			break;
-			//		default:
-			//			break;
-			//	}
-			//}
-			//else if (mover.MoveType == MovementType.Fly)
-			//{
-			//	switch (tile.Type)
-			//	{
-			//		case GridTileType.None:
-			//		case GridTileType.Flat:
-			//		case GridTileType.Water:
-			//		case GridTileType.Lava:
-			//			canEnter = true;
-			//			break;
-			//		default:
-			//			break;
-			//	}
-			//}
-
-			//// check if Tile is occupied
-			//if (canEnter)
-			//{
-
-
-			//}
-
-			//return canEnter;
 		}
 
 		public static void InvalidatePath(this Mover mover)

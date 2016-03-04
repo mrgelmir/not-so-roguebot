@@ -80,10 +80,9 @@ namespace GridCode
 		{
 			get
 			{
-				return grid.GetNeigbours(this);
+				return grid.GetNeigbours(this, true);
 			}
 		}
-
 		#endregion
 
 		#region Callbacks
@@ -157,7 +156,36 @@ namespace GridCode
 		int IPathFindable<TileData>.MovementCostFrom(TileData other)
 		{
 			// TODO: higher cost for diagonal
-			return (other.Column == Column || other.Row == Row) ? 2 : 3;
+			return (other.Column == Column || other.Row == Row) ? 4 : 6;
+		}
+
+		bool IPathFindable<TileData>.ValidateMove(TileData to, Func<TileData, bool> validateTile)
+		{
+			if (!validateTile(to))
+				return false;
+			
+			GridDirection movementDir = GridDirectionUtil.DirectionBetween(Position, to.Position);
+
+			switch (movementDir)
+			{
+				case GridDirection.None:
+				case GridDirection.North:
+				case GridDirection.East:
+				case GridDirection.South:
+				case GridDirection.West:
+					// axial movement is always valid
+					return true;
+				case GridDirection.NorthEast:
+				case GridDirection.SouthEast:
+				case GridDirection.SouthWest:
+				case GridDirection.NorthWest:
+					// check neigbouring tiles when moving diagonally
+					return validateTile(grid[Position + movementDir.RotateBy(-45)]) &&
+						validateTile(grid[Position + movementDir.RotateBy(45)]);
+				default:
+					// we don't deal with composite directions
+					return false;
+			}
 		}
 		#endregion
 	}

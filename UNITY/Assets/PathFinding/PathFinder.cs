@@ -9,21 +9,25 @@ namespace PathFinding
 	public class PathFinder<T> where T : class, IPathFindable<T>
 	{
 
-		public static IEnumerable<T> FindPath(T from, T to, Func<T,bool> validateTileFunction)
+		public static IEnumerable<T> FindPath(T from, T to, Func<T, bool> validateTileFunction)
 		{
-			
+
 			// create pathfinder and let it work its magic
 			PathFinder<T> p = new PathFinder<T>(from, to, validateTileFunction);
+			
+			if(!p.Finished)
+			{
+				return null;
+			}
 
 			// return values
-
 			List<T> l = new List<T>();
 
 			foreach (T pf in p.Path)
 			{
 				l.Add(pf as T);
 			}
-			
+
 			return l;
 		}
 
@@ -34,11 +38,16 @@ namespace PathFinding
 		//private SimplePriorityQueue<Node> OpenList = new SimplePriorityQueue<Node>();
 		private List<Node> OpenList = new List<Node>();
 		private HashSet<Node> ClosedList = new HashSet<Node>(); // TODO calculate a feasible amount to start with?
-		private bool finished = true;
+		private bool finished = false;
 
 		protected List<T> Nodes;
 		protected List<int> HeuristicValues;
 		protected List<int> MoveValues;
+
+		public bool Finished
+		{
+			get { return finished; }
+		}
 
 		private PathFinder(T from, T to, Func<T, bool> validateTileFunction)
 		{
@@ -53,7 +62,9 @@ namespace PathFinding
 				Calculate();
 			}
 			while (currentNode.PathFindeable != target && OpenList.Count > 0);
-		}
+
+			finished = currentNode.PathFindeable == target;
+        }
 
 		private void Calculate() // TODO find better name
 		{
@@ -63,8 +74,7 @@ namespace PathFinding
 			if (OpenList.Count == 0)
 			{
 				Log.Write("No more open list nodes");
-				finished = false;
-                return;
+				return;
 			}
 			currentNode = OpenList[0];
 			//currentNode = OpenList.Dequeue();
@@ -73,14 +83,23 @@ namespace PathFinding
 			OpenList.Remove(currentNode);
 			ClosedList.Add(currentNode);
 
+			// TODO handle diagonal clipping (ie moving from A to B)
+			// X is an invalid tile, O a valid tile
+			//
+			// OAXO	 OA0O OAXO
+			// OXBO	 OXBO O0BO
+			// OOOO	 OOOO OOOO
+
 			// add its neigbours to open list
 			foreach (T pathFindeable in currentNode.PathFindeable.Neighbours)
 			{
+				if (pathFindeable == null)
+					continue;
+
 				Node newNode = new Node(pathFindeable, target, currentNode);
-				if (validateTile(pathFindeable) && !OpenList.Contains(newNode) && !ClosedList.Contains(newNode))
-				//if (pathFindeable.Walkeable && !OpenList.Contains(newNode) && !ClosedList.Contains(newNode))
+				if (currentNode.PathFindeable.ValidateMove(pathFindeable, validateTile) && !OpenList.Contains(newNode) && !ClosedList.Contains(newNode))
 				{
-					
+
 					// see if this item exists on open list
 					int currentIndex = OpenList.IndexOf(newNode);
 					if (currentIndex > 0)
@@ -193,8 +212,8 @@ namespace PathFinding
 		int HeuristicDistance(T other);
 		int MovementCostFrom(T other);
 		IEnumerable<T> Neighbours { get; }
-
+		bool ValidateMove(T to, Func<T, bool> validateTile);
 	}
-	
+
 
 }

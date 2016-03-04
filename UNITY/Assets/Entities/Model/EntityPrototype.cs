@@ -59,18 +59,30 @@ namespace GridCode.Entities.Model
 			return e;
 		}
 
-		public static Entity SimpleDoor(GridPosition pos)
+		public static Entity SimpleDoor(GridPosition pos, bool open, bool locked)
 		{
 			Entity e = GetNewEntity();
-
-			// Keep door non-blockable until we can 
-			// figure out how to handle opening doors in pathfinder
-			e.AddComponent(new Position(pos, GridDirection.None, false));
-			e.AddComponent(new EntityVisual("door"));
-
-			// TODO: make this doorInteractable or whatever
-			e.AddComponent(new Interactable());
 			
+			Position position = new Position(pos, GridDirection.None, !open);
+			e.AddComponent(position);
+			e.AddComponent(new EntityVisual("door"));
+			
+			Interactable i = new Interactable();
+			e.AddComponent(i);
+			PathBlocker pathBlocker = new PathBlocker() { Block = !open, };
+			e.AddComponent(pathBlocker);
+
+			// add opening/closing mechanic
+			if(!locked)
+			{
+				i.OnInteract += (Entity entity) =>
+				{
+					Log.Write("locking/unlocking door");
+					position.Blocking = !position.Blocking;
+					pathBlocker.Block = !pathBlocker.Block;
+				};
+			}
+
 			return e;
 		}
 

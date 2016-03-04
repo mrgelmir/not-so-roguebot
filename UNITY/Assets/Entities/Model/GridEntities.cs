@@ -178,15 +178,21 @@ namespace Entities.Model
 
 			foreach (Trigger trigger in Components<Trigger>())
 			{
+				// do not notify triggers of enterning self
+				if (trigger.Entity == position.Entity)
+					break;
+
 				// alert trigger of entry
 				if(position.Pos == trigger.position)
 				{
-					trigger.OnTriggerEnter(position.Entity);
+					if(trigger.OnTriggerEnter != null)
+						trigger.OnTriggerEnter(position.Entity);
 				}
 				// alert trigger of exit
 				else if(previousPos == trigger.position)
 				{
-					trigger.OnTriggerExit(position.Entity);
+					if (trigger.OnTriggerExit != null)
+						trigger.OnTriggerExit(position.Entity);
 				}
 			}
 

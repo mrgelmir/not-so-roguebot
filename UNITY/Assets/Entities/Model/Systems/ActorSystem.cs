@@ -97,6 +97,10 @@ namespace Entities.Model.Systems
 			Position pos = currentEntity.GetComponent<Position>();
 			Mover mover = currentEntity.GetComponent<Mover>();
 
+
+
+			// 1. check if we can move to tile
+
 			if (mover.MoveBehaviour.CanEnterTile(tile))
 			{
 				GetPath(mover, grid[pos.Pos], tile);
@@ -113,7 +117,37 @@ namespace Entities.Model.Systems
 
 				// hand control back over to the game
 				FinishActorHandling();
+				return;
 			}
+
+			// 2. check if we can interact with tile
+			Interactable interactable = null;
+
+			foreach (Entity entity in tile.LinkedEntities)
+			{
+				interactable = entity.GetComponent<Interactable>();
+
+				// if we do not face the interactable, do so
+				GridDirection dir = GridDirectionUtil.DirectionBetween(pos.Pos, tile.Position);
+				pos.Orientation = dir;
+
+				if (interactable != null)
+				{
+					Log.Write("actor can interact with tile");
+					break;
+				}
+			}
+
+			if (interactable != null)
+			{
+				// do interaction
+				if (interactable.OnInteract != null)
+				{
+					interactable.OnInteract(currentEntity);
+				}
+			}
+
+			// 3. check if ther eis an actor on the tile that we can attack
 
 		}
 
@@ -133,12 +167,22 @@ namespace Entities.Model.Systems
 
 		private void GetPath(Mover mover, TileData from, TileData to)
 		{
-			// dynamic grid thing
-			mover.Path = new Queue<TileData>(PathFinder<TileData>.FindPath(
-				from, to, mover.MoveBehaviour.CanPathThroughTile));
-			// remove start pos from path
-			mover.Path.Dequeue();
+			try
+			{
+				// dynamic grid thing
+				mover.Path = new Queue<TileData>(PathFinder<TileData>.FindPath(
+					from, to, mover.MoveBehaviour.CanPathThroughTile));
 
+				if (mover.Path != null && mover.Path.Count > 0)
+				{
+					// remove start pos from path
+					mover.Path.Dequeue();
+				}
+			}
+			catch (ArgumentNullException e)
+			{
+				// well, the path will be null 
+			}
 
 			//// graph based version
 			//Path_AStar path = new Path_AStar(grid, currentPos, target);

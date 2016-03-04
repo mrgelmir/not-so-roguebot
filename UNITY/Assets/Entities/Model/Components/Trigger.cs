@@ -1,4 +1,5 @@
 ﻿using GridCode;
+using System;
 
 namespace Entities.Model.Components
 {
@@ -10,27 +11,9 @@ namespace Entities.Model.Components
 		/// </summary>
 		public GridPosition position;
 
-		// TODO make this more data/callback oriented
-
-		public void OnTriggerEnter(Entity entity)
-		{
-			//// temp
-			HitPoints hp = entity.GetComponent<HitPoints>();
-			if (hp != null)
-			{
-				hp.CurrentHitpoints -= 1;
-			}
-
-		}
-
-		public void OnTriggerExit(Entity entity)
-		{
-
-		}
-
-		public void OnTriggerStay(Entity entity)
-		{
-			// not yet implemented
-		}
+		// callbacks
+		public Action<Entity> OnTriggerEnter;
+		public Action<Entity> OnTriggerExit;
+		public Action<Entity> OnTriggerStay;
 	}
 }

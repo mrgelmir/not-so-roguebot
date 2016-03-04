@@ -88,6 +88,14 @@ namespace GridCode
 			return column >= 0 && column < Columns && row >= 0 && row < Rows;
 		}
 
+		/// <summary>
+		/// Returns a list of all neigbours
+		/// Non valid neigbours are null
+		/// Diagonal lists have a count of 8, non-diagonal only four
+		/// </summary>
+		/// <param name="tileData">the tile for which to get the neigbours</param>
+		/// <param name="allowDiagonals">should diagonal neigbours be included</param>
+		/// <returns></returns>
 		public List<TileData> GetNeigbours(TileData tileData, bool allowDiagonals = true)
 		{
 			int maxNeigbours = allowDiagonals ? 8 : 4;
@@ -96,20 +104,13 @@ namespace GridCode
 			if (tileData == null)
 			{
 				return null;
-			}
+			}			
 
-			// TODO: find out if this thing is efficient enough?
-
-			List<TileData> neigbours = new List<TileData>(8);
-			TileData neigbourTile;
+			List<TileData> neigbours = new List<TileData>(maxNeigbours);
 			GridDirection dir = GridDirection.North;
 			for (int i = 0; i < maxNeigbours; i++)
 			{
-				neigbourTile = GetTile(tileData.Position + dir.RotateBy(i * angle));
-				if(neigbourTile != null)
-				{
-					neigbours.Add(neigbourTile);
-				}
+				neigbours.Add(GetTile(tileData.Position + dir.RotateBy(i * angle)));
 			}
 			return neigbours;
 		}
@@ -146,11 +147,11 @@ namespace GridCode
 		#endregion
 
 		#region Indexers
-		public TileData this[int row, int column]
+		public TileData this[int column, int row]
 		{
 			get
 			{
-				return GetTile(row, column);
+				return GetTile(column, row);
 			}
 		}
 
@@ -168,7 +169,7 @@ namespace GridCode
 	{
 		private GridData grid;
 		private int currentColumn = 0;
-		private int currentRow = 0;
+		private int currentRow = -1;
 
 		public GridEnumerator(GridData grid)
 		{

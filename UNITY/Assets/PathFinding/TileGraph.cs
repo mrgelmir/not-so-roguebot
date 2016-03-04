@@ -42,6 +42,9 @@ namespace PathFinding
 				List<Edge<TileData>> neigbourEdges = new List<Edge<TileData>>(8);
 				foreach (TileData neighbourTile in grid.GetNeigbours(node.Data, true))
 				{
+					if (neighbourTile == null)
+						continue;
+
 					// TODO: only allow diagonals that do not cross walls
 					if (neighbourTile.Type == GridTileType.Flat)
 					{

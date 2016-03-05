@@ -35,10 +35,8 @@ namespace Entities.Model.Tests
 			}
 			else
 			{
-				bool hasAddedEntity = testEntity.AddComponent(new AddedComponentTest1());
+				testEntity.AddComponent(new AddedComponentTest1());
 
-				Assert.IsTrue(hasAddedEntity, 
-					"AddComponent should return true when adding a component it does not contain");
 				Assert.IsTrue(originalComponentCount + 1 == testEntity.ComponentCount,
 					"component count should increment on addition");
 			}
@@ -53,9 +51,8 @@ namespace Entities.Model.Tests
 			int originalComponentCount = testEntity.ComponentCount;
 			if (testEntity.HasComponent<DefaultComponentTest1>())
 			{
-				bool hasAddedEntity = testEntity.AddComponent(new DefaultComponentTest1());
-
-				Assert.IsFalse(hasAddedEntity, "duplicate additions should not happen");
+				testEntity.AddComponent(new DefaultComponentTest1());
+				
 				Assert.IsTrue(originalComponentCount == testEntity.ComponentCount,
 					"component count should not change with duplicate addition");
 			}

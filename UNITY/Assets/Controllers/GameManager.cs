@@ -11,7 +11,6 @@ using PathFinding;
 
 public class GameManager : MonoBehaviour
 {
-
 	[Header("Dungeon Generation")]
 	[SerializeField]
 	private DungeonGenerationInfo dungeonInfo = null;
@@ -26,7 +25,8 @@ public class GameManager : MonoBehaviour
 	[SerializeField]
 	private TextPopup textPopup = null;
 
-	//[Header("Tweakables")]
+	[Header("Tweakables")]
+	public bool Testing = true;
 
 	private GridData gridData = null;
 	private GridEntities entities = null;
@@ -206,8 +206,11 @@ public class GameManager : MonoBehaviour
 
 		// -- setup --
 
+		// entities and grid
 		entities = new GridEntities();
 		GenerateDungeon();
+
+		// systems
 		actorSystem = new ActorSystem(entities, gridData);
 		healthSystem = new HealthSystem(entities);
 		gridLink = new GridLink(entities, gridData);
@@ -218,8 +221,11 @@ public class GameManager : MonoBehaviour
 		// find a valid spawn position
 		GridPosition spawnPos = gridData.GetRandomTile(GridTileType.Flat).Position;
 
-		// temp while using the test dungeon
-		spawnPos = SetupTestDungeon();
+		if (Testing)
+		{
+			// temp while using the test dungeon
+			spawnPos = SetupTestDungeon();
+		}
 
 		// New player creation
 		playerEntity = EntityPrototype.Player("The Player", spawnPos);
@@ -286,7 +292,7 @@ public class GameManager : MonoBehaviour
 		t = endTrigger.GetComponent<Trigger>();
 		t.OnTriggerEnter += (Entity e) =>
 		{
-			Log.Write("made it trough to the other side");
+			textPopup.Show("Victory", "You have made it to the end of the level.\nRestart?", Restart);
 		};
 
 
@@ -402,8 +408,14 @@ public class GameManager : MonoBehaviour
 		// Dungeon generation
 
 		//GenerateDungeonOld();
-		//GenerateDungeonNew();
-		GenerateTempDungeon();
+		if (Testing)
+		{
+			GenerateTempDungeon();
+		}
+		else
+		{
+			GenerateDungeonNew();
+		}
 
 		// Add doors/other entities from generation
 		// TODO re-create room objects (flood-fill) and determine doors

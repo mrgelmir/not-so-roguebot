@@ -3,7 +3,7 @@ using System;
 
 namespace Entities.Model.Components
 {
-	class Trigger : Component
+	public class Trigger : Component
 	{
 		/// <summary>
 		/// The position to check

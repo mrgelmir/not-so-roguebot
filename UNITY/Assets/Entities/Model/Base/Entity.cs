@@ -53,12 +53,11 @@ namespace Entities.Model
 			this.id = id;
 		}
 
-		public bool AddComponent<T>(T component) where T : Component
+		public Entity AddComponent<T>(T component) where T : Component
 		{
 			if (HasComponent<T>())
 			{
 				Log.Warning("Entity::AddComponent - attempt to add duplicate component " + component.GetType().ToString());
-				return false;
 			}
 			else
 			{
@@ -70,9 +69,9 @@ namespace Entities.Model
 				{
 					onComponentAdded(component);
 				}
-
-				return true;
 			}
+
+			return this;
 		}
 
 		public bool RemoveComponent<T>()

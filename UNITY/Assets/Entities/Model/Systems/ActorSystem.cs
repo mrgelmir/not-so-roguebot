@@ -121,31 +121,36 @@ namespace Entities.Model.Systems
 			}
 
 			// 2. check if we can interact with tile
-			Interactable interactable = null;
-
-			foreach (Entity entity in tile.LinkedEntities)
+			if (tile.Position.Neighbours(pos.Pos))
 			{
-				interactable = entity.GetComponent<Interactable>();
+				Interactable interactable = null;
 
-				// if we do not face the interactable, do so
-				GridDirection dir = GridDirectionUtil.DirectionBetween(pos.Pos, tile.Position);
-				pos.Orientation = dir;
+				foreach (Entity entity in tile.LinkedEntities)
+				{
+					interactable = entity.GetComponent<Interactable>();
+
+					// if we do not face the interactable, do so
+					GridDirection dir = GridDirectionUtil.DirectionBetween(pos.Pos, tile.Position);
+					pos.Orientation = dir;
+
+					if (interactable != null)
+					{
+						Log.Write("actor can interact with tile");
+						break;
+					}
+				}
 
 				if (interactable != null)
 				{
-					Log.Write("actor can interact with tile");
-					break;
+					// do interaction
+					if (interactable.OnInteract != null)
+					{
+						interactable.OnInteract(currentEntity);
+					}
 				}
 			}
 
-			if (interactable != null)
-			{
-				// do interaction
-				if (interactable.OnInteract != null)
-				{
-					interactable.OnInteract(currentEntity);
-				}
-			}
+
 
 			// 3. check if ther eis an actor on the tile that we can attack
 

@@ -3,6 +3,10 @@ using Entities.Model.Components;
 
 namespace GridCode.Entities.Model
 {
+	/// <summary>
+	/// Factory for creating Entities
+	/// atm only selected presets available
+	/// </summary>
 	public static class EntityPrototype
 	{
 		// TODO: make a better entity system when this breaks
@@ -72,14 +76,17 @@ namespace GridCode.Entities.Model
 			PathBlocker pathBlocker = new PathBlocker() { Block = !open, };
 			e.AddComponent(pathBlocker);
 
+			EntityAnimator animator = new EntityAnimator();
+			e.AddComponent(animator);
+
 			// add opening/closing mechanic
 			if(!locked)
 			{
 				i.OnInteract += (Entity entity) =>
 				{
-					Log.Write("locking/unlocking door");
 					position.Blocking = !position.Blocking;
 					pathBlocker.Block = !pathBlocker.Block;
+					animator.UpdateFloat("openness", pathBlocker.Block ? 1 : 2);
 				};
 			}
 

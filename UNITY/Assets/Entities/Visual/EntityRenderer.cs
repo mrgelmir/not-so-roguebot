@@ -49,7 +49,28 @@ namespace Entities.Visual
 					// add visual to collection
 					entityVisuals.Add(entity.ID, visual);
 				}
-				
+
+				// link animator
+				// TODO add different types that listen to stuff?
+				EntityAnimator a = entity.GetComponent<EntityAnimator>();
+				if (a != null)
+				{
+					// asumption: visual is not null here
+
+					// link animator component with real animator 
+					// TODO get in children?
+					Animator visualAnimator = visual.GetComponent<Animator>();
+
+					if(visualAnimator != null)
+					{
+						a.OnUpdateFloat += visualAnimator.SetFloat;
+						a.OnSetTrigger += visualAnimator.SetTrigger;
+					}
+					else
+					{
+						Log.Warning("EntityRenderer::UpdateEntityVisual - An animator component is added to a non-animating visual");
+					}
+				}
 
 				// TEMP visual only gets created, not updated
 
@@ -80,7 +101,7 @@ namespace Entities.Visual
 		{
 			Position position = entity.GetComponent<Position>();
 
-			if(position!= null)
+			if (position != null)
 			{
 				// Check if a visual already exists (visual can be an empty GameObject)
 				// TODO: should we be subscribed to a non-visual entity? 
@@ -105,7 +126,7 @@ namespace Entities.Visual
 			// subscribe to all hooks etc here
 
 			Position p = entity.GetComponent<Position>();
-			if(p != null)
+			if (p != null)
 			{
 				p.OnPositionChanged += UpdateEntityPosition;
 				p.OnOrientationChanged += UpdateEntityPosition;
@@ -127,11 +148,11 @@ namespace Entities.Visual
 				// entity not found -> create new one
 
 				// get needed data
-                EntityName name = entity.GetComponent<EntityName>();
-                Position position = entity.GetComponent<Position>();
+				EntityName name = entity.GetComponent<EntityName>();
+				Position position = entity.GetComponent<Position>();
 
 				// a position is quite essential for visual entities
-				if(position == null)
+				if (position == null)
 				{
 					Log.Error("EntityFactory::GetOrCreateVisual - Creating a visual without a position is a no-go");
 					return null;
@@ -144,7 +165,7 @@ namespace Entities.Visual
 
 				// add visual reference
 				entityVisuals.Add(entity.ID, visual);
-            }
+			}
 
 			return visual;
 		}

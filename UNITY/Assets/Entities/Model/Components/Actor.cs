@@ -22,7 +22,6 @@ namespace Entities.Model.Components
 		public bool InstantActor;
 
 		public int CurrentEnergy;
-
 		public int NeededEnergy;
 
 		// Gives systems an idea of how this actor acts

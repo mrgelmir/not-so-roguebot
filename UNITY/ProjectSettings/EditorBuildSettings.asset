@@ -9,3 +9,5 @@ EditorBuildSettings:
     path: Assets/Test_sd/MainScene.unity
   - enabled: 1
     path: Assets/Test_sd/TestScene_entities.unity
+  - enabled: 0
+    path: Assets/Test_sd/SubstanceMech/testScene.unity
